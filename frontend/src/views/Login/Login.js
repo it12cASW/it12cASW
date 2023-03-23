@@ -5,16 +5,15 @@ const Login = () => {
 
     function myfunction() {
 
-        // quiero pasarle 2 parametros a la request que hace el axios.get
-        // el primero es el email y el segundo es el password
-        // pero no se como hacerlo
-        
+        // obten los valores de los campos input
+        var email = document.querySelector('input[type="text"]').value;
+        var password = document.querySelector('input[type="password"]').value;
+
 
         axios.get('http://127.0.0.1:8000/polls/register', {
             params: {
-                name: 'name',
-                email: 'email',
-                password: 'password',
+                email: email,
+                password: password,
             }
         })
         .then(function (response) {
@@ -26,12 +25,17 @@ const Login = () => {
     }
 
     return (
-        <div styles={ styles.mainContainer }>
-            <input type="text" placeholder='email'/>
-            <input type="password" placeholder='password'/>
+        <div style={ styles.pantallaPrincipal }>
 
-            <button onClick={myfunction}>Click me</button>
+            <h1 style={ styles.tituloLogin } >Login</h1>
+
+            <div style={ styles.mainContainer }>
+                <input style={ styles.input } type="text" placeholder='email'/>
+                <input style={ styles.input } type="password" placeholder='password'/>
+                <button style={ styles.buttonInput } onClick={myfunction}>Click me</button>
+            </div>
         </div>
+        
     );
 };
 
@@ -40,9 +44,29 @@ const Login = () => {
 export default Login;
 
 const styles = {
-
+    pantallaPrincipal: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '100%',
+    },
+    tituloLogin: {
+        fontSize: '50px',
+    },
     mainContainer: {
         display: 'flex',
         flexDirection: 'column',
+        padding: '20px',
+        alignItems  : 'center',
+    },
+    input: {
+        margin: '10px',
+        width: '300px',
+        height: '30px',
+    },
+    buttonInput: {
+        marginTop: '20px',
+        width: '100x',
+        height: '30px',
     },
 };

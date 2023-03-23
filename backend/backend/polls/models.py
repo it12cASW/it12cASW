@@ -16,5 +16,12 @@ class User(models.Model):
     def register(self):
         self.save()
 
+    def exists(self, email):
+        # si el usuario existe devuelve true
+        if User.objects.filter(email=email).exists():
+            return True
+        else:
+            return False
+
     def __str__(self):
         return self.name

@@ -13,7 +13,7 @@ SECRET_KEY = 'django-insecure-d2**29b%qn3w52-l1*u0a&r&5)!xna#vtuq4rz#!@3$h9tt9vf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = []
 
 
 # Application definition -> cuando ejecuto migrate creo las tablas para estas apps
@@ -28,7 +28,6 @@ INSTALLED_APPS = [
     # apps nuestras ( polls )
     'polls.apps.PollsConfig',
     'corsheaders',
-    "fly",
 ]
 
 MIDDLEWARE = [
