@@ -1,26 +1,30 @@
 import React from 'react';
 import axios from 'axios';
+import { Link, useNavigate } from "react-router-dom";
+
+
 
 const Login = () => {
+
 
     function myfunction() {
 
         // obten los valores de los campos input
         var email = document.querySelector('input[type="text"]').value;
         var password = document.querySelector('input[type="password"]').value;
+        var codigo = '';
 
-
-        axios.get('http://127.0.0.1:8000/polls/register', {
+        axios.get('http://127.0.0.1:8000/polls/login', {
             params: {
                 email: email,
                 password: password,
             }
         })
         .then(function (response) {
-            console.log(response);
+            window.location.assign('/panel');
         })
         .catch(function (error) {
-            console.log(error);
+            document.querySelector('.alerta').style.display = 'flex';
         });   
     }
 
@@ -34,6 +38,12 @@ const Login = () => {
                 <input style={ styles.input } type="password" placeholder='password'/>
                 <button style={ styles.buttonInput } onClick={myfunction}>Click me</button>
             </div>
+
+            <div class='alerta' style={ styles.alerta }>
+                <h1>ALERTA</h1>
+            </div>
+
+            <Link to='/register' style={ styles.buttonRegistrarse } >Registrarse</Link>
         </div>
         
     );
@@ -68,5 +78,14 @@ const styles = {
         marginTop: '20px',
         width: '100x',
         height: '30px',
+    },
+    buttonRegistrarse: {
+        padding: '10px',
+        backgroundColor: 'lightblue',
+        color: 'white',
+        textDecoration: 'none',
+    },
+    alerta: {
+        display: 'none',
     },
 };

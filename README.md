@@ -18,3 +18,26 @@ Ahora podremos abrir la ventana del cliente ( react ) con la URL que nos del Rea
     - 
 
 
+COMANDOS
+- Borrar tablas y su contenido
+# python3 manage.py flush
+
+- Crear la migración de los modelos
+# python3 manage.py makemigrations
+
+- Aplicar la migración a la BD
+# python3 manage.py migrate
+
+- Entrar en la shell de la BD
+# python3 manage.py shell
+
+- Importar la clase
+# from django.contrib.auth.models import <clase>
+
+- Ver contenido de las tablas
+# <clase>.objects.all()
+
+- Ver tablas de BD
+# python3 manage.py inspectdb
+
+
