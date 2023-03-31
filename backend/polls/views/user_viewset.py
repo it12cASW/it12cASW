@@ -1,9 +1,5 @@
 from django.http import HttpResponse
-from .models import User
 
-
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
 
 
 def register(request):
@@ -16,6 +12,7 @@ def register(request):
         email = aux.get('email')
         password = aux.get('password')
         confirmarPassword = aux.get('confirmarPassword')
+        from backend.polls.models import User
         user = User(email=email)
 
         # Compruebo que las contraseñas coinciden
@@ -48,3 +45,7 @@ def login(request):
             return HttpResponse("El usuario no existe", status=400)
 
     return HttpResponse("Faltan parámetros ", status="400")
+
+
+
+
