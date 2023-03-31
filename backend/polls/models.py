@@ -30,6 +30,7 @@ class User(models.Model):
     def getUsuarioConEmail(email):
         return User.objects.filter(email=email)
 
+
 class Issue(models.Model):
     id = models.AutoField(primary_key=True)
     asunto = models.CharField(max_length=50, default='')
