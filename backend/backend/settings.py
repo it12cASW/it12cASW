@@ -28,7 +28,18 @@ INSTALLED_APPS = [
     # apps nuestras ( polls )
     'polls.apps.PollsConfig',
     'corsheaders',
+
+    'django.contrib.sites', # must
+    'allauth', # must
+    'allauth.account', # must
+    'allauth.socialaccount', # must
+    'allauth.socialaccount.providers.google', # new
 ]
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '812040518166-trifui9v2mc6nnhgkbud5hn4kj5g6c4s.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = 'http://127.0.0.1:8000/main/login/auth'
+LOGIN_REDIRECT_URL = 'http://127.0.0.1:8000/main/login/auth'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -124,3 +135,18 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:9000",
     "http://localhost:3000",
 ]
+
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+
