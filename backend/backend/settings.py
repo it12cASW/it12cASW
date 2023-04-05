@@ -149,4 +149,5 @@ AUTHENTICATION_BACKENDS = [
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
-
+# Decir que la clase usuario es mia, para hacer la autenticacion en mi BD
+# AUTH_USER_MODEL = 'polls.User'

@@ -15,7 +15,7 @@
     <!-- Añade 2 inputs para el email y la contraseña -->
     <form action="/main/login/" method="POST">
         {% csrf_token %}
-        <input type="email" name="email" placeholder="Email">
+        <input type="text" name="username" placeholder="Username">
         <input type="password" name="password" placeholder="Password">
         <button type="submit">Login</button>
     </form>

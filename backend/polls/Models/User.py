@@ -3,6 +3,7 @@ from django.db import models
 
 class User(models.Model):
     # crea un nuevo campo para la edad que sea por defecto 5
+    username = models.CharField(max_length=50, default='')
     email = models.CharField(max_length=50)
     password = models.CharField(max_length=50, default='')
 

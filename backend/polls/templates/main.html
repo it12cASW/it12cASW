@@ -6,7 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+{% load socialaccount %}
 <body>
     <h1>BIENVENIDO A TU ESPACIO</h1>
+
+
+    {% if user.is_authenticated %}
+        <p>Welcome, {{ user.username }} !</p>
+    {% endif %}
+
 </body>
 </html>
