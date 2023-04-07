@@ -66,8 +66,6 @@ def logoutTest(request):
     logout(request)
     return render(request, 'login.html')
 
-
-
 #GOOGLE
 def login_with_google(request):
 
@@ -87,6 +85,14 @@ def login_with_google(request):
 
     return render(request, 'main.html', {"issues" : issues})
 
+def editarPerfil(request):
+
+    return render(request, 'editarPerfil.html')
+
+
+def actualizarPerfil(request):
+
+    return render(request, 'main.html')
     
 
 

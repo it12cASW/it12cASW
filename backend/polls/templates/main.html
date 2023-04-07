@@ -8,6 +8,8 @@
 </head>
 {% load socialaccount %}
 <body>
+
+
     <h1>BIENVENIDO A TU ESPACIO</h1>
 
 
@@ -19,14 +21,16 @@
 
     <a href="http://127.0.0.1:8000/main/logout">Logout</a>
 
+    <a href="http://127.0.0.1:8000/main/editarPerfil">Editar perfil</a>
+
     <div>
         <h1>Issues</h1>
         imprime el tamaño de issues
         {% for issue in issues %}
-            <p>{{ issue.asunto }} {{ issue.descripcion }}  {{ issue.creador_id }}</p>
+            <a href="http://127.0.0.1:8000/main/mostrarIssue/{{ issue.id }}/">{{ issue.asunto }}</a>
+            <p> {{ issue.descripcion }}  {{ issue.creador_id }}</p>
         {% endfor %}
-                
-
+            
     </div>
 
 </body>

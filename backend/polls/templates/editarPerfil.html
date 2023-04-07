@@ -1,0 +1,17 @@
+
+
+<form action="http://127.0.0.1:8000/main/editarPerfil/actualizar" method="POST">
+
+    {% csrf_token %}
+    <label for="descripcion">Descripcion</label>
+    <input type="text" name="descripcion" id="descripcion" value="{{ user.descripcion }}">
+    <label for="imagen">Imagen</label>
+    <input type="file" name="imagen" id="imagen" value="{{ user.imagen }}">
+    <input type="submit" value="Guardar cambios">
+</form>
+
+{% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+{% endif %}
