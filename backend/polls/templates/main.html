@@ -5,19 +5,65 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://kit.fontawesome.com/1b70a53e7d.js" crossorigin="anonymous"></script>
 </head>
 {% load socialaccount %}
 <body>
-
-
-    <h1>BIENVENIDO A TU ESPACIO</h1>
 
 
     {% if user.is_authenticated %}
         <p>BIENVENIDO, {{ user.username }} !</p>
     {% endif %}
 
-    <a href="http://127.0.0.1:8000/main/pantallaCrearIssue">Crea un nuevo issue</a>
+    {% include 'barraLateral.html' %}
+
+    <div id="contenedorPrincipal">
+        <h1>Issues</h1>
+        <div id="barraSuperior">
+
+            <div id="superiorIzquierda">
+                <a href="#">FILTROS</a>
+                <input type="text" placeholder="subject or reference"></input> 
+                <input type="checkbox">TAGS</input>
+            </div>
+            <div id="superiorDerecha">
+                <a id="crearIssue" href="http://127.0.0.1:8000/main/pantallaCrearIssue">Crea un nuevo issue</a>
+                <a href="#">BULK</a>
+            </div>
+            
+        </div>
+        <div id="tablaIssues">
+            <h1>Issues del usuario</h1>
+            <div id="CabeceraTabla">
+                <div class="col">Type</div>
+                <div class="col">Severity</div>
+                <div class="col">Priority</div>
+                <div class="col" id="especial">Issue</div>
+                <div class="col">Status</div>
+                <div class="col">Modified</div>
+                <div class="col">Asign to</div>
+            </div>
+            {% for issue in issues %}
+                <div id="issue">
+                    <div class="col"><i class="fa-solid fa-circle"></i></div>
+                    <div class="col"><i class="fa-solid fa-circle"></i></div>
+                    <div class="col"><i class="fa-solid fa-circle"></i></div>
+                    <div class="col" id="especial"><a href="http://127.0.0.1:8000/main/mostrarIssue/{{ issue.id }}/">{{ issue.asunto }}</a></div>
+                    <div class="col"><p> {{ issue.descripcion }}  {{ issue.creador_id }}</p></div>
+                    <div class="col">Modified</div>
+                    <div class="col">Asign to</div>
+                </div>   
+            {% endfor %}
+        </div>
+    </div>  
+
+
+
+
+
+    
+
+    
 
     <a href="http://127.0.0.1:8000/main/logout">Logout</a>
 
@@ -25,7 +71,7 @@
 
 
     {% if equipo %}
-        <h1>Equipo</h1>
+        <h1>ESTAS EN EL EQUIPO:</h1>
         <h2>{{ equipo.nombre }}</h2>
     {% else %}
         <h2>AUN NO TIENES EQUIPO</h2>
@@ -41,18 +87,105 @@
     <a href="http://127.0.0.1:8000/main/pantallaCrearEquipo">Crear nuevo equipo</a>
 
 
-    <div>
-        <h1>Issues</h1>
 
-        {% for issue in issues %}
-            <div>
-                <a href="http://127.0.0.1:8000/main/mostrarIssue/{{ issue.id }}/">{{ issue.asunto }}</a>
-                <p> {{ issue.descripcion }}  {{ issue.creador_id }}</p>
-            </div>
-            
-        {% endfor %}
-            
-    </div>
 
 </body>
 </html>
+<style>
+
+    #contenedorPrincipal{
+        width: 85%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        position: absolute;
+        left: 15%;
+    }
+    #CabeceraTabla{
+        width: 90%;
+        height: auto;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }   
+
+    #barraSuperior{
+        width: 90%;
+        height: 50px;
+        background-color: #ffffff;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    #barraSuperior a{
+        text-decoration: none;
+        margin-right: 20px;
+    }
+
+    #tablaIssues{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 2px solid black;
+    }
+
+    #issue {
+        width: 90%;
+        height: 50px;
+        background-color: rgba(249, 249, 251, 1);
+        padding: 5px;
+        margin-top: 5px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 10px;
+
+    }
+    .col{
+        width: 14.3%;
+        padding: 5px;
+        margin-left: 5px;
+        text-align: center;
+        
+    }
+    #especial{
+        width: 50%;
+        text-align: left;
+    }
+
+    #especial a{
+        text-decoration: none;
+        font-size: 17px;
+        color:black
+    }
+
+    #especial a:hover{
+        text-decoration: underline;
+        color:blue;
+    }
+
+
+    .fa-solid fa-circle{
+        color: red;
+    }
+
+    #crearIssue{
+        background-color: #39a232bb;
+        color: white;
+        padding: 10px;
+        border-radius: 10px;
+        text-decoration: none;
+    }
+    
+</style>

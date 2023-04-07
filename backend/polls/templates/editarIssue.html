@@ -11,6 +11,13 @@
     <h2>COMENTARIOS</h2>
     <input placeholder="comentarios"/>
 
+    
+    <select name="type">
+        {% for usuario in usuarios %}
+            <option value="asignada">{{ usuario.username }}</option>
+        {% endfor %}
+    </select>
+
     <input type="submit" value="Editar Issue" />
 </form>
 

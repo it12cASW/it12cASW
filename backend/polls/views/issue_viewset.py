@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from polls.models import Issue, Actividad_Issue
+from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo
 from django.contrib.auth.models import User
 import datetime
 
@@ -8,7 +8,14 @@ import datetime
 
 # Mostrar pantalla de creación de un issue
 def pantallaCrearIssue(request):
-    return render(request, 'crearIssue.html')
+
+    equipo = Miembro_Equipo.objects.filter(miembro=request.user)
+    miebros = Miembro_Equipo.objects.filter(equipo=equipo[0].equipo)
+    usuarios = []
+    for miembro in miebros:
+        usuarios.append(miembro.miembro)
+
+    return render(request, 'crearIssue.html', {'usuarios' : usuarios})
 
 # Crear un nuevo issue
 def crearIssue(request):
@@ -49,6 +56,17 @@ def eliminarIssue(request, idIssue):
 def mostrarPantallaEditarIssue(request, idIssue):
     issue = Issue.objects.get(id=idIssue)
     creador = User.objects.get(id=issue.creador.id)
+
+    # Si el miembro tiene equipo
+
+    if Miembro_Equipo.objects.filter(miembro=creador):
+        equipo = Miembro_Equipo.objects.filter(miembro=creador)[0].equipo
+        miembros = Miembro_Equipo.objects.filter(equipo=equipo)
+        aux = []
+        for miembro in miembros:
+            aux.append(miembro.miembro)
+        return render(request, 'editarIssue.html', {'issue': issue, 'creador' : creador, 'usuarios' : aux })
+
     return render(request, 'editarIssue.html', {'issue': issue, 'creador' : creador })
 
 # Acualizar el issue con la nueva información
@@ -69,6 +87,14 @@ def editarIssue(request, idIssue):
             actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.datetime.now(), tipo="descripcion", usuario=request.user)
             actividad.save()
             issue.descripcion = request.GET.get('descripcion')
+            issue.save()
+
+        if request.GET.get('asignada'):
+            actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.datetime.now(), tipo="asignada", usuario=request.user)
+            actividad.save()
+            username_asignado = request.GET.get('asignada')
+            user = User.objects.get(username=username_asignado)
+            issue.asignada = user
             issue.save()
 
         actividades = Actividad_Issue.objects.filter(issue_id=idIssue)

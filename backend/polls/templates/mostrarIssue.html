@@ -20,6 +20,8 @@
         <h5>El usuario {{ actividad.usuario }} ha modificado el campo: {{ actividad.tipo }}</h5>
     {% elif actividad.tipo == 'creada' %}
         <h5>El usuario {{ actividad.creador }} ha creado la Issue</h5>
+    {% elif actividad.tipo == 'creada' %}
+        <h5>La Issue ha sido asignada a {{ issue.asignada }} por {{ actividad.creador }}</h5>
     {% endif %}
-{% endfor %}
+{% endfor %} 
 

@@ -88,8 +88,10 @@ def login_with_google(request):
         equipos = Equipo.objects.all()
 
         equipo_usuario = Miembro_Equipo.objects.filter(miembro=userBD.id)
-        equipo = equipo_usuario[0].equipo
-
+        if equipo_usuario:
+            equipo = equipo_usuario[0].equipo
+        else :
+            equipo = None
         return render(request, 'main.html', {"issues" : issues, "equipos" : equipos, "equipo" : equipo})
 
     equipos = Equipo.objects.all()
