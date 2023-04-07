@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 def pantallaCrearIssue(request):
     return render(request, 'crearIssue.html')
 
-
 def crearIssue(request):
 
     if request.method == 'GET':

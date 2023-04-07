@@ -25,19 +25,25 @@ def logintest(request):
 
         print("voy a autenticar")
         user = authenticate(request, username=username, password=password)
-
+        print("autenticado")
         if user is not None:
+            print("estoy aqui")
             login(request, user)
+            print("estoy aqui323")
             # OBTEN EL ID DE LA BD
             user_id = User.objects.get(username=username).id
-            issues = Issue.objects.filter(usuario_id=user_id)
-            console.log("NUMERO DE ISSUES: " + issues.length)
-            return render(request, 'main.html', {"issues" : issues})
+            print("tengo el id")
+            issues = Issue.objects.filter(creador_id=user_id, deleted=False)
+            if issues:
+                print("existen")
+                return render(request, 'main.html', {"issues" : issues})
+            return render(request, 'main.html')
         else:
 
             return render(request, 'login.html', {"error" : "Usuario o contraseña incorrectos"})
 
     else:
+        print("estoy aqui")
         return render(request, 'login.html', {"error" : "Algo ha ido mal..."})
 
 # Registro de un usuario
@@ -72,15 +78,11 @@ def login_with_google(request):
     # Obtén el ID de la BD
     user = request.user
     user = str(user)
-    print("Tengo el usuario: " + str(user))
     # obten el user identificado con usermane = user
     userBD = User.objects.get(username=user)
-    print("TENGO TODO EL USUARIO: " + userBD.username + " " + str(userBD.id)) 
     
     if User.objects.filter(id=userBD.id).exists():
-        print("hasta aqui guai")
-        issues = Issue.objects.filter(creador_id=userBD.id)
-        print("Tamaño de issues: ")
+        issues = Issue.objects.filter(creador_id=userBD.id,  deleted=False)
         return render(request, 'main.html', {"issues" : issues})
 
     return render(request, 'main.html', {"issues" : issues})
