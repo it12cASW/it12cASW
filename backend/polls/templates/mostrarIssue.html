@@ -8,3 +8,18 @@
 <a href="http://127.0.0.1:8000/main/eliminarIssue/{{ issue.id }}/">Eliminar Issue</a>
 <a href="http://127.0.0.1:8000/main/mostrarPantallaEditarIssue/{{ issue.id }}/">Editar Issue</a>
 <a href="http://127.0.0.1:8000/main/login/auth">Volver a pagina principal</a>
+
+
+<h1>ACTIVIDADES DE LA ISSUE</h1>
+{% for actividad in actividades %}
+    <h4>{{ actividad.issue }}</h2>
+    <h5>{{ actividad.creador }}</h3>
+    <h5>{{ actividad.fecha }}</h3>
+
+    {% if actividad.tipo == 'asunto' or actividad.tipo == 'descripcion' %}
+        <h5>El usuario {{ actividad.usuario }} ha modificado el campo: {{ actividad.tipo }}</h5>
+    {% elif actividad.tipo == 'creada' %}
+        <h5>El usuario {{ actividad.creador }} ha creado la Issue</h5>
+    {% endif %}
+{% endfor %}
+

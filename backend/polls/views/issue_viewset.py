@@ -1,6 +1,7 @@
 from django.shortcuts import render
-from polls.models import Issue
+from polls.models import Issue, Actividad_Issue
 from django.contrib.auth.models import User
+import datetime
 
 
 
@@ -15,20 +16,16 @@ def crearIssue(request):
     if request.method == 'GET':
         asunto = request.GET.get('asunto')
         descripcion = request.GET.get('descripcion')
-
-        print("ASUNTO: " + asunto + " DESCRIPCION: " + descripcion)
-
         creador = User.objects.get(id=request.user.id)
-        print("creador ok")
         issue = Issue(asunto=asunto, descripcion=descripcion, creador=creador)
-        print("issue ok")
         issue.save()
-        print("Se ha creado el issue")
+        
+        actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.datetime.now(), tipo="creada", usuario=request.user)
+        actividad.save()
         #associat = request.POST.get('associat')
         #vigilant = request.POST.get('vigilant'
-       
-    else:
-        print("No ha funcionaod")
+    
+        
     return render(request, 'crearIssue.html')
 
 # Mostrar la información del issue dado su id
@@ -36,7 +33,8 @@ def mostrarIssue(request, idIssue):
     # obten el issue con este id
     issue = Issue.objects.get(id=idIssue)
     creador = User.objects.get(id=issue.creador.id)
-    return render(request, 'mostrarIssue.html', {'issue': issue, 'creador' : creador })
+    actividades = Actividad_Issue.objects.filter(issue_id=idIssue)
+    return render(request, 'mostrarIssue.html', {'issue': issue, 'creador' : creador, 'actividades' : actividades })
 
 # Eliminar un issue dado su id
 def eliminarIssue(request, idIssue):
@@ -61,15 +59,18 @@ def editarIssue(request, idIssue):
         issue = Issue.objects.get(id=idIssue)
         # modifica los atributos del issue
         if request.GET.get('asunto'):
-            print("hay asunto")
+            # crea una actividad
+            actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.datetime.now(), tipo="asunto", usuario=request.user)
+            actividad.save()
             issue.asunto = request.GET.get('asunto')
             issue.save()
 
         if request.GET.get('descripcion'):
-            print("hay descripcion")
+            actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.datetime.now(), tipo="descripcion", usuario=request.user)
+            actividad.save()
             issue.descripcion = request.GET.get('descripcion')
             issue.save()
 
-        print("ASUNTO: " + issue.asunto + " DESCRIPCION: " + issue.descripcion)
-        return render(request, 'mostrarIssue.html', {'issue': issue})
+        actividades = Actividad_Issue.objects.filter(issue_id=idIssue)
+        return render(request, 'mostrarIssue.html', {'issue': issue, 'actividades' : actividades})
     return render(request, 'editarIssue.html', {'error' : 'No se ha podido actualizar el issue'})
