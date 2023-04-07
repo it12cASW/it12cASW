@@ -8,7 +8,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from polls.views import issue_viewset
-from polls.models import Issue
+from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo
 
 def aux(request):
     return render(request, 'login.html')
@@ -34,10 +34,9 @@ def logintest(request):
             user_id = User.objects.get(username=username).id
             print("tengo el id")
             issues = Issue.objects.filter(creador_id=user_id, deleted=False)
-            if issues:
-                print("existen")
-                return render(request, 'main.html', {"issues" : issues})
-            return render(request, 'main.html')
+            equipos = Equipo.objects.all()
+            equipo_usuario = Miembro_Equipo.objects.filter(miembro=user_id)
+            return render(request, 'main.html', {"issues" : issues, "equipos" : equipos, "equipo" : equipo_usuario})
         else:
 
             return render(request, 'login.html', {"error" : "Usuario o contraseña incorrectos"})
@@ -64,7 +63,9 @@ def register(request):
         nuevo_usuario.save()    
         print("SE HA REGISTRADO EL USUARIO")
         
-        return render(request, 'main.html')
+
+        equipos = Equipo.objects.all()
+        return render(request, 'main.html', {"issues" : issues, "equipos" : equipos})
     else:
         return render(request, 'register.html', {"error" : "Algo ha ido mal..."})
 
@@ -84,9 +85,17 @@ def login_with_google(request):
     
     if User.objects.filter(id=userBD.id).exists():
         issues = Issue.objects.filter(creador_id=userBD.id,  deleted=False)
-        return render(request, 'main.html', {"issues" : issues})
+        equipos = Equipo.objects.all()
 
-    return render(request, 'main.html', {"issues" : issues})
+        equipo_usuario = Miembro_Equipo.objects.filter(miembro=userBD.id)
+        equipo = equipo_usuario[0].equipo
+
+        return render(request, 'main.html', {"issues" : issues, "equipos" : equipos, "equipo" : equipo})
+
+    equipos = Equipo.objects.all()
+    miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)
+    print("miembro_equipo: ", miembro_equipo)
+    return render(request, 'main.html', {"issues" : issues, "equipos" : equipos, "equipo" : miembro_equipo})
 
 # Mostrar pantalla de edición de perfil
 def editarPerfil(request):
@@ -96,7 +105,25 @@ def editarPerfil(request):
 # Guardar los nuevos datos del perfil
 def actualizarPerfil(request):
 
-    return render(request, 'main.html')
+    issues = Issue.objects.filter(creador_id=request.user.id, deleted=False)
+    equipos = Equipo.objects.all()
+
+    return render(request, 'main.html', {"issues" : issues, "equipos" : equipos})
+    
+# Seleccionar equipo
+def seleccionarEquipo(request):
+
+    # crea un miembro equipo
+    equipo = Equipo.objects.get(id=request.GET['equipo'])
+    user = User.objects.get(id=request.user.id)
+    miembro_equipo = Miembro_Equipo(equipo=equipo , miembro=user)
+    miembro_equipo.save()
+
+    issues = Issue.objects.filter(creador_id=request.user.id, deleted=False)
+    equipos = Equipo.objects.all()
+    miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)
+    return render(request, 'main.html', {"issues" : issues, "equipos" : equipos, "equipo" : miembro_equipo})
+    
     
 
 

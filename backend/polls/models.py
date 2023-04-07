@@ -3,7 +3,7 @@ from django.db import models
 # Importación de los modelos 
 from django.contrib.auth.models import User
 
-
+# Clase issue
 class Issue(models.Model):
     id = models.AutoField(primary_key=True)
     asunto = models.CharField(max_length=50, default='')
@@ -11,11 +11,11 @@ class Issue(models.Model):
     #creador = models.ForeignKey(User, on_delete=models.CASCADE, related_name='issues_creadas')
     creador = models.ForeignKey(User, on_delete=models.CASCADE, related_name='issues_creadas')
     associat = models.ForeignKey(User, on_delete=models.CASCADE, related_name='issues_associado', null=True)
-    vigilant = models.ManyToManyField(User,  related_name='issues_vigiladas', default='', null=True)
+    vigilant = models.ManyToManyField(User,  related_name='issues_vigiladas', default='')
     deleted = models.BooleanField(default=False)
 
 
-# Creame un modelo Actividad_Issue que guarde informacion de las modificaciones que se hacen a un issue con una foreign key que contenga el id del issue y otra del creador
+# Clase actividad_issue
 class Actividad_Issue(models.Model):
     id = models.AutoField(primary_key=True)
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE) # id de la issue
@@ -38,3 +38,16 @@ class Actividad_Issue(models.Model):
     def existeEnDB(self):
         return Actividad_Issue.objects.filter(issue=self.issue).exists()
 
+# Clase equipo
+class Equipo(models.Model):
+    id = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=50, default='', unique=True)
+    descripcion = models.CharField(max_length=200, default='')
+    creador = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipos_creados')
+    
+# clase miemrbo_equipo --> UN MIEBRO SOLO PUEDE PERTENECER A UN EQUIPO
+class Miembro_Equipo(models.Model):
+    id = models.AutoField(primary_key=True)
+    equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
+    miembro = models.ForeignKey(User, on_delete=models.CASCADE, unique=True)
+    rol = models.CharField(max_length=50, default='')

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import user_viewset, index_viewset, issue_viewset
+from .views import user_viewset, index_viewset, issue_viewset, equipo_viewset
 from allauth.account.views import LoginView
 
 
@@ -25,6 +25,11 @@ urlpatterns = [
     path('mostrarPantallaEditarIssue/<int:idIssue>/', issue_viewset.mostrarPantallaEditarIssue, name='mostrarPantallaEditarIssue'),
     path('editarIssue/<int:idIssue>/', issue_viewset.editarIssue, name='editarIssue'),
     
+    # Equipo
+    path('pantallaCrearEquipo', equipo_viewset.pantallaCrearEquipo, name='pantallaCrearEquipo'),
+    path('crearEquipo/', equipo_viewset.crearEquipo, name='crearEquipo'),
+    path('seleccionarEquipo/', user_viewset.seleccionarEquipo, name='seleccionarEquipo'),
+
 
 ]
 
