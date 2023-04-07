@@ -12,9 +12,9 @@
     <input placeholder="comentarios"/>
 
     
-    <select name="type">
+    <select name="asignada">
         {% for usuario in usuarios %}
-            <option value="asignada">{{ usuario.username }}</option>
+            <option name="asignada" value="{{ usuario.username }}">{{ usuario.username }}</option>
         {% endfor %}
     </select>
 
