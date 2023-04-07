@@ -1,0 +1,21 @@
+
+
+<form action="/main/editarIssue/{{ issue.id }}/" method="GET">
+    <h1>{{ issue.id }}</h1>
+    <h2>ASUNTO</h2>
+    <input type="text" placeholder="asunto" name="asunto"/> 
+
+    <h2>DESCRIPCION</h2>
+    <input type="text" placeholder="descripcion" name="descripcion" /> 
+
+    <h2>COMENTARIOS</h2>
+    <input placeholder="comentarios"/>
+
+    <input type="submit" value="Editar Issue" />
+</form>
+
+{% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+{% endif %}

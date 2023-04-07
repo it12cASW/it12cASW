@@ -22,11 +22,8 @@ urlpatterns = [
     path('crearIssue', issue_viewset.crearIssue, name='crearIssue'),
     path('mostrarIssue/<int:idIssue>/', issue_viewset.mostrarIssue, name='mostrarIssue'),
     path('eliminarIssue/<int:idIssue>/', issue_viewset.eliminarIssue, name='eliminarIssue'),
-    
-    
-    
-    
-    
+    path('mostrarPantallaEditarIssue/<int:idIssue>/', issue_viewset.mostrarPantallaEditarIssue, name='mostrarPantallaEditarIssue'),
+    path('editarIssue/<int:idIssue>/', issue_viewset.editarIssue, name='editarIssue'),
     
 
 ]

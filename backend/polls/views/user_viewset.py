@@ -68,6 +68,7 @@ def register(request):
     else:
         return render(request, 'register.html', {"error" : "Algo ha ido mal..."})
 
+# Cerrar sesión de un usuario
 def logoutTest(request):
     logout(request)
     return render(request, 'login.html')
@@ -87,11 +88,12 @@ def login_with_google(request):
 
     return render(request, 'main.html', {"issues" : issues})
 
+# Mostrar pantalla de edición de perfil
 def editarPerfil(request):
 
     return render(request, 'editarPerfil.html')
 
-
+# Guardar los nuevos datos del perfil
 def actualizarPerfil(request):
 
     return render(request, 'main.html')
