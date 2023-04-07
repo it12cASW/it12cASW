@@ -6,6 +6,9 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
+from django.contrib.auth import logout
+from polls.views import issue_viewset
+from polls.models import Issue
 
 def aux(request):
     return render(request, 'login.html')
@@ -13,33 +16,29 @@ def aux(request):
 # Iniciar sesión de un usuario
 def logintest(request):
     if request.method == 'POST':
-        # Obtener el nombre de usuario y la contraseña desde la solicitud POST
+
         username = request.POST['username']
         password = request.POST['password']
-        # comprueba si existe
-        if User.objects.filter(username=username).exists():
-            print("existe")
-        else:
-            print("no existe")
-        # Autenticar al usuario con las credenciales proporcionadas
+
+        if User.objects.filter(username=username).exists(): print("existe")
+        else: print("no existe")
+
         print("voy a autenticar")
         user = authenticate(request, username=username, password=password)
 
-        # Si el usuario existe y las credenciales son correctas
         if user is not None:
-            print("SE HA LOGEADO EL USUARIO")
-            # Iniciar sesión para el usuario
             login(request, user)
-            # Redirigir a la página de inicio o cualquier otra página que desees
-            return render(request, 'main.html')
+            # OBTEN EL ID DE LA BD
+            user_id = User.objects.get(username=username).id
+            issues = Issue.objects.filter(usuario_id=user_id)
+            console.log("NUMERO DE ISSUES: " + issues.length)
+            return render(request, 'main.html', {"issues" : issues})
         else:
-            print("FALLO EN EL LOGIN")
-            # Si las credenciales son incorrectas, mostrar un mensaje de error
-            return render(request, 'login.html')
 
-    # Si la solicitud no es POST, mostrar la página de inicio de sesión
+            return render(request, 'login.html', {"error" : "Usuario o contraseña incorrectos"})
+
     else:
-        return render(request, 'login.html')
+        return render(request, 'login.html', {"error" : "Algo ha ido mal..."})
 
 # Registro de un usuario
 def register(request):
@@ -51,22 +50,44 @@ def register(request):
         password = aux.get('password')
         
         if User.objects.filter(username=username).exists():
-            return render(request, 'register.html')
+            return render(request, 'register.html', {"error" : "El usuario ya existe"})
         if User.objects.filter(email=email).exists():
-            return render(request, 'register.html')
+            return render(request, 'register.html', {"error" : "El email ya existe"})
 
         nuevo_usuario = User.objects.create_user(username=username, email=email, password=password)
         nuevo_usuario.save()    
         print("SE HA REGISTRADO EL USUARIO")
-
+        
         return render(request, 'main.html')
     else:
-        return render(request, 'register.html')
+        return render(request, 'register.html', {"error" : "Algo ha ido mal..."})
+
+def logoutTest(request):
+    logout(request)
+    return render(request, 'login.html')
+
+
 
 #GOOGLE
-
 def login_with_google(request):
-    return render(request, 'main.html')
+
+    # Obtén el ID de la BD
+    user = request.user
+    user = str(user)
+    print("Tengo el usuario: " + str(user))
+    # obten el user identificado con usermane = user
+    userBD = User.objects.get(username=user)
+    print("TENGO TODO EL USUARIO: " + userBD.username + " " + str(userBD.id)) 
+    
+    if User.objects.filter(id=userBD.id).exists():
+        print("hasta aqui guai")
+        issues = Issue.objects.filter(creador_id=userBD.id)
+        print("Tamaño de issues: ")
+        return render(request, 'main.html', {"issues" : issues})
+
+    return render(request, 'main.html', {"issues" : issues})
+
+    
 
 
 

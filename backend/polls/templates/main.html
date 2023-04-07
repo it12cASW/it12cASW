@@ -12,8 +12,22 @@
 
 
     {% if user.is_authenticated %}
-        <p>Welcome, {{ user.username }} !</p>
+        <p>BIENVENIDO, {{ user.username }} !</p>
     {% endif %}
+
+    <a href="http://127.0.0.1:8000/main/pantallaCrearIssue">Crea un nuevo issue</a>
+
+    <a href="http://127.0.0.1:8000/main/logout">Logout</a>
+
+    <div>
+        <h1>Issues</h1>
+        imprime el tamaño de issues
+        {% for issue in issues %}
+            <p>{{ issue.asunto }} {{ issue.descripcion }}  {{ issue.creador_id }}</p>
+        {% endfor %}
+                
+
+    </div>
 
 </body>
 </html>

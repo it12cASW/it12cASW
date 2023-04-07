@@ -20,7 +20,12 @@
         <button type="submit">Login</button>
     </form>
 
-    <button>Registrarse</button>
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+    {% endif %}
+
 
     {% load socialaccount %}
     <h1>Google Login</h1>
