@@ -100,3 +100,45 @@ def editarIssue(request, idIssue):
         actividades = Actividad_Issue.objects.filter(issue_id=idIssue)
         return render(request, 'mostrarIssue.html', {'issue': issue, 'actividades' : actividades})
     return render(request, 'editarIssue.html', {'error' : 'No se ha podido actualizar el issue'})
+
+def filtrar_issues(request):
+    filtro = request.GET.get('filtro')
+    opciones = request.GET.get('opciones')
+
+    if filtro == 'status':
+        issues = Issue.objects.filter(status=opciones, deleted=False)
+
+    elif filtro == 'assignee':
+        assignee = request.GET.get('assignee')
+        assignee = User.objects.get(username=opciones)
+        # lógica para filtrar por asignado a
+        issues = Issue.objects.filter(associat=assignee)        
+    #falsta el filtro de tag
+    elif filtro == 'priority':
+        priority = request.GET.get('priority')
+        # lógica para filtrar por prioridad
+        issues = Issue.objects.filter(prioridad=opciones, deleted=False)
+
+    elif filtro == 'assign_to':
+        assign_to = request.GET.get('assign_to')
+        assign_to = User.objects.get(username=opciones)
+
+        issues = Issue.objects.filter(asignada=assign_to, deleted=False)
+
+    elif filtro == 'created_by':
+        assignee = request.GET.get('assignee')
+        assignee = User.objects.get(username=opciones)
+
+        issues = Issue.objects.filter(creador=assignee, deleted=False)
+    else:
+        # lógica si no se seleccionó ningún filtro
+        issues = Issue.objects.filter(deleted=False)
+
+    equipos = Equipo.objects.all()
+    miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)
+    equipo = Miembro_Equipo.objects.filter(miembro=request.user)
+    miebros = Miembro_Equipo.objects.filter(equipo=equipo[0].equipo)
+    usuarios = []
+    for miembro in miebros:
+        usuarios.append(miembro.miembro)
+    return render(request, 'filterIssues.html', {'issues' : issues, 'equipos' : equipos, 'equipo' : miembro_equipo, 'usuarios' : usuarios})

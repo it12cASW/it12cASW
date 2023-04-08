@@ -30,7 +30,8 @@ urlpatterns = [
     path('crearEquipo/', equipo_viewset.crearEquipo, name='crearEquipo'),
     path('seleccionarEquipo/', user_viewset.seleccionarEquipo, name='seleccionarEquipo'),
 
-
+    # Filtros
+    path('filtrar-issues/', issue_viewset.filtrar_issues, name='filtrar-issues'),
 ]
 
 
