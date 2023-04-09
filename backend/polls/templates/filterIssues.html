@@ -22,9 +22,10 @@
 
             <div id="superiorIzquierda" style="display: flex; flex-direction: column;">
                 <div>
-                    <a id="aplicarFiltros" href="http://127.0.0.1:8000/main/login/">FILTERS</a>
+                    <a id="aplicarFiltros" href="http://127.0.0.1:8000/main/login/">OCULTAR FILTRES</a>
                     <a>SEARCH: </a>
                     <input type="text" placeholder="subject or reference"></input> 
+                    <input type="submit" value="Search">
                     <input type="checkbox">TAGS</input>
                 </div>
                 {% include "form_filtrarIssues.html" %}
@@ -32,7 +33,7 @@
             
         </div>
         <div id="tablaIssues">
-            <h1>Issues del usuario</h1>
+            <h1>Issues filtrades</h1>
             <div id="CabeceraTabla">
                 <div class="col">Type</div>
                 <div class="col">Severity</div>
