@@ -105,33 +105,26 @@ def filtrar_issues(request):
     filtro = request.GET.get('filtro')
     opciones = request.GET.get('opciones')
 
-    if filtro == 'status':
-        issues = Issue.objects.filter(status=opciones, deleted=False)
-
-    elif filtro == 'assignee':
-        assignee = request.GET.get('assignee')
-        assignee = User.objects.get(username=opciones)
-        # lógica para filtrar por asignado a
-        issues = Issue.objects.filter(associat=assignee)        
-    #falsta el filtro de tag
-    elif filtro == 'priority':
-        priority = request.GET.get('priority')
-        # lógica para filtrar por prioridad
-        issues = Issue.objects.filter(prioridad=opciones, deleted=False)
-
-    elif filtro == 'assign_to':
-        assign_to = request.GET.get('assign_to')
-        assign_to = User.objects.get(username=opciones)
-
-        issues = Issue.objects.filter(asignada=assign_to, deleted=False)
-
-    elif filtro == 'created_by':
-        assignee = request.GET.get('assignee')
-        assignee = User.objects.get(username=opciones)
-
-        issues = Issue.objects.filter(creador=assignee, deleted=False)
+    # Verificamos si se seleccionó algún filtro
+    if filtro:
+        # Filtramos por el tipo de filtro seleccionado
+        if filtro == 'status':
+            issues = Issue.objects.filter(status=opciones, deleted=False)
+        elif filtro == 'assignee':
+            issues = Issue.objects.filter(associat=opciones, deleted=False)
+        elif filtro == 'tag':
+            issues = Issue.objects.filter(tag=opciones, deleted=False)
+        elif filtro == 'priority':
+            issues = Issue.objects.filter(priority=opciones, deleted=False)
+        elif filtro == 'assign_to':
+            issues = Issue.objects.filter(asignada=opciones, deleted=False)
+        elif filtro == 'created_by':
+            issues = Issue.objects.filter(creador=opciones, deleted=False)
+        else:
+            # Si no se reconoce el filtro, retornamos un error
+            issues = None
     else:
-        # lógica si no se seleccionó ningún filtro
+        # Si no se seleccionó ningún filtro, mostramos todos los issues
         issues = Issue.objects.filter(deleted=False)
 
     equipos = Equipo.objects.all()
