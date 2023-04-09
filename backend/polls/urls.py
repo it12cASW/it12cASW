@@ -16,6 +16,7 @@ urlpatterns = [
     path('logout', user_viewset.logoutTest, name='logoutTest'),
     path('editarPerfil', user_viewset.editarPerfil, name='editarPerfil'),
     path('editarPerfil/actualizar', user_viewset.actualizarPerfil, name='actualizarPerfil'),
+    path('verPerfil/<str:username>/', user_viewset.verPerfil, name='verPerfil'),
 
     # Issue
     path('pantallaCrearIssue', issue_viewset.pantallaCrearIssue, name='pantallaCrearIssue'),

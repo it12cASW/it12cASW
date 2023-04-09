@@ -1,0 +1,120 @@
+<div id="perfilContainerPrincipal">
+    <div id="perfilContainerIzquierda">
+        <img id="logoPerfil" src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar"">
+        <h1 id="perfilUsername">{{ user.username }}</h1>
+        {% if equipo %}
+            <h2 id="perfilEquipo">Equipo: {{ equipo.nombre }}</h2>
+        {% else %}
+            <h2 id="perfilEquipo">No pertenece a ningún equipo</h2>
+        {% endif %}
+    </div>
+    <div id="perfilContainerDerecha">
+        <div id="perfilContainerDerecha1">
+            <h2>TIMELINE</h2>
+            {% for actividad in actividades %}
+                <div id="issue">
+                    <p id="actividadDescripcion"><strong>{{ actividad.creador }} </strong>ha actualizado la 
+                        issue <strong>{{ actividad.issue.asunto }}</strong> en la fecha <strong>{{ actividad.fecha }}</strong>
+                    </p>
+                    {% if actividad.tipo == 'asunto' or actividad.tipo == 'descripcion' %}
+                        <p class="anotacionActividad">Se ha modificado el campo: {{ actividad.tipo }}</p>
+                    {% elif actividad.tipo == 'creada' %}
+                        <p class="anotacionActividad">Ha creado la Issue</p>
+                    {% elif actividad.tipo == 'asignada' %}
+                        <p class="anotacionActividad">Ha asignado la tarea a {{ issue.asignada }}</p>
+                    {% elif actividad.tipo == 'desasignada' %}
+                        <p class="anotacionActividad">Ha desasignado la issue</p>
+                    {% endif %}
+                </div>
+                
+            {% endfor %} 
+
+            <h2>Issues watched</h2>
+        </div>
+        <div id="perfilContainerDerecha2">
+            <h2>Editar perfil</h2>
+            <div id="perfilBotonEditarPerfil">
+                <a href="#">Editar perfil</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    #perfilContainerPrincipal {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+        height: 100%;
+    }
+    #perfilContainerIzquierda {
+        display: flex;
+        flex-direction: column;
+        justify-content: top;
+        width: 20%;
+        height: 100%;
+        text-align: center;
+        align-items: center;
+    }
+    #perfilContainerDerecha {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 80%;
+        height: 100%;
+        margin-left: 30px;
+    }
+    #perfilContainerDerecha2 {
+        display: flex;
+        flex-direction: column;
+        width: 30%;
+        height: 100%;
+        justify-content: top;
+        text-align: center;
+    }
+    #perfilContainerDerecha1 {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 70%;
+        height: 100%;
+    }
+    #issue {
+        width: 90%;
+        border: 1px solid black;
+        border-radius: 5px;
+        margin-top: 10px;
+        padding: 10px;
+    }
+    #logoPerfil {
+        width: 90%;
+        height: auto;
+        border-radius: 50%;
+    }
+    #perfilUsername {
+        text-align: center;
+    }
+    #perfilBotonEditarPerfil {
+        display: flex;
+        justify-content: center;
+        background-color: aqua;
+        border-radius: 10px;
+        width: 50%;
+        height: 50px;
+        align-self: center;
+        text-align: center;
+    }
+    #perfilBotonEditarPerfil a {
+        text-decoration: none;
+        color: black;
+        font-size: 15px;
+        align-self: center;
+    }
+
+    #perfilBotonEditarPerfil:hover {
+        background-color: antiquewhite;
+    }
+</style>
+

@@ -126,7 +126,22 @@ def seleccionarEquipo(request):
     miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)
     return render(request, 'main.html', {"issues" : issues, "equipos" : equipos, "equipo" : miembro_equipo})
     
-    
+# Ver perfil 
+def verPerfil(request, username):
+    # Obtén el ID de la BD
+    user = User.objects.get(username=username)
+
+    # obten las actividades de este usuario
+    actividades = Actividad_Issue.objects.filter(usuario=user.id)
+    # obtengo el equipo del usuario
+    if Miembro_Equipo.objects.filter(miembro=user.id):
+        equipo_usuario = Miembro_Equipo.objects.filter(miembro=user.id)[0].equipo
+    else :
+        equipo_usuario = None
+
+
+    return render(request, 'verPerfil.html', {"user" : user, "actividades": actividades, "equipo" : equipo_usuario})
+
 
 
 
