@@ -2,7 +2,7 @@ from django.shortcuts import render
 from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo
 from django.contrib.auth.models import User
 import datetime
-
+from django.db.models import Q
 
 
 
@@ -106,33 +106,33 @@ def filtrar_issues(request):
     opciones = request.GET.get('opciones')
 
     if filtro == 'status':
-        issues = Issue.objects.filter(status=opciones, deleted=False)
+        issues = Issue.objects.filter(status=opciones, deleted=True)
 
     elif filtro == 'assignee':
         assignee = request.GET.get('assignee')
         assignee = User.objects.get(username=opciones)
         # lógica para filtrar por asignado a
-        issues = Issue.objects.filter(associat=assignee)        
+        issues = Issue.objects.filter(associat=assignee, deleted=True)        
     #falsta el filtro de tag
     elif filtro == 'priority':
         priority = request.GET.get('priority')
         # lógica para filtrar por prioridad
-        issues = Issue.objects.filter(prioridad=opciones, deleted=False)
+        issues = Issue.objects.filter(prioridad=opciones, deleted=True)
 
     elif filtro == 'assign_to':
         assign_to = request.GET.get('assign_to')
         assign_to = User.objects.get(username=opciones)
 
-        issues = Issue.objects.filter(asignada=assign_to, deleted=False)
+        issues = Issue.objects.filter(asignada=assign_to, deleted=True)
 
     elif filtro == 'created_by':
         assignee = request.GET.get('assignee')
         assignee = User.objects.get(username=opciones)
 
-        issues = Issue.objects.filter(creador=assignee, deleted=False)
+        issues = Issue.objects.filter(creador=assignee, deleted=True)
     else:
         # lógica si no se seleccionó ningún filtro
-        issues = Issue.objects.filter(deleted=False)
+        issues = Issue.objects.filter(deleted=True)
 
     equipos = Equipo.objects.all()
     miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)
@@ -142,3 +142,21 @@ def filtrar_issues(request):
     for miembro in miebros:
         usuarios.append(miembro.miembro)
     return render(request, 'filterIssues.html', {'issues' : issues, 'equipos' : equipos, 'equipo' : miembro_equipo, 'usuarios' : usuarios})
+
+
+def search_issues(request):
+    query = request.GET.get('q')
+    if query:
+        results = Issue.objects.filter(Q(asunto__icontains=query) | Q(descripcion__icontains=query), deleted=False)
+    else:
+        results = Issue.objects.filter(deleted=False)
+    
+    equipos = Equipo.objects.all()
+    miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)
+    equipo = Miembro_Equipo.objects.filter(miembro=request.user)
+    miebros = Miembro_Equipo.objects.filter(equipo=equipo[0].equipo)
+    usuarios = []
+    for miembro in miebros:
+        usuarios.append(miembro.miembro)
+
+    return render(request, 'main.html', {'issues': results, 'equipos' : equipos, 'equipo' : miembro_equipo, 'usuarios' : usuarios})

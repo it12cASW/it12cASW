@@ -22,10 +22,8 @@
 
             <div id="superiorIzquierda" style="display: flex; flex-direction: column;">
                 <div>
-                    <a id="aplicarFiltros" href="http://127.0.0.1:8000/main/login/">OCULTAR FILTRES</a>
-                    <a>SEARCH: </a>
-                    <input type="text" placeholder="subject or reference"></input> 
-                    <input type="submit" value="Search">
+                    <a id="aplicarFiltros" href="http://127.0.0.1:8000/main/login/auth">OCULTAR FILTRES</a>
+                    {% include "form_search_bar.html" %}
                     <input type="checkbox">TAGS</input>
                 </div>
                 {% include "form_filtrarIssues.html" %}
