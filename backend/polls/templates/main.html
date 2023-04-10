@@ -52,31 +52,35 @@
                     <div class="col" id="especial"><a href="http://127.0.0.1:8000/main/mostrarIssue/{{ issue.id }}/">{{ issue.asunto }}</a></div>
                     <div class="col"><p> {{ issue.descripcion }}  {{ issue.creador_id }}</p></div>
                     <div class="col">Modified</div>
-                    <div class="col">Asign to</div>
+                    <div class="col"><strong>{{ issue.asignada.username }}</strong></div>
                 </div>   
             {% endfor %}
         </div>
 
-        <a href="http://127.0.0.1:8000/main/logout">Logout</a>
+        <div id="mainExtras">
+            <a href="http://127.0.0.1:8000/main/logout">Logout</a>
 
-        <a href="http://127.0.0.1:8000/main/editarPerfil">Editar perfil</a>
+            <a href="http://127.0.0.1:8000/main/editarPerfil">Editar perfil</a>
 
 
-        {% if equipo %}
-            <h1>ESTAS EN EL EQUIPO:</h1>
-            <h2>{{ equipo.nombre }}</h2>
-        {% else %}
-            <h2>AUN NO TIENES EQUIPO</h2>
-            <form action="http://127.0.0.1:8000/main/seleccionarEquipo/" method="GET">
-                <select name="equipo">
-                    {% for equipo in equipos %}
-                        <option value="{{ equipo.id }}" name="equipo">{{ equipo.nombre }}</option>
-                    {% endfor %}
-                <input type="submit" value="Seleccionar equipo">
-            </form>
-        {% endif %}
+            {% if equipo %}
+                <h1>ESTAS EN EL EQUIPO:</h1>
+                <h2>{{ equipo.nombre }}</h2>
+            {% else %}
+                <h2>AUN NO TIENES EQUIPO</h2>
+                <form action="http://127.0.0.1:8000/main/seleccionarEquipo/" method="GET">
+                    <select name="equipo">
+                        {% for equipo in equipos %}
+                            <option value="{{ equipo.id }}" name="equipo">{{ equipo.nombre }}</option>
+                        {% endfor %}
+                    <input type="submit" value="Seleccionar equipo">
+                </form>
+            {% endif %}
 
-        <a href="http://127.0.0.1:8000/main/pantallaCrearEquipo">Crear nuevo equipo</a>
+            <a href="http://127.0.0.1:8000/main/pantallaCrearEquipo">Crear nuevo equipo</a>
+        </div>
+
+        
 
     </div>  
 
@@ -99,7 +103,6 @@
 
     #contenedorPrincipal{
         width: 85%;
-        height: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -123,7 +126,7 @@
         display: flex;
         justify-content: flex-end;
         align-items: center;
-
+        padding: 20px;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -166,12 +169,16 @@
     #especial{
         width: 50%;
         text-align: left;
+
     }
 
     #especial a{
         text-decoration: none;
         font-size: 17px;
-        color:black
+        color:black;
+        display: table-caption;
+        overflow: auto;
+        width: 300px;
     }
 
     #especial a:hover{

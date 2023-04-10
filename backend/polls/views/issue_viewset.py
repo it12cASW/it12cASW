@@ -26,7 +26,6 @@ def pantallaCrearIssue(request):
 # Crear un nuevo issue
 def crearIssue(request):
 
-
     # Obtengo los miembros
     equipo = Miembro_Equipo.objects.filter(miembro=request.user)
     usuarios = []
@@ -42,13 +41,19 @@ def crearIssue(request):
             asunto = request.GET.get('asunto')
             descripcion = request.GET.get('descripcion')
             creador = User.objects.get(id=request.user.id)
-            issue = Issue(asunto=asunto, descripcion=descripcion, creador=creador)
+            asignado = request.GET.get('type')
+
+            if asignado == "sin asignar":
+                asignado = None
+            else:
+                usuario_asignado = User.objects.get(username=asignado)
+
+            issue = Issue(asunto=asunto, descripcion=descripcion, creador=creador, asignada=usuario_asignado)
             issue.save()
         
             actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.datetime.now(), tipo="creada", usuario=request.user)
             actividad.save()
-            #associat = request.POST.get('associat')
-            #vigilant = request.POST.get('vigilant'
+        
         else:
             return render(request, 'crearIssue.html', {'error' : 'El asunto no puede estar vacío', 'usuarios' : usuarios})
         
@@ -112,7 +117,7 @@ def editarIssue(request, idIssue):
 
 
         puedo_asignar = False
-        print("issue.asignada: ", issue.asignada)
+
         if issue.asignada == None :
             puedo_asignar = True
         elif request.GET.get('asignada') != issue.asignada.username and request.GET.get('asignada') != '':
