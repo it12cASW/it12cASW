@@ -2,7 +2,7 @@ from django.shortcuts import render
 from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo
 from django.contrib.auth.models import User
 import datetime
-
+import json
 
 
 
@@ -135,3 +135,37 @@ def filtrar_issues(request):
     for miembro in miebros:
         usuarios.append(miembro.miembro)
     return render(request, 'filterIssues.html', {'issues' : issues, 'equipos' : equipos, 'equipo' : miembro_equipo, 'usuarios' : usuarios})
+
+def ordenar_issues(request):
+    # Obtener los ids de las issues seleccionadas desde el parámetro de la URL
+    issue_ids = request.GET.get('issue_ids', '')
+    issue_ids = [int(id) for id in issue_ids.split(',') if id]
+
+    # Obtener las issues correspondientes a los ids seleccionados
+    issues = Issue.objects.filter(id__in=issue_ids)
+
+    orden = request.GET.get('orden', 'issue')
+    
+    orden_dir = request.GET.get('orden_dir')
+    
+    print(orden_dir)
+    # Concatenar la dirección de la ordenación al campo de ordenación
+    if orden_dir == 'asc' :
+        orden = orden 
+    else :
+        orden = '-' + orden
+    
+    issues = issues.order_by(orden)
+
+    issues = issues.filter(deleted=False)
+
+    equipos = Equipo.objects.all()
+    miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)
+    equipo = Miembro_Equipo.objects.filter(miembro=request.user)
+    miebros = Miembro_Equipo.objects.filter(equipo=equipo[0].equipo)
+    usuarios = []
+    for miembro in miebros:
+        usuarios.append(miembro.miembro)
+
+    return render(request, 'main.html', {'issues' : issues, 'equipos' : equipos, 'equipo' : miembro_equipo, 'usuarios' : usuarios})
+

@@ -1,0 +1,20 @@
+<form method="get" action="{% url 'ordenar-issues' %}">
+    <label for="select-orden">Ordenar issues por:</label>
+    <select id="select-orden" name="orden">
+        <option value="type">Type</option>
+        <option value="severity">Severity</option>
+        <option value="priority">Priority</option>
+        <option value="issue">Issue</option>
+        <option value="status">Status</option>
+        <option value="modified">Modified</option>
+        <option value="asignada">Asign to</option>
+    </select>
+    <select id="select-orden-dir" name="orden_dir">
+        <option value="asc">Ascendente</option>
+        <option value="desc">Descendente</option>
+    </select>
+    <input type="hidden" name="issue_ids" value="{% for issue in issues %}{{ issue.id }},{% endfor %}">
+    <button type="submit">Ordenar</button>
+</form>
+
+  

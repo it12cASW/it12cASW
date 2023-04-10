@@ -32,6 +32,9 @@ urlpatterns = [
 
     # Filtros
     path('filtrar-issues/', issue_viewset.filtrar_issues, name='filtrar-issues'),
+
+    #Ordenar
+    path('ordenar-issues/', issue_viewset.ordenar_issues, name='ordenar-issues'),
 ]
 
 
