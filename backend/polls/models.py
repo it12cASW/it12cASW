@@ -51,3 +51,10 @@ class Miembro_Equipo(models.Model):
     equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
     miembro = models.ForeignKey(User, on_delete=models.CASCADE, unique=True)
     rol = models.CharField(max_length=50, default='')
+
+#clase que almacene los usuarios y su imagen de perfil
+class Imagen_Perfil(models.Model):
+    id = models.AutoField(primary_key=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, unique=True)
+    imagen = models.ImageField(upload_to='imagenes_perfil', null=True, blank=True)
+

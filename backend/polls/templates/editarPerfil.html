@@ -1,17 +1,109 @@
 
+<div>
+    
+    <form action="http://127.0.0.1:8000/main/editarPerfil/actualizar" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <div id="editarPerfilFormContainer">
+            <div id="editarPerfilLeftContainer">
+                {% if imagenPerfil %}
+                    <img id="logoPerfil" src="http://127.0.0.1:8000/main/media/{{ imagenPerfil.imagen }}" alt="Avatar"">
+                {% else %}
+                    <img id="logoPerfil" src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar">
+                {% endif %}
+                <input type="file" name="imagen" id="imagen">
+            </div>
+            <div id="editarPerfilRightContainer">
+                <h1>EDITAR PERFIL</h1>
+                <label for="descripcion">Username</label>
+                <input type="text" name="username" id="descripcion" value="{{ user.username }}">
+                <label for="descripcion">Nombre</label>
+                <input type="text" name="nombre" id="descripcion" value="{{ user.first_name }}">
+                <label for="descripcion">Apellidos</label>
+                <input type="text" name="apellidos" id="descripcion" value="{{ user.last_name }}">
+                <label for="descripcion">Email</label>
+                <input type="text" name="email" id="descripcion" value="{{ user.email }}">
+                
+                {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                {% endif %}
 
-<form action="http://127.0.0.1:8000/main/editarPerfil/actualizar" method="POST">
+                <input id="editarPerfilSubmitButton" type="submit" value="Guardar cambios">
+                <a id="volverPantallaPrincipal" href="http://127.0.0.1:8000/main/login/auth">Volver a pantalla principal</a>
+            </div>
+        </div>
+    </form>
+    
+    
+</div>
 
-    {% csrf_token %}
-    <label for="descripcion">Descripcion</label>
-    <input type="text" name="descripcion" id="descripcion" value="{{ user.descripcion }}">
-    <label for="imagen">Imagen</label>
-    <input type="file" name="imagen" id="imagen" value="{{ user.imagen }}">
-    <input type="submit" value="Guardar cambios">
-</form>
 
-{% if error %}
-    <div class="alert alert-danger" role="alert">
-        {{ error }}
-    </div>
-{% endif %}
+
+
+<style>
+   #editarPerfilFormContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 50%;
+        height: 100%;
+        margin: auto;
+    }
+    #editarPerfilLeftContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 20%;
+        height: 100%;
+        text-align: center;
+        align-items: center;
+        padding: 10px;
+    }
+    #editarPerfilRightContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 80%;
+        height: 100%;
+        margin-left: 30px;
+        padding: 10px;
+   } 
+   #editarPerfilRightContainer input {
+        width: 100%;
+        height: 30px;
+        margin-bottom: 10px;
+   }
+   #editarPerfilSubmitButton {
+        width: 100%;
+        height: 30px;
+        margin-top: 10px;
+        background-color: #1DA1F2;
+        color: white;
+        border: none;
+        border-radius: 5px;
+   }
+   #editarPerfilSubmitButton:hover {
+        background-color: #0D8FEA;
+   }
+   #volverPantallaPrincipal {
+        width: 100%;
+        height: 30px;
+        margin-top: 10px;
+        background-color: #1DA1F2;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        text-align: center;
+        line-height: 30px;
+   }
+    #volverPantallaPrincipal:hover {
+          background-color: #0D8FEA;
+    }
+    #logoPerfil {
+        width: 90%;
+        height: auto;
+        border-radius: 50%;
+    }
+</style>

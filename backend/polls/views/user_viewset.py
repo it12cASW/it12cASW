@@ -8,7 +8,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from polls.views import issue_viewset
-from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo
+from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Imagen_Perfil
 
 def aux(request):
     return render(request, 'login.html')
@@ -100,17 +100,67 @@ def login_with_google(request):
     return render(request, 'main.html', {"issues" : issues, "equipos" : equipos, "equipo" : miembro_equipo})
 
 # Mostrar pantalla de edición de perfil
-def editarPerfil(request):
+def pantallaEditarPerfil(request):
 
-    return render(request, 'editarPerfil.html')
+    # Obtengo el usuario sobre el que se realizaran las actulaizaciones
+    usuario = User.objects.get(id=request.user.id)
+
+    # si existe imagen perfil
+    if Imagen_Perfil.objects.filter(usuario=usuario).exists():
+        imagenPerfil = Imagen_Perfil.objects.get(usuario=usuario)
+    else:
+        imagenPerfil = None
+    return render(request, 'editarPerfil.html', {"user" : request.user, "imagenPerfil" : imagenPerfil})
 
 # Guardar los nuevos datos del perfil
 def actualizarPerfil(request):
+    
+    # Obtengo el usuario sobre el que se realizaran las actulaizaciones
+    usuario = User.objects.get(id=request.user.id)
+    imagen = request.FILES.get('imagen')
+    # crea una instance de imagenPerfil
+    if Imagen_Perfil.objects.filter(usuario=usuario).exists():
+        imagenPerfil = Imagen_Perfil.objects.get(usuario=usuario)
+        imagenPerfil.imagen = imagen
+        imagenPerfil.save()
+    else:
+        imagenPerfil = Imagen_Perfil(imagen=imagen, usuario=usuario)
+        imagenPerfil.save()
 
-    issues = Issue.objects.filter(creador_id=request.user.id, deleted=False)
-    equipos = Equipo.objects.all()
 
-    return render(request, 'main.html', {"issues" : issues, "equipos" : equipos})
+    username = request.POST.get('username')
+    email = request.POST.get('email')
+    nombre = request.POST.get('nombre')
+    apellidos = request.POST.get('apellidos')
+
+    if username != usuario.username:
+        if User.objects.filter(username=username).exists():
+            return render(request, 'editarPerfil.html', {"user": usuario,"error" : "El usuario ya existe"})
+        usuario.username = username
+        usuario.save()
+    if email != usuario.email:
+        if User.objects.filter(email=email).exists():
+            return render(request, 'editarPerfil.html', {"user": usuario,"error" : "El email ya existe"})
+        usuario.email = email
+        usuario.save()
+    if nombre != usuario.first_name:
+        usuario.first_name = nombre
+        usuario.save()
+    if apellidos != usuario.last_name:
+        usuario.last_name = apellidos
+        usuario.save()
+
+    # si existe imagen perfil
+    if Imagen_Perfil.objects.filter(usuario=usuario).exists():
+        imagenPerfil = Imagen_Perfil.objects.get(usuario=usuario)
+    else:
+        imagenPerfil = None
+
+
+    # Lo guardo y compruebo que todo haya ido bien
+    # return render(request, 'editarPerfil.html')
+    return render (request, 'editarPerfil.html', {"user": usuario, "imagenPerfil": imagenPerfil, "error" : "Se ha actualizado el perfil correctamente"})
+    
     
 # Seleccionar equipo
 def seleccionarEquipo(request):
@@ -139,8 +189,13 @@ def verPerfil(request, username):
     else :
         equipo_usuario = None
 
+    # si existe imagen perfil
+    if Imagen_Perfil.objects.filter(usuario=user).exists():
+        imagenPerfil = Imagen_Perfil.objects.get(usuario=user)
+    else:
+        imagenPerfil = None
 
-    return render(request, 'verPerfil.html', {"user" : user, "actividades": actividades, "equipo" : equipo_usuario})
+    return render(request, 'verPerfil.html', {"user" : user, "actividades": actividades, "equipo" : equipo_usuario, "imagenPerfil" : imagenPerfil})
 
 
 

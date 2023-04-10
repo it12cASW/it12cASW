@@ -1,6 +1,11 @@
 <div id="perfilContainerPrincipal">
     <div id="perfilContainerIzquierda">
-        <img id="logoPerfil" src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar"">
+        {% if imagenPerfil %}
+            <img id="logoPerfil" src="http://127.0.0.1:8000/main/media/{{ imagenPerfil.imagen }}" alt="Avatar"">
+        {% else %}
+            <img id="logoPerfil" src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar">
+        {% endif %}
+
         <h1 id="perfilUsername">{{ user.username }}</h1>
         {% if equipo %}
             <h2 id="perfilEquipo">Equipo: {{ equipo.nombre }}</h2>
@@ -34,7 +39,7 @@
         <div id="perfilContainerDerecha2">
             <h2>Editar perfil</h2>
             <div id="perfilBotonEditarPerfil">
-                <a href="#">Editar perfil</a>
+                <a href="http://127.0.0.1:8000/main/editarPerfil">Editar perfil</a>
             </div>
         </div>
     </div>
