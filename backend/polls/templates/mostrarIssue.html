@@ -1,11 +1,20 @@
-
-
-
-
 <h1>{{ issue.asunto }}</h1>
 <h2>{{ issue.descripcion }}</h2>
 <h3>{{ creador }}</h3>
 <h3>ASIGNADA: {{ issue.asignada }}</h3>
+<!--escrivir por pantalla a todos los vigilantes-->
+
+<h3>Vigilantes:</h3>
+  <div class="vigilantes">
+    {% for vigilante in issue.vigilant.all %}
+      <span class="vigilante">{{ vigilante.username }}</span>
+        <a href="http://127.0.0.1:8000/main/eliminar-vigilante/{{issue.id}}/{{ vigilante.id}}/" class="eliminar-vigilante-btn"> Eliminar vigilante</a>
+    {% endfor %}
+  </div>
+
+<a href="http://127.0.0.1:8000/main/pantalla-agregar-vigilante/{{issue.id}}/" class="eliminar-vigilante-btn"> Añadir vigilante</a>
+
+
 <a href="http://127.0.0.1:8000/main/eliminarIssue/{{ issue.id }}/">Eliminar Issue</a>
 <a href="http://127.0.0.1:8000/main/mostrarPantallaEditarIssue/{{ issue.id }}/">Editar Issue</a>
 <a href="http://127.0.0.1:8000/main/login/auth">Volver a pagina principal</a>
@@ -28,3 +37,20 @@
     {% endif %}
 {% endfor %} 
 
+<style>
+    .eliminar-vigilante-btn {
+        display: inline-block;
+        padding: 6px 12px;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: pointer;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        color: #333;
+    }
+</style>
