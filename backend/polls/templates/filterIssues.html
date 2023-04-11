@@ -43,16 +43,16 @@
                 <div class="col">Asign to</div>
             </div>
             {% for issue in issues %}
-                <div id="issue">
-                    <div class="col"><i class="fa-solid fa-circle"></i></div>
-                    <div class="col"><i class="fa-solid fa-circle"></i></div>
-                    <div class="col"><i class="fa-solid fa-circle"></i></div>
-                    <div class="col" id="especial"><a href="http://127.0.0.1:8000/main/mostrarIssue/{{ issue.id }}/">{{ issue.asunto }}</a></div>
-                    <div class="col"><p> {{ issue.descripcion }}  {{ issue.creador_id }}</p></div>
-                    <div class="col">Modified</div>
-                    <div class="col">Asign to</div>
-                </div>   
-            {% endfor %}
+            <div id="issue">
+                <div class="col"><i class="fa-solid fa-circle"></i></div>
+                <div class="col"><i class="fa-solid fa-circle"></i></div>
+                <div class="col"><i class="fa-solid fa-circle"></i></div>
+                <div class="col" id="especial"><a href="http://127.0.0.1:8000/main/mostrarIssue/{{ issue.id }}/">{{ issue.asunto }}</a></div>
+                <div class="col"><p> {{ issue.descripcion }}  {{ issue.creador_id }}</p></div>
+                <div class="col">Modified</div>
+                <div class="col"><strong>{{ issue.asignada.username }}</strong></div>
+            </div>   
+        {% endfor %}
         </div>
     </div>  
 

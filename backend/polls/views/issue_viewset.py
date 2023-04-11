@@ -213,7 +213,7 @@ def ordenar_issues(request):
         max_fecha_actividad = Max('actividad_issue__fecha')
         order_by_field = 'max_fecha_actividad' if orden_dir == 'desc' else '-max_fecha_actividad'
 
-        issues = Issue.objects.annotate(
+        issues = issues.annotate(
             max_fecha_actividad=max_fecha_actividad
         ).order_by(order_by_field)
 
