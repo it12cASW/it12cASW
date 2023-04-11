@@ -46,7 +46,10 @@ def crearIssue(request):
             if asignado == "sin asignar":
                 asignado = None
             else:
-                usuario_asignado = User.objects.get(username=asignado)
+                if: User.objects.get(username=asignado)
+                    usuario_asignado = User.objects.get(username=asignado)
+                else:
+                    asignado = None
 
             issue = Issue(asunto=asunto, descripcion=descripcion, creador=creador, asignada=usuario_asignado)
             issue.save()
