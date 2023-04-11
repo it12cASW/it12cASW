@@ -2,8 +2,8 @@ from django.shortcuts import render
 from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo
 from django.contrib.auth.models import User
 import datetime
-from django.db.models import Q
-
+from django.db.models import Q, Max
+from django.db import models
 
 
 # Mostrar pantalla de creación de un issue
@@ -147,34 +147,27 @@ def filtrar_issues(request):
     filtro = request.GET.get('filtro')
     opciones = request.GET.get('opciones')
 
-    if filtro == 'status':
-        issues = Issue.objects.filter(status=opciones, deleted=True)
-
-    elif filtro == 'assignee':
-        assignee = request.GET.get('assignee')
-        assignee = User.objects.get(username=opciones)
-        # lógica para filtrar por asignado a
-        issues = Issue.objects.filter(associat=assignee, deleted=True)        
-    #falsta el filtro de tag
-    elif filtro == 'priority':
-        priority = request.GET.get('priority')
-        # lógica para filtrar por prioridad
-        issues = Issue.objects.filter(prioridad=opciones, deleted=True)
-
-    elif filtro == 'assign_to':
-        assign_to = request.GET.get('assign_to')
-        assign_to = User.objects.get(username=opciones)
-
-        issues = Issue.objects.filter(asignada=assign_to, deleted=True)
-
-    elif filtro == 'created_by':
-        assignee = request.GET.get('assignee')
-        assignee = User.objects.get(username=opciones)
-
-        issues = Issue.objects.filter(creador=assignee, deleted=True)
+    # Verificamos si se seleccionó algún filtro
+    if filtro:
+        # Filtramos por el tipo de filtro seleccionado
+        if filtro == 'status':
+            issues = Issue.objects.filter(status=opciones, deleted=False)
+        elif filtro == 'assignee':
+            issues = Issue.objects.filter(associat=opciones, deleted=False)
+        elif filtro == 'tag':
+            issues = Issue.objects.filter(tag=opciones, deleted=False)
+        elif filtro == 'priority':
+            issues = Issue.objects.filter(priority=opciones, deleted=False)
+        elif filtro == 'assign_to':
+            issues = Issue.objects.filter(asignada=opciones, deleted=False)
+        elif filtro == 'created_by':
+            issues = Issue.objects.filter(creador=opciones, deleted=False)
+        else:
+            # Si no se reconoce el filtro, retornamos un error
+            issues = None
     else:
-        # lógica si no se seleccionó ningún filtro
-        issues = Issue.objects.filter(deleted=True)
+        # Si no se seleccionó ningún filtro, mostramos todos los issues
+        issues = Issue.objects.filter(deleted=False)
 
     equipos = Equipo.objects.all()
     miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)
@@ -202,3 +195,40 @@ def search_issues(request):
         usuarios.append(miembro.miembro)
 
     return render(request, 'main.html', {'issues': results, 'equipos' : equipos, 'equipo' : miembro_equipo, 'usuarios' : usuarios})
+
+def ordenar_issues(request):
+    issue_ids = request.GET.get('issue_ids', '')
+    issue_ids = [int(id) for id in issue_ids.split(',') if id]
+    issues = Issue.objects.filter(id__in=issue_ids)
+
+    orden = request.GET.get('orden', 'issue')
+    orden_dir = request.GET.get('orden_dir')
+
+    if orden_dir == 'asc':
+        orden = '' + orden
+    else:
+        orden = '-' + orden
+
+    if orden == 'modified' or orden == '-modified':
+        max_fecha_actividad = Max('actividad_issue__fecha')
+        order_by_field = 'max_fecha_actividad' if orden_dir == 'desc' else '-max_fecha_actividad'
+
+        issues = Issue.objects.annotate(
+            max_fecha_actividad=max_fecha_actividad
+        ).order_by(order_by_field)
+
+    else:
+        issues = issues.order_by(orden)
+
+    issues = issues.filter(deleted=False)
+
+    equipos = Equipo.objects.all()
+    miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)
+    equipo = Miembro_Equipo.objects.filter(miembro=request.user)
+    miebros = Miembro_Equipo.objects.filter(equipo=equipo[0].equipo)
+    usuarios = []
+    for miembro in miebros:
+        usuarios.append(miembro.miembro)
+
+    return render(request, 'main.html', {'issues': issues, 'equipos': equipos, 'equipo': miembro_equipo, 'usuarios': usuarios})
+

@@ -14,7 +14,7 @@
     {% if user.is_authenticated %}
         <p>BIENVENIDO, {{ user.username }} !</p>
     {% endif %}
-
+    
 
     <div id="contenedorPrincipal">
         <h1>Issues</h1>
@@ -26,12 +26,13 @@
                     {% include "form_search_bar.html" %}
                     <input type="checkbox">TAGS</input>
                 </div>
-                {% include "form_filtrarIssues.html" %}
+                
             </div>
             
         </div>
         <div id="tablaIssues">
             <h1>Issues filtrades</h1>
+            {%include "form_order_issues.html"%}
             <div id="CabeceraTabla">
                 <div class="col">Type</div>
                 <div class="col">Severity</div>
@@ -58,7 +59,8 @@
     <a href="http://127.0.0.1:8000/main/logout">Logout</a>
 
     <a href="http://127.0.0.1:8000/main/editarPerfil">Editar perfil</a>
-
+    
+    {%include 'form_filtrarIssues.html'%}
 
     {% if equipo %}
         <h1>ESTAS EN EL EQUIPO:</h1>
