@@ -45,7 +45,11 @@ def crearIssue(request):
             if asignado == "sin asignar":
                 asignado = None
             else:
-                usuario_asignado = User.objects.get(username=asignado)
+                if User.objects.filter(username=asignado).exists():
+                    usuario_asignado = User.objects.get(username=asignado)
+                else:
+                    usuario_asignado = None
+                    #return render(request, 'crearIssue.html', {'error' : 'El usuario asignado no existe', 'usuarios' : usuarios})
 
             
             issue = Issue(asunto=asunto, descripcion=descripcion, creador=creador, asignada=usuario_asignado)
