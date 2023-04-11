@@ -28,3 +28,15 @@
     {% endif %}
 {% endfor %} 
 
+<form action="/main/addComment/{{ issue.id }}" method="GET">
+    <input type="text" name="comentario" placeholder="Comentario" />
+    <button id="createButton" type="submit">Create</button>
+</form>
+
+{% for comment in issue.comments %}
+    {% if comment.deleted == False %}
+        <h4>{{ comment.autor }}</h2>
+        <h5>{{ comment.contenido }}</h3>
+        <h5>{{ comment.fecha }}</h3>
+    {% endif %}
+{% endfor %}

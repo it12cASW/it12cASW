@@ -27,6 +27,7 @@ urlpatterns = [
     path('eliminarIssue/<int:idIssue>/', issue_viewset.eliminarIssue, name='eliminarIssue'),
     path('mostrarPantallaEditarIssue/<int:idIssue>/', issue_viewset.mostrarPantallaEditarIssue, name='mostrarPantallaEditarIssue'),
     path('editarIssue/<int:idIssue>/', issue_viewset.editarIssue, name='editarIssue'),
+    path('addComment/<int:idIssue>/', issue_viewset.addComment, name='añadirComments'),
     
     # Equipo
     path('pantallaCrearEquipo', equipo_viewset.pantallaCrearEquipo, name='pantallaCrearEquipo'),

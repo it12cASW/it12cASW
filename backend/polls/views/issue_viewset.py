@@ -1,8 +1,7 @@
 from django.shortcuts import render
-from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo
+from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Comentario
 from django.contrib.auth.models import User
 import datetime
-
 
 
 # Mostrar pantalla de creación de un issue
@@ -145,4 +144,29 @@ def editarIssue(request, idIssue):
 
         actividades = Actividad_Issue.objects.filter(issue_id=idIssue)
         return render(request, 'mostrarIssue.html', {'issue': issue, 'actividades' : actividades})
+<<<<<<< HEAD
     return render(request, 'editarIssue.html', {'error' : 'No se ha podido actualizar el issue'})
+=======
+    return render(request, 'editarIssue.html', {'error' : 'No se ha podido actualizar el issue'})
+
+def addComment(request, idIssue):
+    if request.method == 'GET':
+        if request.GET.get('contenido') != '':
+            autor = User.objects.get(id=request.user.id)
+            contenido = request.GET.get('contenido')
+            issue = Issue.objects.get(id=idIssue)
+
+            comment = Comentario(autor=autor, contenido=contenido, issue=issue)
+            comment.save()
+        else:
+            return render(request, 'añadirComment.html', {'error' : "El contenido no puede estar vacío"})
+    return render(request, 'añadirComment.html', {'error' : "El comentario de ha añadido correctamente"})
+
+def eliminarComment(request, idComment):
+
+    comment = Comentario.objects.get(id=idComment)
+    # modifica el atributo 'deleted' a True
+    comment.deleted = True
+    comment.save()
+    return render(request, 'eliminarComment.html', { 'comentario': comment })
+>>>>>>> 1100b1aa08b311d00a6ed19bd8a9e6006e7755fc
