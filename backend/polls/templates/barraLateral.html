@@ -1,0 +1,51 @@
+<div id="barraLateral">
+    <div id="lateralSuperio">
+        <p class="entrada" style="background-color: rgb(47, 47, 47);">ASW</p>
+        <a class="entrada" href="#">Epics</a>
+        <a class="entrada" href="#">Scrum</a>
+        <a class="entrada" href="#">Issues</a>
+    </div>
+
+    <div id="lateralInferior" style="margin-bottom: 20px;">
+        <a class="entrada" href="#">Search</a>
+        <a class="entrada" href="#">Wiki</a>
+        <a class="entrada" href="#">Team</a>
+    </div>
+
+</div>
+
+
+<style>
+    #barraLateral{
+        width: 15%;
+        height: 100vh;
+        background-color: grey;
+        float: left;
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    #lateralSuperio{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .entrada{
+        height: 40px;
+        padding: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-decoration: none;
+        font-size: 20px;
+    }
+
+    .entrada:hover {
+        font-size: 22px;
+    }
+</style>

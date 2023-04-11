@@ -1,0 +1,28 @@
+
+
+<form action="/main/editarIssue/{{ issue.id }}/" method="GET">
+    <h1>{{ issue.id }}</h1>
+    <h2>ASUNTO</h2>
+    <input type="text" placeholder="asunto" name="asunto"/> 
+
+    <h2>DESCRIPCION</h2>
+    <input type="text" placeholder="descripcion" name="descripcion" /> 
+
+    <h2>COMENTARIOS</h2>
+    <input placeholder="comentarios"/>
+
+    
+    <select name="type">
+        {% for usuario in usuarios %}
+            <option name="asignada" value="{{ usuario.username }}">{{ usuario.username }}</option>
+        {% endfor %}
+    </select>
+
+    <input type="submit" value="Editar Issue" />
+</form>
+
+{% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+{% endif %}
