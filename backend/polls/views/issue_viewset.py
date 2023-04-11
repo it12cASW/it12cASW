@@ -2,8 +2,8 @@ from django.shortcuts import render
 from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo
 from django.contrib.auth.models import User
 import datetime
-import json
-
+from django.db.models import Max
+from django.db import models
 
 
 # Mostrar pantalla de creación de un issue
@@ -137,25 +137,28 @@ def filtrar_issues(request):
     return render(request, 'filterIssues.html', {'issues' : issues, 'equipos' : equipos, 'equipo' : miembro_equipo, 'usuarios' : usuarios})
 
 def ordenar_issues(request):
-    # Obtener los ids de las issues seleccionadas desde el parámetro de la URL
     issue_ids = request.GET.get('issue_ids', '')
     issue_ids = [int(id) for id in issue_ids.split(',') if id]
-
-    # Obtener las issues correspondientes a los ids seleccionados
     issues = Issue.objects.filter(id__in=issue_ids)
 
     orden = request.GET.get('orden', 'issue')
-    
     orden_dir = request.GET.get('orden_dir')
-    
-    print(orden_dir)
-    # Concatenar la dirección de la ordenación al campo de ordenación
-    if orden_dir == 'asc' :
-        orden = orden 
-    else :
+
+    if orden_dir == 'asc':
+        orden = '' + orden
+    else:
         orden = '-' + orden
-    
-    issues = issues.order_by(orden)
+
+    if orden == 'modified' or orden == '-modified':
+        max_fecha_actividad = Max('actividad_issue__fecha')
+        order_by_field = 'max_fecha_actividad' if orden_dir == 'desc' else '-max_fecha_actividad'
+
+        issues = Issue.objects.annotate(
+            max_fecha_actividad=max_fecha_actividad
+        ).order_by(order_by_field)
+
+    else:
+        issues = issues.order_by(orden)
 
     issues = issues.filter(deleted=False)
 
@@ -167,5 +170,5 @@ def ordenar_issues(request):
     for miembro in miebros:
         usuarios.append(miembro.miembro)
 
-    return render(request, 'main.html', {'issues' : issues, 'equipos' : equipos, 'equipo' : miembro_equipo, 'usuarios' : usuarios})
+    return render(request, 'main.html', {'issues': issues, 'equipos': equipos, 'equipo': miembro_equipo, 'usuarios': usuarios})
 
