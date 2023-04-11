@@ -1,0 +1,16 @@
+<form action="{% url 'filtrar-issues' %}" method="GET">
+    <label for="filtro">Filtrar issues por:</label>
+    <select id="filtro" name="filtro">
+        <option value="status" selected>Estado</option>
+        <option value="assignee">Associat</option>
+        <option value="tag">Tag</option>
+        <option value="priority">Prioridad</option>
+        <option value="assign_to">Asignada</option>
+        <option value="created_by">Creador</option>
+    </select>
+
+    <label for="opciones">Opciones:</label>
+    <input type="text" id="opciones" name="opciones">
+
+    <input type="submit" value="Filtrar">
+</form>

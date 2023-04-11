@@ -20,20 +20,18 @@
         <h1>Issues</h1>
         <div id="barraSuperior">
 
-            <div id="superiorIzquierda">
-                <a id="aplicarFiltros" href="http://127.0.0.1:8000/main/filtrar-issues/">FILTERS</a>
-                <a>SEARCH: </a> {% include "form_search_bar.html" %}
-                <input type="checkbox">TAGS</input>
-            </div>
-            <div id="superiorDerecha">
-                <a id="crearIssue" href="http://127.0.0.1:8000/main/pantallaCrearIssue">Crea un nuevo issue</a>
-                <a href="#">BULK</a>
-                <a href="http://127.0.0.1:8000/main/verPerfil/{{ user.username }}/">Ver Perfil</a>
+            <div id="superiorIzquierda" style="display: flex; flex-direction: column;">
+                <div>
+                    <a id="aplicarFiltros" href="http://127.0.0.1:8000/main/login/auth">OCULTAR FILTRES</a>
+                    {% include "form_search_bar.html" %}
+                    <input type="checkbox">TAGS</input>
+                </div>
+                {% include "form_filtrarIssues.html" %}
             </div>
             
         </div>
         <div id="tablaIssues">
-            <h1>Issues del usuario</h1>
+            <h1>Issues filtrades</h1>
             <div id="CabeceraTabla">
                 <div class="col">Type</div>
                 <div class="col">Severity</div>
@@ -51,47 +49,32 @@
                     <div class="col" id="especial"><a href="http://127.0.0.1:8000/main/mostrarIssue/{{ issue.id }}/">{{ issue.asunto }}</a></div>
                     <div class="col"><p> {{ issue.descripcion }}  {{ issue.creador_id }}</p></div>
                     <div class="col">Modified</div>
-                    <div class="col"><strong>{{ issue.asignada.username }}</strong></div>
+                    <div class="col">Asign to</div>
                 </div>   
             {% endfor %}
         </div>
-
-        <div id="mainExtras">
-            <a href="http://127.0.0.1:8000/main/logout">Logout</a>
-
-            <a href="http://127.0.0.1:8000/main/editarPerfil">Editar perfil</a>
-
-
-            {% if equipo %}
-                <h1>ESTAS EN EL EQUIPO:</h1>
-                <h2>{{ equipo.nombre }}</h2>
-            {% else %}
-                <h2>AUN NO TIENES EQUIPO</h2>
-                <form action="http://127.0.0.1:8000/main/seleccionarEquipo/" method="GET">
-                    <select name="equipo">
-                        {% for equipo in equipos %}
-                            <option value="{{ equipo.id }}" name="equipo">{{ equipo.nombre }}</option>
-                        {% endfor %}
-                    <input type="submit" value="Seleccionar equipo">
-                </form>
-            {% endif %}
-
-            <a href="http://127.0.0.1:8000/main/pantallaCrearEquipo">Crear nuevo equipo</a>
-        </div>
-
-        
-
     </div>  
 
+    <a href="http://127.0.0.1:8000/main/logout">Logout</a>
+
+    <a href="http://127.0.0.1:8000/main/editarPerfil">Editar perfil</a>
 
 
+    {% if equipo %}
+        <h1>ESTAS EN EL EQUIPO:</h1>
+        <h2>{{ equipo.nombre }}</h2>
+    {% else %}
+        <h2>AUN NO TIENES EQUIPO</h2>
+        <form action="http://127.0.0.1:8000/main/seleccionarEquipo/" method="GET">
+            <select name="equipo">
+                {% for equipo in equipos %}
+                    <option value="{{ equipo.id }}" name="equipo">{{ equipo.nombre }}</option>
+                {% endfor %}
+            <input type="submit" value="Seleccionar equipo">
+        </form>
+    {% endif %}
 
-
-    
-
-    
-
-    
+    <a href="http://127.0.0.1:8000/main/pantallaCrearEquipo">Crear nuevo equipo</a>
 
 
 
@@ -104,6 +87,7 @@
 
     #contenedorPrincipal{
         width: 85%;
+        height: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -127,7 +111,7 @@
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        padding: 20px;
+
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -170,16 +154,12 @@
     #especial{
         width: 50%;
         text-align: left;
-
     }
 
     #especial a{
         text-decoration: none;
         font-size: 17px;
-        color:black;
-        display: table-caption;
-        overflow: auto;
-        width: 300px;
+        color:black
     }
 
     #especial a:hover{
