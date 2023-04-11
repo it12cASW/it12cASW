@@ -48,6 +48,7 @@ def crearIssue(request):
             else:
                 usuario_asignado = User.objects.get(username=asignado)
 
+            
             issue = Issue(asunto=asunto, descripcion=descripcion, creador=creador, asignada=usuario_asignado)
             issue.save()
         
