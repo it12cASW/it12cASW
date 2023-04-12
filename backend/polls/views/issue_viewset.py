@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Comentario
+from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Comentario, Deadline
 from django.contrib.auth.models import User
 import datetime
 
@@ -68,7 +68,15 @@ def mostrarIssue(request, idIssue):
     issue = Issue.objects.get(id=idIssue)
     creador = User.objects.get(id=issue.creador.id)
     actividades = Actividad_Issue.objects.filter(issue_id=idIssue)
-    return render(request, 'mostrarIssue.html', {'issue': issue, 'creador' : creador, 'actividades' : actividades })
+    
+    motivo = ""
+    if issue.deadline != None:
+        deadline = Deadline.objects.get(issue_id=idIssue)
+        if deadline.motivo != None:
+            motivo = deadline.motivo
+    
+    return render(request, 'mostrarIssue.html', {'issue': issue, 'creador' : creador, 'actividades' : actividades, 'motivo' : motivo })
+
 
 # Eliminar un issue dado su id
 def eliminarIssue(request, idIssue):
@@ -84,7 +92,6 @@ def mostrarPantallaEditarIssue(request, idIssue):
     issue = Issue.objects.get(id=idIssue)
     creador = User.objects.get(id=issue.creador.id)
 
-    
 
     if Miembro_Equipo.objects.filter(miembro=creador):
         equipo = Miembro_Equipo.objects.filter(miembro=creador)[0].equipo
@@ -148,7 +155,11 @@ def editarIssue(request, idIssue):
 
 def pantallaAddDeadline(request, idIssue):
     issue = Issue.objects.get(id=idIssue)
-    return render(request, 'form_addDeadline.html', {'error' : "", 'issue' : issue})
+    motivo = ""
+    if issue.deadline is not None:
+        deadline = Deadline.objects.get(issue_id=idIssue)
+        motivo = deadline.motivo
+    return render(request, 'form_addDeadline.html', {'error' : "", 'issue' : issue, 'motivo' : motivo})
 
 
 def addDeadline(request, idIssue):
@@ -164,11 +175,20 @@ def addDeadline(request, idIssue):
         elif issue.deadline is not None:
             return render(request, 'form_addDeadline.html', {'error' : "La issue ya tiene una deadline", 'issue' : issue})
         else:
-            issue.setDeadline(fecha)
+            motivo = request.POST.get('motivo')
+            issue.setDeadline(fecha, motivo)
             issue.save()
-            return render(request, 'form_addDeadline.html', {'error' : "El deadline se ha añadido correctamente", 'issue' : issue})
+            return render(request, 'form_addDeadline.html', {'error' : "El deadline se ha añadido correctamente", 'issue' : issue, 'motivo' : motivo})
     
     return render(request, 'form_addDeadline.html', {'issue' : issue})
+
+def eliminarDeadline(request, idIssue):
+    issue = Issue.objects.get(id=idIssue)
+    issue.deadline = None
+    issue.save()
+    deadline = Deadline.objects.get(issue=issue)
+    deadline.delete()
+    return render(request, 'form_addDeadline.html', {'issue': issue,  'error' : "La deadline ha sido eliminada correctamente" })
 
 
 def addComment(request, idIssue):
@@ -183,14 +203,6 @@ def addComment(request, idIssue):
         else:
             return render(request, 'añadirComment.html', {'error' : "El contenido no puede estar vacío"})
     return render(request, 'añadirComment.html', {'error' : "El comentario se ha añadido correctamente"})
-
-def eliminarDeadline(request, idIssue):
-    issue = Issue.objects.get(id=idIssue)
-    issue.deadline = None
-    issue.save()
-    creador = User.objects.get(id=issue.creador.id)
-    actividades = Actividad_Issue.objects.filter(issue_id=idIssue)
-    return render(request, 'mostrarIssue.html', {'issue': issue, 'creador' : creador, 'actividades' : actividades })
 
 
 def eliminarComment(request, idComment):

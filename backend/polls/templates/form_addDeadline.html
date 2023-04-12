@@ -1,11 +1,19 @@
+<div>
+    Fecha limite de la tasca {{issue.asunto}}: {% if issue.deadline %} {{ issue.deadline }} Motivo: {{motivo}} {% else %} Esta issue no tiene fecha límite {% endif %}
+</div>
 <form action="{% url 'añadirDeadline' issue.id %}" method="POST">
     <label for="fecha">Selecciona una fecha:</label>
     <input type="date" id="fecha" name="fecha">
     <input type="submit" value="Añadir deadline a la issues">
+    <a>
+        Añade un motivo para la fecha límite (opcional)
+        <textarea name="motivo" placeholder="Motivo de la fecha límite"></textarea>
+    </a>
     <!--mansage de error o satisfaccion-->
     {% if error %}
         <p>{{ error }}</p>
     {% endif %}
+    <a href="{% url 'eliminarDeadline' issue.id %}">Eliminar deadline</a>
     <a href="{% url 'mostrarIssue' issue.id %}">Volver a la pantalla principal</a>
     {% csrf_token %}
 </form>

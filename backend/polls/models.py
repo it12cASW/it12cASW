@@ -15,8 +15,12 @@ class Issue(models.Model):
     asignada = models.ForeignKey(User, on_delete=models.CASCADE, related_name='issues_asignadas', null=True)
     deadline = models.DateTimeField(null=True)
     
-    def setDeadline(self, fecha):
+    def setDeadline(self, fecha, motivo):
         self.deadline = fecha
+        deadline = Deadline.objects.create(issue=self, deadline=fecha, motivo=motivo)
+        deadline.save()
+        self.save()
+
     def __str__(self):
         return f"{self.asunto} ({self.id})"
 
@@ -71,3 +75,8 @@ class Comentario(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, related_name='comments')
 
+class Deadline(models.Model):
+    id = models.AutoField(primary_key=True)
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, related_name='deadlines')
+    deadline = models.DateTimeField()
+    motivo = models.CharField(max_length=200, default='')

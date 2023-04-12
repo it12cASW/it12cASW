@@ -6,7 +6,8 @@
 <h2>{{ issue.descripcion }}</h2>
 <h3>{{ creador }}</h3>
 <h3>ASIGNADA: {{ issue.asignada }}</h3>
-<h3>FECHA LIMITE: {% if issue.deadline %} {{ issue.deadline }} <a href="http://127.0.0.1:8000/main/eliminarDeadline/{{ issue.id }}/">Remover la fecha límite</a> {% else %} Esta issue no tiene fecha límite {% endif %}</h3>
+<h3>FECHA LIMITE: {% if issue.deadline %} {{ issue.deadline }} Motivo: {{motivo}} {% else %} Esta issue no tiene fecha límite {% endif %}</h3>
+<a href="http://127.0.0.1:8000/main/pantallaAddDeadline/{{ issue.id }}/">{%if issue.deadline %} Editar la deadline de la issue{%else%}Añadir deadline a la issue{%endif%}</a>
 <a href="http://127.0.0.1:8000/main/eliminarIssue/{{ issue.id }}/">Eliminar Issue</a>
 <a href="http://127.0.0.1:8000/main/mostrarPantallaEditarIssue/{{ issue.id }}/">Editar Issue</a>
 <a href="http://127.0.0.1:8000/main/login/auth">Volver a pagina principal</a>
@@ -33,5 +34,3 @@
     <input type="text" name="comentario" placeholder="Comentario" />
     <button id="createButton" type="submit">Create</button>
 </form>
-
-<a href="http://127.0.0.1:8000/main/pantallaAddDeadline/{{ issue.id }}/">Añadir deadline a la issue</a>
