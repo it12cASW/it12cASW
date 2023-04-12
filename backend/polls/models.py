@@ -15,10 +15,11 @@ class Issue(models.Model):
     vigilant = models.ManyToManyField(User, related_name='issues_vigiladas')
     deleted = models.BooleanField(default=False)
     asignada = models.ForeignKey(User, on_delete=models.CASCADE, related_name='issues_asignadas', null=True)
-    blocked = models.BooleanField(default=False)
+    blocked = models.BooleanField(default=False, null=True)
     reason_blocked = models.CharField(max_length=200, default='', null=True)
     deadline = models.DateTimeField(null=True)
-    status = models.IntegerField(max_length=2, choices=ESTADOS, default=1)
+    status = models.IntegerField(max_length=2, choices=ESTADOS, default=1, null=True)
+    prioridad = models.CharField(max_length=100, default=None, null=True)
     #si se añade un nuevo watcher, se añade a la lista de watchers
     def addWatcher(self, user):
         self.vigilant.add(user)

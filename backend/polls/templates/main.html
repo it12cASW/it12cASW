@@ -48,7 +48,11 @@
                 <div id="issue" {% if issue.blocked %} style="border-style: solid; border-color: red; border-width: 4px;"{% endif %}>
                     <div class="col"><i class="fa-solid fa-circle"></i></div>
                     <div class="col"><i class="fa-solid fa-circle"></i></div>
-                    <div class="col"><i class="fa-solid fa-circle"></i></div>
+                    {% if issue.prioridad %}
+                        <div class="col">{{ issue.prioridad }}</div>
+                    {% else %}
+                        <div class="col">Ninguna</div>
+                    {% endif %}
                     <div class="col" id="especial"><a href="http://127.0.0.1:8000/main/mostrarIssue/{{ issue.id }}/">{{ issue.asunto }}</a></div>
                     <div class="col"><p> {{ issue.descripcion }}  {{ issue.creador_id }}</p></div>
                     <div class="col">Modified</div>

@@ -1,71 +1,109 @@
-<h1>{{ issue.asunto }}</h1>
-<h2>{{ issue.descripcion }}</h2>
-<h3>{{ creador }}</h3>
+
+<div id="issueMainContainer">
+
+    <div id="issueContenedorIzquierda">
+        <div id="issueInformacionGeneral">
+            <h1>{{ issue.asunto }}</h1>
+            <h2>{{ issue.descripcion }}</h2>
+            <h3>{{ creador }}</h3>
+            <h3>Fecha Límite: {% if issue.deadline %} {{ issue.deadline }} Motivo: {{motivo}} {% else %} Esta issue no tiene fecha límite {% endif %}</h3>
+        </div>
+        <div id="issueSubcontenedorAbajo">
+            <div id="issueActividadesIssue">
+                <h1>ACTIVIDADES DE LA ISSUE</h1>
+                {% for actividad in actividades %}
+                <div id="issueActividad">
+                    h4>{{ actividad.issue }}</h2>
+                    <h5>{{ actividad.creador }}</h3>
+                    <h5>{{ actividad.fecha }}</h3>
+    
+                    {% if actividad.tipo == 'asunto' or actividad.tipo == 'descripcion' %}
+                        <h5>El usuario {{ actividad.usuario }} ha modificado el campo: {{ actividad.tipo }}</h5>
+                    {% elif actividad.tipo == 'creada' %}
+                        <h5>El usuario {{ actividad.creador }} ha creado la Issue</h5>
+                    {% elif actividad.tipo == 'asignada' %}
+                        <h5>La Issue ha sido asignada a {{ issue.asignada }} por {{ actividad.creador }}</h5>
+                    {% elif actividad.tipo == 'desasignada' %}
+                        <h5>Se ha desasignado la issue</h5>
+                    {% elif actividad.tipo == 'bloqueada' %}
+                        <h5>El usuario {{ actividad.creador }} ha bloqueado la Issue</h5>
+                    {% elif actividad.tipo == 'desbloqueada' %}
+                        <h5>El usuario {{ actividad.creador }} ha desbloqueado la Issue</h5>
+                    {% endif %}
+                </div>
+                {% endfor %} 
+            </div>
+
+            <div id="issueComentarios">
+                <h2>Añade comentarios</h2>
+                <form action="/main/addComment/{{ issue.id }}" method="GET">
+                    <input type="text" name="contenido" placeholder="contenido" />
+                    <button id="createButton" type="submit">Create</button>
+                </form>
+                <h2>Comentarios</h2>
+                {% for comment in comments %}
+                    <div id="issueComentario">
+                        {% if comment.deleted == False %}
+                        <h4> Comentario : {{ comment.id }} </h4>
+                        <h5> autor : {{ comment.autor }} </h5>
+                        <h5> {{ comment.contenido }} </h5>
+                        <h5> {{ comment.fecha }} </h5>
+                    {% endif %}
+                    </div>
+                {% endfor %} 
+            </div>
+        </div>
+        
+    </div>
+
+    <div id="issueContenedorDerecha">
+        <h4>ASIGNADA: {{ issue.asignada }}</h4>
+
+        <div id="issueContenedorVigilantes">
+        
+            <div class="vigilantes">
+            {% for vigilante in issue.vigilant.all %}
+                <span class="vigilante">{{ vigilante.username }}</span>
+                <a class="botonOpcion" href="http://127.0.0.1:8000/main/eliminar-vigilante/{{issue.id}}/{{ vigilante.id}}/" class="eliminar-vigilante-btn"> Eliminar vigilante</a>
+            {% endfor %}
+            </div>
+            <a class="botonOpcion" href="http://127.0.0.1:8000/main/pantalla-agregar-vigilante/{{issue.id}}/" class="eliminar-vigilante-btn"> Añadir vigilante</a>
+        </div>
+
+        <div id="issueContenedorBotones">
+            <a class="botonOpcion" href="http://127.0.0.1:8000/main/pantallaAddDeadline/{{ issue.id }}/">{%if issue.deadline %} Editar la deadline de la issue{%else%}Añadir deadline a la issue{%endif%}</a>
+            <a class="botonOpcion" href="http://127.0.0.1:8000/main/eliminarIssue/{{ issue.id }}/">Eliminar Issue</a>
+            <a class="botonOpcion" href="http://127.0.0.1:8000/main/mostrarPantallaEditarIssue/{{ issue.id }}/">Editar Issue</a>
+            {% if issue.blocked %}
+                <a class="botonOpcion" style="color:red" href="http://127.0.0.1:8000/main/desbloquearIssue/{{ issue.id }}/">Desbloquear Issue</a>
+            {% else %}
+                <a class="botonOpcion" style="color:red" href="http://127.0.0.1:8000/main/quieroBloquear/{{ issue.id }}/">Bloquear Issue</a>
+            {% endif %}
+            <a class="botonOpcion" href="http://127.0.0.1:8000/main/login/auth">Volver a pagina principal</a>
+        </div>
+    </div>
+</div>
+
 
 {% if issue.blocked %}
     <h3 style="color:red">ESTA ISSUE ESTA BLOQUEDA POR LA SIGUIENT RAZON: {{ issue.reason_blocked }}</h3>
 {% endif %}
 
-<h3>ASIGNADA: {{ issue.asignada }}</h3>
+
 <!--escrivir por pantalla a todos los vigilantes-->
 
-<h3>Vigilantes:</h3>
-  <div class="vigilantes">
-    {% for vigilante in issue.vigilant.all %}
-      <span class="vigilante">{{ vigilante.username }}</span>
-        <a href="http://127.0.0.1:8000/main/eliminar-vigilante/{{issue.id}}/{{ vigilante.id}}/" class="eliminar-vigilante-btn"> Eliminar vigilante</a>
-    {% endfor %}
-  </div>
-
-<a href="http://127.0.0.1:8000/main/pantalla-agregar-vigilante/{{issue.id}}/" class="eliminar-vigilante-btn"> Añadir vigilante</a>
 
 
-<h3>FECHA LIMITE: {% if issue.deadline %} {{ issue.deadline }} Motivo: {{motivo}} {% else %} Esta issue no tiene fecha límite {% endif %}</h3>
-<a href="http://127.0.0.1:8000/main/pantallaAddDeadline/{{ issue.id }}/">{%if issue.deadline %} Editar la deadline de la issue{%else%}Añadir deadline a la issue{%endif%}</a>
-<a href="http://127.0.0.1:8000/main/eliminarIssue/{{ issue.id }}/">Eliminar Issue</a>
-<a href="http://127.0.0.1:8000/main/mostrarPantallaEditarIssue/{{ issue.id }}/">Editar Issue</a>
-{% if issue.blocked %}
-    <a style="color:red" href="http://127.0.0.1:8000/main/desbloquearIssue/{{ issue.id }}/">Desbloquear Issue</a>
-{% else %}
-    <a style="color:red" href="http://127.0.0.1:8000/main/quieroBloquear/{{ issue.id }}/">Bloquear Issue</a>
-{% endif %}
-<a href="http://127.0.0.1:8000/main/login/auth">Volver a pagina principal</a>
 
 
-<h1>ACTIVIDADES DE LA ISSUE</h1>
-{% for actividad in actividades %}
-    <h4>{{ actividad.issue }}</h2>
-    <h5>{{ actividad.creador }}</h3>
-    <h5>{{ actividad.fecha }}</h3>
 
-    {% if actividad.tipo == 'asunto' or actividad.tipo == 'descripcion' %}
-        <h5>El usuario {{ actividad.usuario }} ha modificado el campo: {{ actividad.tipo }}</h5>
-    {% elif actividad.tipo == 'creada' %}
-        <h5>El usuario {{ actividad.creador }} ha creado la Issue</h5>
-    {% elif actividad.tipo == 'asignada' %}
-        <h5>La Issue ha sido asignada a {{ issue.asignada }} por {{ actividad.creador }}</h5>
-    {% elif actividad.tipo == 'desasignada' %}
-        <h5>Se ha desasignado la issue</h5>
-    {% elif actividad.tipo == 'bloqueada' %}
-        <h5>El usuario {{ actividad.creador }} ha bloqueado la Issue</h5>
-    {% elif actividad.tipo == 'desbloqueada' %}
-        <h5>El usuario {{ actividad.creador }} ha desbloqueado la Issue</h5>
-    {% endif %}
-{% endfor %} 
-<h2>Añade comentarios</h2>
-<form action="/main/addComment/{{ issue.id }}" method="GET">
-    <input type="text" name="contenido" placeholder="contenido" />
-    <button id="createButton" type="submit">Create</button>
-</form>
-<h2>Comentarios</h2>
-{% for comment in comments %}
-    {% if comment.deleted == False %}
-        <h4> Comentario : {{ comment.id }} </h4>
-        <h5> autor : {{ comment.autor }} </h5>
-        <h5> {{ comment.contenido }} </h5>
-        <h5> {{ comment.fecha }} </h5>
-    {% endif %}
-{% endfor %} 
+
+
+
+
+
+
+
 
 <style>
     .eliminar-vigilante-btn {
@@ -83,4 +121,59 @@
         border-radius: 4px;
         color: #333;
     }
+
+
+    /* MIGUEL */
+    #issueMainContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    #issueContenedorIzquierda {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    #issueSubcontenedorAbajo {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+    }
+    #issueContenedorDerecha {
+        display: flex;
+        flex-direction: column;
+    }
+    #issueInformacionGeneral {
+        align-self: center;
+        width: 100%;
+        text-align: center;
+    }
+    #issueContenedorBotones {
+        display: flex;
+        flex-direction: column;
+        align-items: baseline;
+    }
+    .botonOpcion {
+        padding: 5px;
+        margin: 5px;
+    }
+    #issueActividad {
+        border: 1px solid black;
+        padding: 5px;
+        margin-top: 5px;
+        border-radius: 3px;
+    }
+    #issueComentarios {
+        max-width: 500px;
+        padding: 5px;
+        overflow: auto;
+    }
+    #issueComentario {
+        border: 1px solid black;
+        padding: 5px;
+    }
+
+
+
 </style>

@@ -102,6 +102,9 @@ def login_with_google(request):
 # Mostrar pantalla de edición de perfil
 def pantallaEditarPerfil(request):
 
+    print("ID: " + str(request.user.id))
+
+
     # Obtengo el usuario sobre el que se realizaran las actulaizaciones
     usuario = User.objects.get(id=request.user.id)
 
@@ -111,7 +114,7 @@ def pantallaEditarPerfil(request):
     else:
         imagenPerfil = None
 
-    return render(request, 'editarPerfil.html', {"user" : request.user, 'watched_issues' : issues, "imagenPerfil" : imagenPerfil})
+    return render(request, 'editarPerfil.html', {"user" : request.user, "imagenPerfil" : imagenPerfil})
 
 # Guardar los nuevos datos del perfil
 def actualizarPerfil(request):
@@ -120,13 +123,14 @@ def actualizarPerfil(request):
     usuario = User.objects.get(id=request.user.id)
     imagen = request.FILES.get('imagen')
     # crea una instance de imagenPerfil
-    if Imagen_Perfil.objects.filter(usuario=usuario).exists():
-        imagenPerfil = Imagen_Perfil.objects.get(usuario=usuario)
-        imagenPerfil.imagen = imagen
-        imagenPerfil.save()
-    else:
-        imagenPerfil = Imagen_Perfil(imagen=imagen, usuario=usuario)
-        imagenPerfil.save()
+    if imagen:
+        if Imagen_Perfil.objects.filter(usuario=usuario).exists():
+            imagenPerfil = Imagen_Perfil.objects.get(usuario=usuario)
+            imagenPerfil.imagen = imagen
+            imagenPerfil.save()
+        else:
+            imagenPerfil = Imagen_Perfil(imagen=imagen, usuario=usuario)
+            imagenPerfil.save()
 
 
     username = request.POST.get('username')
