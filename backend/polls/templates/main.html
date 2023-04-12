@@ -16,25 +16,25 @@
     {% endif %}
 
     {% include 'barraLateral.html' %}
-
     <div id="contenedorPrincipal">
         <h1>Issues</h1>
         <div id="barraSuperior">
 
             <div id="superiorIzquierda">
-                <a href="#">FILTROS</a>
-                <input type="text" placeholder="subject or reference"></input> 
+                <a id="aplicarFiltros" href="http://127.0.0.1:8000/main/filtrar-issues/">FILTERS</a>
+                {% include "form_search_bar.html" %}
                 <input type="checkbox">TAGS</input>
             </div>
             <div id="superiorDerecha">
                 <a id="crearIssue" href="http://127.0.0.1:8000/main/pantallaCrearIssue">Crea un nuevo issue</a>
-                <a href="#">BULK</a>
+                <a href="http://127.0.0.1:8000/main/bulkInsertView">BULK</a>
                 <a href="http://127.0.0.1:8000/main/verPerfil/{{ user.username }}/">Ver Perfil</a>
             </div>
             
         </div>
         <div id="tablaIssues">
             <h1>Issues del usuario</h1>
+            {%include "form_order_issues.html"%}
             <div id="CabeceraTabla">
                 <div class="col">Type</div>
                 <div class="col">Severity</div>
@@ -45,10 +45,14 @@
                 <div class="col">Asign to</div>
             </div>
             {% for issue in issues %}
-                <div id="issue">
+                <div id="issue" {% if issue.blocked %} style="border-style: solid; border-color: red; border-width: 4px;"{% endif %}>
                     <div class="col"><i class="fa-solid fa-circle"></i></div>
                     <div class="col"><i class="fa-solid fa-circle"></i></div>
-                    <div class="col"><i class="fa-solid fa-circle"></i></div>
+                    {% if issue.prioridad %}
+                        <div class="col">{{ issue.prioridad }}</div>
+                    {% else %}
+                        <div class="col">Ninguna</div>
+                    {% endif %}
                     <div class="col" id="especial"><a href="http://127.0.0.1:8000/main/mostrarIssue/{{ issue.id }}/">{{ issue.asunto }}</a></div>
                     <div class="col"><p> {{ issue.descripcion }}  {{ issue.creador_id }}</p></div>
                     <div class="col">Modified</div>
@@ -99,6 +103,8 @@
 
 </body>
 </html>
+
+
 <style>
 
     #contenedorPrincipal{

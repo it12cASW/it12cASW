@@ -28,12 +28,31 @@ urlpatterns = [
     path('mostrarPantallaEditarIssue/<int:idIssue>/', issue_viewset.mostrarPantallaEditarIssue, name='mostrarPantallaEditarIssue'),
     path('editarIssue/<int:idIssue>/', issue_viewset.editarIssue, name='editarIssue'),
     path('addComment/<int:idIssue>/', issue_viewset.addComment, name='añadirComments'),
-    
+    path('bulkInsertView', issue_viewset.bulkInsertView, name='bulkInsertView'),
+    path('bulkInsert', issue_viewset.bulkInsert, name='bulkInsert'),
+    path('quieroBloquear/<int:idIssue>/', issue_viewset.quieroBloquear, name='quieroBloquear'),
+    path('bloquearIssue/<int:idIssue>/', issue_viewset.bloquearIssue, name='bloquearIssue'),
+    path('desbloquearIssue/<int:idIssue>/', issue_viewset.desbloquearIssue, name='desbloquearIssue'),
+    path('pantallaAddDeadline/<int:idIssue>/', issue_viewset.pantallaAddDeadline, name='pantallaAñadirDeadline'),
+    path('addDeadline/<int:idIssue>/', issue_viewset.addDeadline, name='añadirDeadline'),
+    path('eliminarDeadline/<int:idIssue>/', issue_viewset.eliminarDeadline, name='eliminarDeadline'),
+    #Eliminar vigilante de la issue
+    path('eliminar-vigilante/<int:idIssue>/<int:idWatcher>/', issue_viewset.eliminarVigilante, name='eliminar_vigilante'),
+    path('pantalla-agregar-vigilante/<int:idIssue>/', issue_viewset.mostrarUsuariosParaAñadir, name='mostrar-pantalla-vigilante'),
+    path('agregar-vigilante/<int:idIssue>/', issue_viewset.agregarVigilante, name='agregar_vigilante'),
     # Equipo
     path('pantallaCrearEquipo', equipo_viewset.pantallaCrearEquipo, name='pantallaCrearEquipo'),
     path('crearEquipo/', equipo_viewset.crearEquipo, name='crearEquipo'),
     path('seleccionarEquipo/', user_viewset.seleccionarEquipo, name='seleccionarEquipo'),
 
+    # Filtros
+    path('filtrar-issues/', issue_viewset.filtrar_issues, name='filtrar-issues'),
+
+    #Ordenar
+    path('ordenar-issues/', issue_viewset.ordenar_issues, name='ordenar-issues'),
+
+    #Busqueda
+    path('search/', issue_viewset.search_issues, name='search_issues'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

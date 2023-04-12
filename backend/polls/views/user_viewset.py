@@ -8,7 +8,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from polls.views import issue_viewset
-from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Imagen_Perfil
+from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Imagen_Perfil, Watcher
 
 def aux(request):
     return render(request, 'login.html')
@@ -102,6 +102,9 @@ def login_with_google(request):
 # Mostrar pantalla de edición de perfil
 def pantallaEditarPerfil(request):
 
+    print("ID: " + str(request.user.id))
+
+
     # Obtengo el usuario sobre el que se realizaran las actulaizaciones
     usuario = User.objects.get(id=request.user.id)
 
@@ -110,6 +113,7 @@ def pantallaEditarPerfil(request):
         imagenPerfil = Imagen_Perfil.objects.get(usuario=usuario)
     else:
         imagenPerfil = None
+
     return render(request, 'editarPerfil.html', {"user" : request.user, "imagenPerfil" : imagenPerfil})
 
 # Guardar los nuevos datos del perfil
@@ -119,13 +123,14 @@ def actualizarPerfil(request):
     usuario = User.objects.get(id=request.user.id)
     imagen = request.FILES.get('imagen')
     # crea una instance de imagenPerfil
-    if Imagen_Perfil.objects.filter(usuario=usuario).exists():
-        imagenPerfil = Imagen_Perfil.objects.get(usuario=usuario)
-        imagenPerfil.imagen = imagen
-        imagenPerfil.save()
-    else:
-        imagenPerfil = Imagen_Perfil(imagen=imagen, usuario=usuario)
-        imagenPerfil.save()
+    if imagen:
+        if Imagen_Perfil.objects.filter(usuario=usuario).exists():
+            imagenPerfil = Imagen_Perfil.objects.get(usuario=usuario)
+            imagenPerfil.imagen = imagen
+            imagenPerfil.save()
+        else:
+            imagenPerfil = Imagen_Perfil(imagen=imagen, usuario=usuario)
+            imagenPerfil.save()
 
 
     username = request.POST.get('username')
@@ -195,7 +200,12 @@ def verPerfil(request, username):
     else:
         imagenPerfil = None
 
-    return render(request, 'verPerfil.html', {"user" : user, "actividades": actividades, "equipo" : equipo_usuario, "imagenPerfil" : imagenPerfil})
+    watchlist = Watcher.objects.filter(usuario=request.user.id)
+    #coger todas las issues de la watchlist
+    issues = []
+    for i in watchlist:
+        issues.append(Issue.objects.get(id=i.issue.id))
+    return render(request, 'verPerfil.html', {"user" : user, "actividades": actividades, "equipo" : equipo_usuario, "imagenPerfil" : imagenPerfil, "issues" : issues})
 
 
 

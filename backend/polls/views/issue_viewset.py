@@ -1,7 +1,9 @@
-from django.shortcuts import render
-from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Comentario
+from django.shortcuts import render, redirect, redirect, redirect
+from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Watcher, Comentario, Deadline
 from django.contrib.auth.models import User
 import datetime
+from django.db.models import Q, Max
+from django.db import models
 
 
 # Mostrar pantalla de creación de un issue
@@ -17,7 +19,10 @@ def pantallaCrearIssue(request):
 
         sinAsignar = User(username="sin asignar")
         usuarios.append(sinAsignar)
-        return render(request, 'crearIssue.html', {'usuarios' : usuarios})
+
+        prioridades = ["baja", "media", "alta", "ninguna"]
+
+        return render(request, 'crearIssue.html', {'usuarios' : usuarios, "prioridades" : prioridades})
     else:
         return render(request, 'crearIssue.html')
 
@@ -40,6 +45,9 @@ def crearIssue(request):
             descripcion = request.GET.get('descripcion')
             creador = User.objects.get(id=request.user.id)
             asignado = request.GET.get('type')
+            vigilantes = request.GET.get('vigilante')
+            usuario_asignado = None
+
 
             if asignado == "sin asignar":
                 asignado = None
@@ -50,12 +58,29 @@ def crearIssue(request):
                     usuario_asignado = None
                     #return render(request, 'crearIssue.html', {'error' : 'El usuario asignado no existe', 'usuarios' : usuarios})
 
+                        
+            if vigilantes == "sin asignar":
+                usuario_vigilante = None
+            else:
+                usuario_vigilante = User.objects.get(username=vigilantes)
+                
+            # Prioridad
+            prioridad = None
+            if request.GET.get('prioridad') != "ninguna":
+                prioridad = request.GET.get('prioridad')
+
             
-            issue = Issue(asunto=asunto, descripcion=descripcion, creador=creador, asignada=usuario_asignado)
+            issue = Issue(asunto=asunto, descripcion=descripcion, creador=creador, asignada=usuario_asignado, prioridad=prioridad)
             issue.save()
+            if usuario_vigilante:
+                issue.addWatcher(usuario_vigilante)
         
             actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.datetime.now(), tipo="creada", usuario=request.user)
             actividad.save()
+
+            watching = Watcher(issue=issue, usuario=creador)
+            watching.save()
+
         
         else:
             return render(request, 'crearIssue.html', {'error' : 'El asunto no puede estar vacío', 'usuarios' : usuarios})
@@ -68,7 +93,60 @@ def mostrarIssue(request, idIssue):
     issue = Issue.objects.get(id=idIssue)
     creador = User.objects.get(id=issue.creador.id)
     actividades = Actividad_Issue.objects.filter(issue_id=idIssue)
-    return render(request, 'mostrarIssue.html', {'issue': issue, 'creador' : creador, 'actividades' : actividades, 'comments': issue.comments.all()})
+    
+    motivo = ""
+    if issue.deadline != None:
+        deadline = Deadline.objects.get(issue_id=idIssue)
+        if deadline.motivo != None:
+            motivo = deadline.motivo
+    
+    return render(request, 'mostrarIssue.html', {'issue': issue, 'creador' : creador, 'actividades' : actividades, 'motivo' : motivo, 'comments': issue.comments.all()})
+
+#Eliminar un vigilante de un issue
+def eliminarVigilante(request, idIssue, idWatcher):
+    issue = Issue.objects.get(id=idIssue)
+    usuario = User.objects.get(id=idWatcher)
+    issue.removeWatcher(usuario)
+    watching = Watcher.objects.filter(issue=issue, usuario=usuario)
+    watching.delete()
+    return redirect('mostrarIssue', idIssue=idIssue)
+
+def mostrarUsuariosParaAñadir(request, idIssue):
+    issue = Issue.objects.get(id=idIssue)
+    equipos = Equipo.objects.all()
+    miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)
+    equipo = Miembro_Equipo.objects.filter(miembro=request.user)
+    miebros = Miembro_Equipo.objects.filter(equipo=equipo[0].equipo)
+    usuarios = []
+    for miembro in miebros:
+        usuarios.append(miembro.miembro)
+
+    return render(request, 'form_addWatchers.html', {'issues': issue, 'equipos' : equipos, 'equipo' : miembro_equipo, 'usuarios' : usuarios})
+
+def agregarVigilante(request, idIssue):
+    issue = Issue.objects.get(id=idIssue)
+    usuario = User.objects.get(id=request.POST.get('vigilante'))
+
+    equipos = Equipo.objects.all()
+    miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)
+    equipo = Miembro_Equipo.objects.filter(miembro=request.user)
+    miebros = Miembro_Equipo.objects.filter(equipo=equipo[0].equipo)
+    usuarios = []
+    for miembro in miebros:
+        usuarios.append(miembro.miembro)
+    
+    if issue.vigilant.filter(id=usuario.id).exists():
+        mensaje_error = "El usuario ya es un watcher."
+        context = {"mensaje_error": mensaje_error, 'issues': issue, 'equipos': equipos, 'equipo': miembro_equipo, 'usuarios': usuarios}
+        return render(request, 'form_addWatchers.html', context)
+    
+    issue.addWatcher(usuario)
+    watching = Watcher(issue=issue, usuario=usuario)
+    watching.save()
+
+    mensaje_exito = "Watcher añadido correctamente."
+    context = {"mensaje_exito": mensaje_exito, 'issues': issue, 'equipos': equipos, 'equipo': miembro_equipo, 'usuarios': usuarios}
+    return render(request, 'form_addWatchers.html', context)
 
 # Eliminar un issue dado su id
 def eliminarIssue(request, idIssue):
@@ -84,7 +162,6 @@ def mostrarPantallaEditarIssue(request, idIssue):
     issue = Issue.objects.get(id=idIssue)
     creador = User.objects.get(id=issue.creador.id)
 
-    
 
     if Miembro_Equipo.objects.filter(miembro=creador):
         equipo = Miembro_Equipo.objects.filter(miembro=creador)[0].equipo
@@ -94,7 +171,8 @@ def mostrarPantallaEditarIssue(request, idIssue):
             aux.append(miembro.miembro)
         sinAsignar = User(username="sin asignar")
         aux.append(sinAsignar)
-        return render(request, 'editarIssue.html', {'issue': issue, 'creador' : creador, 'usuarios' : aux })
+        prioridades = ["baja", "media", "alta", "ninguna"]
+        return render(request, 'editarIssue.html', {'issue': issue, 'creador' : creador, 'usuarios' : aux, "prioridades" : prioridades})
 
     return render(request, 'editarIssue.html', {'issue': issue, 'creador' : creador})
 
@@ -142,9 +220,53 @@ def editarIssue(request, idIssue):
                 issue.asignada = user
                 issue.save()
 
+        # Prioridad
+        
+        if request.GET.get('prioridad') != "ninguna":
+            issue.prioridad = request.GET.get('prioridad')
+            issue.save()
+
         actividades = Actividad_Issue.objects.filter(issue_id=idIssue)
         return render(request, 'mostrarIssue.html', {'issue': issue, 'actividades' : actividades, 'comments': issue.comments.all()})
     return render(request, 'editarIssue.html', {'error' : 'No se ha podido actualizar el issue'})
+
+def pantallaAddDeadline(request, idIssue):
+    issue = Issue.objects.get(id=idIssue)
+    motivo = ""
+    if issue.deadline is not None:
+        deadline = Deadline.objects.get(issue_id=idIssue)
+        motivo = deadline.motivo
+    return render(request, 'form_addDeadline.html', {'error' : "", 'issue' : issue, 'motivo' : motivo})
+
+
+def addDeadline(request, idIssue):
+    try:
+        issue = Issue.objects.get(id=idIssue)
+    except Issue.DoesNotExist:
+        return render(request, 'form_addDeadline.html', {'error' : "La issue no existe"})
+
+    if request.method == 'POST':
+        fecha = request.POST.get('fecha')
+        if fecha == '':
+            return render(request, 'form_addDeadline.html', {'error' : "La fecha no puede estar vacía", 'issue' : issue})
+        elif issue.deadline is not None:
+            return render(request, 'form_addDeadline.html', {'error' : "La issue ya tiene una deadline", 'issue' : issue})
+        else:
+            motivo = request.POST.get('motivo')
+            issue.setDeadline(fecha, motivo)
+            issue.save()
+            return render(request, 'form_addDeadline.html', {'error' : "El deadline se ha añadido correctamente", 'issue' : issue, 'motivo' : motivo})
+    
+    return render(request, 'form_addDeadline.html', {'issue' : issue})
+
+def eliminarDeadline(request, idIssue):
+    issue = Issue.objects.get(id=idIssue)
+    issue.deadline = None
+    issue.save()
+    deadline = Deadline.objects.get(issue=issue)
+    deadline.delete()
+    return render(request, 'form_addDeadline.html', {'issue': issue,  'error' : "La deadline ha sido eliminada correctamente" })
+
 
 def addComment(request, idIssue):
     if request.method == 'GET':
@@ -160,6 +282,8 @@ def addComment(request, idIssue):
 
         else:
             return render(request, 'añadirComment.html', {'error' : "El contenido no puede estar vacío"})
+    return render(request, 'añadirComment.html', {'error' : "El comentario se ha añadido correctamente"})
+
 
 def eliminarComment(request, idComment):
 
@@ -168,3 +292,145 @@ def eliminarComment(request, idComment):
     comment.deleted = True
     comment.save()
     return render(request, 'eliminarComment.html', { 'comentario': comment })
+
+def bulkInsertView(request):
+    return render(request, 'bulkInsert.html')
+
+def bulkInsert(request):
+    if request.method == 'GET':
+        if request.GET.get('newIssues') != '':
+
+            for asunto in request.GET.get('newIssues').splitlines():
+                issue = Issue(asunto=asunto, descripcion="", creador=request.user)
+                issue.save()
+
+                actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.datetime.now(), tipo="creada", usuario=request.user)
+                actividad.save()
+
+            return render(request, 'bulkInsert.html')
+
+        else:
+            return render(request, 'bulkInsert.html', {'error': 'El esta vacio'})
+
+def bloquearIssue(request, idIssue):
+
+    if request.method == 'GET':
+        issue = Issue.objects.get(id=idIssue)
+        issue.blocked = True
+        issue.reason_blocked = request.GET.get('razon') if request.GET.get('razon') != '' else None
+        issue.save()
+
+        actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.datetime.now(), tipo="bloqueada",
+                                    usuario=request.user)
+        actividad.save()
+
+        return redirect('mostrarIssue', idIssue=idIssue)
+
+def desbloquearIssue(request, idIssue):
+    issue = Issue.objects.get(id=idIssue)
+    issue.blocked = False
+    issue.reason_blocked = None
+    issue.save()
+
+    actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.datetime.now(), tipo="desbloqueada",
+                                usuario=request.user)
+    actividad.save()
+    return redirect('mostrarIssue', idIssue=idIssue)
+
+def quieroBloquear(request, idIssue):
+    issue = Issue.objects.get(id=idIssue)
+    return render(request, 'bloquearIssue.html', {'issue': issue})
+
+def filtrar_issues(request):
+    filtro = request.GET.get('filtro')
+    opciones = request.GET.get('opciones')
+
+    # Verificamos si se seleccionó algún filtro
+    if filtro:
+        # Filtramos por el tipo de filtro seleccionado
+        if filtro == 'status':
+            issues = Issue.objects.filter(status=opciones, deleted=False)
+        elif filtro == 'assignee':
+            issues = Issue.objects.filter(associat=opciones, deleted=False)
+        elif filtro == 'tag':
+            issues = Issue.objects.filter(tag=opciones, deleted=False)
+        elif filtro == 'priority':
+            issues = Issue.objects.filter(priority=opciones, deleted=False)
+        elif filtro == 'assign_to':
+            issues = Issue.objects.filter(asignada=opciones, deleted=False)
+        elif filtro == 'created_by':
+            issues = Issue.objects.filter(creador=opciones, deleted=False)
+        else:
+            # Si no se reconoce el filtro, retornamos un error
+            issues = None
+    else:
+        # Si no se seleccionó ningún filtro, mostramos todos los issues
+        issues = Issue.objects.filter(deleted=False)
+
+    equipos = Equipo.objects.all()
+    miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)
+    equipo = Miembro_Equipo.objects.filter(miembro=request.user)
+    miebros = Miembro_Equipo.objects.filter(equipo=equipo[0].equipo)
+    usuarios = []
+    for miembro in miebros:
+        usuarios.append(miembro.miembro)
+    return render(request, 'filterIssues.html', {'issues' : issues, 'equipos' : equipos, 'equipo' : miembro_equipo, 'usuarios' : usuarios})
+
+def search_issues(request):
+    query = request.GET.get('q')
+
+    issue_ids = request.GET.get('issue_ids', '')
+    issue_ids = [int(id) for id in issue_ids.split(',') if id]
+    issues = Issue.objects.filter(id__in=issue_ids)
+
+    if query:
+        results = issues.filter(Q(asunto__icontains=query) | Q(descripcion__icontains=query), deleted=False)
+    else:
+        results = issues.filter(deleted=False)
+    
+    equipos = Equipo.objects.all()
+    miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)
+    equipo = Miembro_Equipo.objects.filter(miembro=request.user)
+    miebros = Miembro_Equipo.objects.filter(equipo=equipo[0].equipo)
+    usuarios = []
+    for miembro in miebros:
+        usuarios.append(miembro.miembro)
+
+    return render(request, 'main.html', {'issues': results, 'equipos' : equipos, 'equipo' : miembro_equipo, 'usuarios' : usuarios})
+
+def ordenar_issues(request):
+    issue_ids = request.GET.get('issue_ids', '')
+    issue_ids = [int(id) for id in issue_ids.split(',') if id]
+    issues = Issue.objects.filter(id__in=issue_ids)
+
+    orden = request.GET.get('orden', 'issue')
+    orden_dir = request.GET.get('orden_dir')
+
+    if orden_dir == 'asc':
+        orden = '' + orden
+    else:
+        orden = '-' + orden
+
+    if orden == 'modified' or orden == '-modified':
+        max_fecha_actividad = Max('actividad_issue__fecha')
+        order_by_field = 'max_fecha_actividad' if orden_dir == 'desc' else '-max_fecha_actividad'
+
+        issues = issues.annotate(
+            max_fecha_actividad=max_fecha_actividad
+        ).order_by(order_by_field)
+
+    else:
+        issues = issues.order_by(orden)
+
+    issues = issues.filter(deleted=False)
+
+    equipos = Equipo.objects.all()
+    miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)
+    equipo = Miembro_Equipo.objects.filter(miembro=request.user)
+    miebros = Miembro_Equipo.objects.filter(equipo=equipo[0].equipo)
+    usuarios = []
+    for miembro in miebros:
+        usuarios.append(miembro.miembro)
+
+    return render(request, 'main.html', {'issues': issues, 'equipos': equipos, 'equipo': miembro_equipo, 'usuarios': usuarios})
+
