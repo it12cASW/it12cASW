@@ -30,6 +30,7 @@ urlpatterns = [
     path('addComment/<int:idIssue>/', issue_viewset.addComment, name='añadirComments'),
     path('pantallaAddDeadline/<int:idIssue>/', issue_viewset.pantallaAddDeadline, name='pantallaAñadirDeadline'),
     path('addDeadline/<int:idIssue>/', issue_viewset.addDeadline, name='añadirDeadline'),
+    path('eliminarDeadline/<int:idIssue>/', issue_viewset.eliminarDeadline, name='eliminarDeadline'),
     # Equipo
     path('pantallaCrearEquipo', equipo_viewset.pantallaCrearEquipo, name='pantallaCrearEquipo'),
     path('crearEquipo/', equipo_viewset.crearEquipo, name='crearEquipo'),

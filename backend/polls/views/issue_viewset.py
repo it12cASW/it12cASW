@@ -184,6 +184,15 @@ def addComment(request, idIssue):
             return render(request, 'añadirComment.html', {'error' : "El contenido no puede estar vacío"})
     return render(request, 'añadirComment.html', {'error' : "El comentario se ha añadido correctamente"})
 
+def eliminarDeadline(request, idIssue):
+    issue = Issue.objects.get(id=idIssue)
+    issue.deadline = None
+    issue.save()
+    creador = User.objects.get(id=issue.creador.id)
+    actividades = Actividad_Issue.objects.filter(issue_id=idIssue)
+    return render(request, 'mostrarIssue.html', {'issue': issue, 'creador' : creador, 'actividades' : actividades })
+
+
 def eliminarComment(request, idComment):
 
     comment = Comentario.objects.get(id=idComment)
