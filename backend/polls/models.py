@@ -64,4 +64,5 @@ class Comentario(models.Model):
     contenido = models.TextField()
     fecha = models.DateTimeField(auto_now_add=True)
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, related_name='comments')
+    deleted = models.BooleanField(default=False)
 

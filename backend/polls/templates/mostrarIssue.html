@@ -27,16 +27,17 @@
         <h5>Se ha desasignado la issue</h5>
     {% endif %}
 {% endfor %} 
-
+<h2>Añade comentarios</h2>
 <form action="/main/addComment/{{ issue.id }}" method="GET">
-    <input type="text" name="comentario" placeholder="Comentario" />
+    <input type="text" name="contenido" placeholder="contenido" />
     <button id="createButton" type="submit">Create</button>
 </form>
-
-{% for comment in issue.comments %}
+<h2>Comentarios</h2>
+{% for comment in comments %}
     {% if comment.deleted == False %}
-        <h4>{{ comment.autor }}</h2>
-        <h5>{{ comment.contenido }}</h3>
-        <h5>{{ comment.fecha }}</h3>
+        <h4> Comentario : {{ comment.id }} </h4>
+        <h5> autor : {{ comment.autor }} </h5>
+        <h5> {{ comment.contenido }} </h5>
+        <h5> {{ comment.fecha }} </h5>
     {% endif %}
 {% endfor %}

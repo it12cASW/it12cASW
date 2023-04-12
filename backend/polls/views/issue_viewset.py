@@ -68,7 +68,7 @@ def mostrarIssue(request, idIssue):
     issue = Issue.objects.get(id=idIssue)
     creador = User.objects.get(id=issue.creador.id)
     actividades = Actividad_Issue.objects.filter(issue_id=idIssue)
-    return render(request, 'mostrarIssue.html', {'issue': issue, 'creador' : creador, 'actividades' : actividades })
+    return render(request, 'mostrarIssue.html', {'issue': issue, 'creador' : creador, 'actividades' : actividades, 'comments': issue.comments.all()})
 
 # Eliminar un issue dado su id
 def eliminarIssue(request, idIssue):
@@ -143,7 +143,7 @@ def editarIssue(request, idIssue):
                 issue.save()
 
         actividades = Actividad_Issue.objects.filter(issue_id=idIssue)
-        return render(request, 'mostrarIssue.html', {'issue': issue, 'actividades' : actividades})
+        return render(request, 'mostrarIssue.html', {'issue': issue, 'actividades' : actividades, 'comments': issue.comments.all()})
     return render(request, 'editarIssue.html', {'error' : 'No se ha podido actualizar el issue'})
 
 def addComment(request, idIssue):
@@ -155,9 +155,11 @@ def addComment(request, idIssue):
 
             comment = Comentario(autor=autor, contenido=contenido, issue=issue)
             comment.save()
+            actividades = Actividad_Issue.objects.filter(issue_id=idIssue)
+            return render(request, 'mostrarIssue.html', {'issue': issue, 'actividades' : actividades, 'comments': issue.comments.all()})
+
         else:
             return render(request, 'añadirComment.html', {'error' : "El contenido no puede estar vacío"})
-    return render(request, 'añadirComment.html', {'error' : "El comentario de ha añadido correctamente"})
 
 def eliminarComment(request, idComment):
 
