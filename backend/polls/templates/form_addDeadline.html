@@ -1,0 +1,11 @@
+<form action="{% url 'añadirDeadline' issue.id %}" method="POST">
+    <label for="fecha">Selecciona una fecha:</label>
+    <input type="date" id="fecha" name="fecha">
+    <input type="submit" value="Añadir deadline a la issues">
+    <!--mansage de error o satisfaccion-->
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+    <a href="{% url 'mostrarIssue' issue.id %}">Volver a la pantalla principal</a>
+    {% csrf_token %}
+</form>

@@ -28,7 +28,8 @@ urlpatterns = [
     path('mostrarPantallaEditarIssue/<int:idIssue>/', issue_viewset.mostrarPantallaEditarIssue, name='mostrarPantallaEditarIssue'),
     path('editarIssue/<int:idIssue>/', issue_viewset.editarIssue, name='editarIssue'),
     path('addComment/<int:idIssue>/', issue_viewset.addComment, name='añadirComments'),
-    
+    path('pantallaAddDeadline/<int:idIssue>/', issue_viewset.pantallaAddDeadline, name='pantallaAñadirDeadline'),
+    path('addDeadline/<int:idIssue>/', issue_viewset.addDeadline, name='añadirDeadline'),
     # Equipo
     path('pantallaCrearEquipo', equipo_viewset.pantallaCrearEquipo, name='pantallaCrearEquipo'),
     path('crearEquipo/', equipo_viewset.crearEquipo, name='crearEquipo'),

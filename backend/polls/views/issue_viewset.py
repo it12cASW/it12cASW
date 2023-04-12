@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Comentario
 from django.contrib.auth.models import User
 import datetime
@@ -146,6 +146,31 @@ def editarIssue(request, idIssue):
         return render(request, 'mostrarIssue.html', {'issue': issue, 'actividades' : actividades})
     return render(request, 'editarIssue.html', {'error' : 'No se ha podido actualizar el issue'})
 
+def pantallaAddDeadline(request, idIssue):
+    issue = Issue.objects.get(id=idIssue)
+    return render(request, 'form_addDeadline.html', {'error' : "", 'issue' : issue})
+
+
+def addDeadline(request, idIssue):
+    try:
+        issue = Issue.objects.get(id=idIssue)
+    except Issue.DoesNotExist:
+        return render(request, 'form_addDeadline.html', {'error' : "La issue no existe"})
+
+    if request.method == 'POST':
+        fecha = request.POST.get('fecha')
+        if fecha == '':
+            return render(request, 'form_addDeadline.html', {'error' : "La fecha no puede estar vacía", 'issue' : issue})
+        elif issue.deadline is not None:
+            return render(request, 'form_addDeadline.html', {'error' : "La issue ya tiene una deadline", 'issue' : issue})
+        else:
+            issue.setDeadline(fecha)
+            issue.save()
+            return render(request, 'form_addDeadline.html', {'error' : "El deadline se ha añadido correctamente", 'issue' : issue})
+    
+    return render(request, 'form_addDeadline.html', {'issue' : issue})
+
+
 def addComment(request, idIssue):
     if request.method == 'GET':
         if request.GET.get('contenido') != '':
@@ -157,7 +182,7 @@ def addComment(request, idIssue):
             comment.save()
         else:
             return render(request, 'añadirComment.html', {'error' : "El contenido no puede estar vacío"})
-    return render(request, 'añadirComment.html', {'error' : "El comentario de ha añadido correctamente"})
+    return render(request, 'añadirComment.html', {'error' : "El comentario se ha añadido correctamente"})
 
 def eliminarComment(request, idComment):
 

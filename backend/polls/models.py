@@ -8,12 +8,18 @@ class Issue(models.Model):
     id = models.AutoField(primary_key=True)
     asunto = models.CharField(max_length=50, default='')
     descripcion = models.CharField(max_length=200, default='')
-    #creador = models.ForeignKey(User, on_delete=models.CASCADE, related_name='issues_creadas')
     creador = models.ForeignKey(User, on_delete=models.CASCADE, related_name='issues_creadas')
     associat = models.ForeignKey(User, on_delete=models.CASCADE, related_name='issues_associado', null=True)
-    vigilant = models.ManyToManyField(User,  related_name='issues_vigiladas', default='')
+    vigilant = models.ManyToManyField(User, related_name='issues_vigiladas')
     deleted = models.BooleanField(default=False)
     asignada = models.ForeignKey(User, on_delete=models.CASCADE, related_name='issues_asignadas', null=True)
+    deadline = models.DateTimeField(null=True)
+    
+    def setDeadline(self, fecha):
+        self.deadline = fecha
+    def __str__(self):
+        return f"{self.asunto} ({self.id})"
+
 
 # Clase actividad_issue
 class Actividad_Issue(models.Model):
