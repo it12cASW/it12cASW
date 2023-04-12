@@ -144,9 +144,6 @@ def editarIssue(request, idIssue):
 
         actividades = Actividad_Issue.objects.filter(issue_id=idIssue)
         return render(request, 'mostrarIssue.html', {'issue': issue, 'actividades' : actividades})
-<<<<<<< HEAD
-    return render(request, 'editarIssue.html', {'error' : 'No se ha podido actualizar el issue'})
-=======
     return render(request, 'editarIssue.html', {'error' : 'No se ha podido actualizar el issue'})
 
 def addComment(request, idIssue):
@@ -169,4 +166,3 @@ def eliminarComment(request, idComment):
     comment.deleted = True
     comment.save()
     return render(request, 'eliminarComment.html', { 'comentario': comment })
->>>>>>> 1100b1aa08b311d00a6ed19bd8a9e6006e7755fc

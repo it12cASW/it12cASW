@@ -60,8 +60,8 @@ class Imagen_Perfil(models.Model):
 
 class Comentario(models.Model):
     id = models.AutoField(primary_key=True)
-    autor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='autor_del_comentario')
+    autor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     contenido = models.TextField()
     fecha = models.DateTimeField(auto_now_add=True)
-    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, related_name='issue_comentada')
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, related_name='comments')
 
