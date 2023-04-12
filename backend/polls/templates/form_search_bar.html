@@ -1,5 +1,6 @@
 <form method="get" action="{% url 'search_issues' %}">
     <a>SEARCH:</a>
     <input type="text" name="q" placeholder="Search" value="{{ query }}" />
+    <input type="hidden" name="issue_ids" value="{% for issue in issues %}{{ issue.id }},{% endfor %}">
     <button type="submit">Search</button>
 </form>

@@ -18,14 +18,4 @@ class Migration(migrations.Migration):
             name='deadline',
             field=models.DateTimeField(null=True),
         ),
-        migrations.CreateModel(
-            name='Comentario',
-            fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('contenido', models.TextField()),
-                ('fecha', models.DateTimeField(auto_now_add=True)),
-                ('autor', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to=settings.AUTH_USER_MODEL)),
-                ('issue', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='polls.issue')),
-            ],
-        ),
     ]
