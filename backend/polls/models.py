@@ -14,6 +14,8 @@ class Issue(models.Model):
     vigilant = models.ManyToManyField(User,  related_name='issues_vigiladas', default='')
     deleted = models.BooleanField(default=False)
     asignada = models.ForeignKey(User, on_delete=models.CASCADE, related_name='issues_asignadas', null=True)
+    blocked = models.BooleanField(default=False)
+    reason_blocked = models.CharField(max_length=200, default='', null=True)
 
 # Clase actividad_issue
 class Actividad_Issue(models.Model):

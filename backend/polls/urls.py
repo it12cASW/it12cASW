@@ -28,13 +28,17 @@ urlpatterns = [
     path('mostrarPantallaEditarIssue/<int:idIssue>/', issue_viewset.mostrarPantallaEditarIssue, name='mostrarPantallaEditarIssue'),
     path('editarIssue/<int:idIssue>/', issue_viewset.editarIssue, name='editarIssue'),
     path('addComment/<int:idIssue>/', issue_viewset.addComment, name='añadirComments'),
+    path('bulkInsertView', issue_viewset.bulkInsertView, name='bulkInsertView'),
+    path('bulkInsert', issue_viewset.bulkInsert, name='bulkInsert'),
+    path('quieroBloquear/<int:idIssue>/', issue_viewset.quieroBloquear, name='quieroBloquear'),
+    path('bloquearIssue/<int:idIssue>/', issue_viewset.bloquearIssue, name='bloquearIssue'),
+    path('desbloquearIssue/<int:idIssue>/', issue_viewset.desbloquearIssue, name='desbloquearIssue'),
     
     # Equipo
     path('pantallaCrearEquipo', equipo_viewset.pantallaCrearEquipo, name='pantallaCrearEquipo'),
     path('crearEquipo/', equipo_viewset.crearEquipo, name='crearEquipo'),
     path('seleccionarEquipo/', user_viewset.seleccionarEquipo, name='seleccionarEquipo'),
-    path('bulkInsertView', issue_viewset.bulkInsertView, name='bulkInsertView'),
-    path('bulkInsert', issue_viewset.bulkInsert, name='bulkInsert'),
+
 
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

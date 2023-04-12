@@ -45,7 +45,7 @@
                 <div class="col">Asign to</div>
             </div>
             {% for issue in issues %}
-                <div id="issue">
+                <div id="issue" {% if issue.blocked %} style="border-style: solid; border-color: red; border-width: 4px;"{% endif %}>
                     <div class="col"><i class="fa-solid fa-circle"></i></div>
                     <div class="col"><i class="fa-solid fa-circle"></i></div>
                     <div class="col"><i class="fa-solid fa-circle"></i></div>

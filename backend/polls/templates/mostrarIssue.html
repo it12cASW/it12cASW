@@ -5,9 +5,19 @@
 <h1>{{ issue.asunto }}</h1>
 <h2>{{ issue.descripcion }}</h2>
 <h3>{{ creador }}</h3>
+
+{% if issue.blocked %}
+    <h3 style="color:red">ESTA ISSUE ESTA BLOQUEDA POR LA SIGUIENT RAZON: {{ issue.reason_blocked }}</h3>
+{% endif %}
+
 <h3>ASIGNADA: {{ issue.asignada }}</h3>
 <a href="http://127.0.0.1:8000/main/eliminarIssue/{{ issue.id }}/">Eliminar Issue</a>
 <a href="http://127.0.0.1:8000/main/mostrarPantallaEditarIssue/{{ issue.id }}/">Editar Issue</a>
+{% if issue.blocked %}
+    <a style="color:red" href="http://127.0.0.1:8000/main/desbloquearIssue/{{ issue.id }}/">Desbloquear Issue</a>
+{% else %}
+    <a style="color:red" href="http://127.0.0.1:8000/main/quieroBloquear/{{ issue.id }}/">Bloquear Issue</a>
+{% endif %}
 <a href="http://127.0.0.1:8000/main/login/auth">Volver a pagina principal</a>
 
 
@@ -25,6 +35,10 @@
         <h5>La Issue ha sido asignada a {{ issue.asignada }} por {{ actividad.creador }}</h5>
     {% elif actividad.tipo == 'desasignada' %}
         <h5>Se ha desasignado la issue</h5>
+    {% elif actividad.tipo == 'bloqueada' %}
+        <h5>El usuario {{ actividad.creador }} ha bloqueado la Issue</h5>
+    {% elif actividad.tipo == 'desbloqueada' %}
+        <h5>El usuario {{ actividad.creador }} ha desbloqueado la Issue</h5>
     {% endif %}
 {% endfor %} 
 <h2>Añade comentarios</h2>

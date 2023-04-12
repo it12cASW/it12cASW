@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Comentario
 from django.contrib.auth.models import User
 import datetime
@@ -187,3 +187,33 @@ def bulkInsert(request):
 
         else:
             return render(request, 'bulkInsert.html', {'error': 'El esta vacio'})
+
+def bloquearIssue(request, idIssue):
+
+    if request.method == 'GET':
+        issue = Issue.objects.get(id=idIssue)
+        issue.blocked = True
+        issue.reason_blocked = request.GET.get('razon') if request.GET.get('razon') != '' else None
+        issue.save()
+
+        actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.datetime.now(), tipo="bloqueada",
+                                    usuario=request.user)
+        actividad.save()
+
+        return redirect('mostrarIssue', idIssue=idIssue)
+
+def desbloquearIssue(request, idIssue):
+    issue = Issue.objects.get(id=idIssue)
+    issue.blocked = False
+    issue.reason_blocked = None
+    issue.save()
+
+    actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.datetime.now(), tipo="desbloqueada",
+                                usuario=request.user)
+    actividad.save()
+    return redirect('mostrarIssue', idIssue=idIssue)
+
+def quieroBloquear(request, idIssue):
+    issue = Issue.objects.get(id=idIssue)
+    return render(request, 'bloquearIssue.html', {'issue': issue})
+
