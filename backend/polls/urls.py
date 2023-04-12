@@ -34,12 +34,16 @@ urlpatterns = [
     path('bloquearIssue/<int:idIssue>/', issue_viewset.bloquearIssue, name='bloquearIssue'),
     path('desbloquearIssue/<int:idIssue>/', issue_viewset.desbloquearIssue, name='desbloquearIssue'),
     
+    #Eliminar vigilante de la issue
+    path('eliminar-vigilante/<int:idIssue>/<int:idWatcher>/', issue_viewset.eliminarVigilante, name='eliminar_vigilante'),
+    path('pantalla-agregar-vigilante/<int:idIssue>/', issue_viewset.mostrarUsuariosParaAñadir, name='mostrar-pantalla-vigilante'),
+    path('agregar-vigilante/<int:idIssue>/', issue_viewset.agregarVigilante, name='agregar_vigilante'),
     # Equipo
     path('pantallaCrearEquipo', equipo_viewset.pantallaCrearEquipo, name='pantallaCrearEquipo'),
     path('crearEquipo/', equipo_viewset.crearEquipo, name='crearEquipo'),
     path('seleccionarEquipo/', user_viewset.seleccionarEquipo, name='seleccionarEquipo'),
 
 
-    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

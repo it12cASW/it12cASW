@@ -1,0 +1,20 @@
+<form action="http://127.0.0.1:8000/main/agregar-vigilante/{{issues.id}}/" method="POST">
+    <p>AÑADIR WATCHER:</p>
+    {% csrf_token %}
+    {% if mensaje_error %}
+        <div style="color:red">{{ mensaje_error }}</div>
+    {% endif %}
+    {% if mensaje_exito %}
+        <div style="color:green">{{ mensaje }}</div>
+    {% endif %}
+    <select name="vigilante">
+        {% for usuario in usuarios %}
+            <option value="{{ usuario.id }}">{{ usuario.username }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Añadir">
+    <div>
+        <a href="http://127.0.0.1:8000/main/mostrarIssue/{{ issues.id }}/">Volver a la pagina de la Issue</a>
+    </div>
+</form>
+

@@ -17,6 +17,13 @@ class Issue(models.Model):
     blocked = models.BooleanField(default=False)
     reason_blocked = models.CharField(max_length=200, default='', null=True)
 
+    #si se añade un nuevo watcher, se añade a la lista de watchers
+    def addWatcher(self, user):
+        self.vigilant.add(user)
+
+    def removeWatcher(self, user):
+        self.vigilant.remove(user)
+
 # Clase actividad_issue
 class Actividad_Issue(models.Model):
     id = models.AutoField(primary_key=True)
@@ -60,6 +67,7 @@ class Imagen_Perfil(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, unique=True)
     imagen = models.ImageField(upload_to='imagenes_perfil', null=True, blank=True)
 
+<<<<<<< HEAD
 class Comentario(models.Model):
     id = models.AutoField(primary_key=True)
     autor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
@@ -67,4 +75,16 @@ class Comentario(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, related_name='comments')
     deleted = models.BooleanField(default=False)
+
+=======
+#clase que almacena los usuarios y las issues que observan
+class Watcher(models.Model):
+    id = models.AutoField(primary_key=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='watcher')
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, related_name='whatched')
+
+    def delete(self, *args, **kwargs):
+        self.issue.removeWatcher(self.usuario)
+        super(Watcher, self).delete(*args, **kwargs)
+>>>>>>> #84-Add-Watcher-#85-Remove-Watcher
 

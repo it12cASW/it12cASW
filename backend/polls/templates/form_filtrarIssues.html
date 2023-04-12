@@ -1,0 +1,119 @@
+<!--falta agregar estilos-->
+<style>
+    
+</style>
+
+<form action="{% url 'filtrar-issues' %}" method="GET">
+    <label for="filtro">Filtrar issues por:</label>
+    <div class="filtro-options">
+        <div>
+            <input type="radio" id="status" name="filtro" value="status">
+            <label for="status">Estado</label>
+        </div>
+        <div>
+            <input type="radio" id="assignee" name="filtro" value="assignee">
+            <label for="assignee">Asignado a</label>
+        </div>
+        <div>
+            <input type="radio" id="tag" name="filtro" value="tag">
+            <label for="tag">Tag</label>
+        </div>
+        <div>
+            <input type="radio" id="priority" name="filtro" value="priority">
+            <label for="priority">Prioridad</label>
+        </div>
+        <div>
+            <input type="radio" id="assign_to" name="filtro" value="assign_to">
+            <label for="assign_to">Asignada</label>
+        </div>
+        <div>
+            <input type="radio" id="created_by" name="filtro" value="created_by">
+            <label for="created_by">Creador</label>
+        </div>
+    </div>
+
+    <div class="opciones-container">
+        <div id="status-options" class="opciones">
+            <label for="status-select">Selecciona el estado:</label>
+            <select id="status-select" name="opciones">
+                <option value="new" selected>Nuevo</option>
+                <option value="in_progress">En curso</option>
+                <option value="test">Lista para testear</option>
+                <option value="closed">Cerrada</option>
+                <option value="need_info">Necesita informacion</option>
+                <option value="refused">Rechazada</option>
+                <option value="proposal">Propuesta</option>
+            </select>
+        </div>
+        <div id="assignee-options" class="opciones">
+            <label for="assignee-select">Selecciona el usuario:</label>
+            <select id="assignee-select" name="opciones">
+                {% for user in usuarios %}
+                    <option value="{{ user.id }}">{{ user.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div id="tag-options" class="opciones">
+            <label for="tag-input">Introduce el tag:</label>
+            <input type="text" id="tag-input" name="opciones">
+        </div>
+        <div id="priority-options" class="opciones">
+            <label for="priority-select">Selecciona la prioridad:</label>
+            <select id="priority-select" name="opciones">
+                <option value="low" selected>Baja</option>
+                <option value="medium">Media</option>
+                <option value="high">Alta</option>
+            </select>
+        </div>
+        <div id="assign_to-options" class="opciones">
+            <label for="assign_to-select">Selecciona el usuario:</label>
+            <select id="assign_to-select" name="opciones">
+                {% for user in usuarios %}
+                    <option value="{{ user.id }}">{{ user.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div id="created_by-options" class="opciones">
+            <label for="created_by-select">Selecciona el usuario:</label>
+            <select id="created_by-select" name="opciones">
+                {% for user in usuarios %}
+                    <option value="{{ user.id }}">{{ user.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <input type="submit" value="Filtrar">
+</form>
+
+<script>
+    // Función para mostrar u ocultar las opciones según el radio button seleccionado
+    function mostrarOpciones() {
+      // Obtenemos todos los radio buttons del formulario
+      var radioButtons = document.querySelectorAll('input[name="filtro"]');
+  
+      // Recorremos todos los radio buttons para detectar cuál está seleccionado
+      radioButtons.forEach(function(radio) {
+        if (radio.checked) {
+          // Si el radio button está seleccionado, mostramos las opciones correspondientes
+          var opciones = document.querySelector('#' + radio.value + '-options');
+          opciones.style.display = 'block';
+        } else {
+          // Si el radio button no está seleccionado, ocultamos las opciones correspondientes
+          var opciones = document.querySelector('#' + radio.value + '-options');
+          opciones.style.display = 'none';
+        }
+      });
+    }
+  
+    // Mostramos las opciones correspondientes al cargar la página
+    mostrarOpciones();
+  
+    // Escuchamos los cambios en los radio buttons para actualizar las opciones mostradas
+    var radioButtons = document.querySelectorAll('input[name="filtro"]');
+    radioButtons.forEach(function(radio) {
+      radio.addEventListener('change', mostrarOpciones);
+    });
+
+    
+  </script>
+  
