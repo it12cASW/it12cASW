@@ -20,6 +20,8 @@
 <a href="http://127.0.0.1:8000/main/pantalla-agregar-vigilante/{{issue.id}}/" class="eliminar-vigilante-btn"> Añadir vigilante</a>
 
 
+<h3>FECHA LIMITE: {% if issue.deadline %} {{ issue.deadline }} Motivo: {{motivo}} {% else %} Esta issue no tiene fecha límite {% endif %}</h3>
+<a href="http://127.0.0.1:8000/main/pantallaAddDeadline/{{ issue.id }}/">{%if issue.deadline %} Editar la deadline de la issue{%else%}Añadir deadline a la issue{%endif%}</a>
 <a href="http://127.0.0.1:8000/main/eliminarIssue/{{ issue.id }}/">Eliminar Issue</a>
 <a href="http://127.0.0.1:8000/main/mostrarPantallaEditarIssue/{{ issue.id }}/">Editar Issue</a>
 {% if issue.blocked %}

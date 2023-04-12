@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect, redirect
-from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Watcher, Comentario
+from django.shortcuts import render, redirect, redirect, redirect
+from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Watcher, Comentario, Deadline
 from django.contrib.auth.models import User
 import datetime
 from django.db.models import Q, Max
@@ -81,7 +81,15 @@ def mostrarIssue(request, idIssue):
     issue = Issue.objects.get(id=idIssue)
     creador = User.objects.get(id=issue.creador.id)
     actividades = Actividad_Issue.objects.filter(issue_id=idIssue)
-    return render(request, 'mostrarIssue.html', {'issue': issue, 'creador' : creador, 'actividades' : actividades, 'comments': issue.comments.all()})
+    
+    motivo = ""
+    if issue.deadline != None:
+        deadline = Deadline.objects.get(issue_id=idIssue)
+        if deadline.motivo != None:
+            motivo = deadline.motivo
+    
+    return render(request, 'mostrarIssue.html', {'issue': issue, 'creador' : creador, 'actividades' : actividades, 'motivo' : motivo, 'comments': issue.comments.all()})
+
 
 #Eliminar un vigilante de un issue
 def eliminarVigilante(request, idIssue, idWatcher):
@@ -144,7 +152,6 @@ def mostrarPantallaEditarIssue(request, idIssue):
     issue = Issue.objects.get(id=idIssue)
     creador = User.objects.get(id=issue.creador.id)
 
-    
 
     if Miembro_Equipo.objects.filter(miembro=creador):
         equipo = Miembro_Equipo.objects.filter(miembro=creador)[0].equipo
@@ -206,6 +213,44 @@ def editarIssue(request, idIssue):
         return render(request, 'mostrarIssue.html', {'issue': issue, 'actividades' : actividades, 'comments': issue.comments.all()})
     return render(request, 'editarIssue.html', {'error' : 'No se ha podido actualizar el issue'})
 
+def pantallaAddDeadline(request, idIssue):
+    issue = Issue.objects.get(id=idIssue)
+    motivo = ""
+    if issue.deadline is not None:
+        deadline = Deadline.objects.get(issue_id=idIssue)
+        motivo = deadline.motivo
+    return render(request, 'form_addDeadline.html', {'error' : "", 'issue' : issue, 'motivo' : motivo})
+
+
+def addDeadline(request, idIssue):
+    try:
+        issue = Issue.objects.get(id=idIssue)
+    except Issue.DoesNotExist:
+        return render(request, 'form_addDeadline.html', {'error' : "La issue no existe"})
+
+    if request.method == 'POST':
+        fecha = request.POST.get('fecha')
+        if fecha == '':
+            return render(request, 'form_addDeadline.html', {'error' : "La fecha no puede estar vacía", 'issue' : issue})
+        elif issue.deadline is not None:
+            return render(request, 'form_addDeadline.html', {'error' : "La issue ya tiene una deadline", 'issue' : issue})
+        else:
+            motivo = request.POST.get('motivo')
+            issue.setDeadline(fecha, motivo)
+            issue.save()
+            return render(request, 'form_addDeadline.html', {'error' : "El deadline se ha añadido correctamente", 'issue' : issue, 'motivo' : motivo})
+    
+    return render(request, 'form_addDeadline.html', {'issue' : issue})
+
+def eliminarDeadline(request, idIssue):
+    issue = Issue.objects.get(id=idIssue)
+    issue.deadline = None
+    issue.save()
+    deadline = Deadline.objects.get(issue=issue)
+    deadline.delete()
+    return render(request, 'form_addDeadline.html', {'issue': issue,  'error' : "La deadline ha sido eliminada correctamente" })
+
+
 def addComment(request, idIssue):
     if request.method == 'GET':
         if request.GET.get('contenido') != '':
@@ -220,6 +265,8 @@ def addComment(request, idIssue):
 
         else:
             return render(request, 'añadirComment.html', {'error' : "El contenido no puede estar vacío"})
+    return render(request, 'añadirComment.html', {'error' : "El comentario se ha añadido correctamente"})
+
 
 def eliminarComment(request, idComment):
 
