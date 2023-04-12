@@ -17,6 +17,16 @@
         {% endfor %}
     </select>
 
+    <div id="prioridad">
+        <p>Prioridad</p>
+        <select name="prioridad">
+            {% for prioridad in prioridades %}
+                <option name="priority" value="{{ prioridad }}">{{ prioridad }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+
     <input type="submit" value="Editar Issue" />
 </form>
 

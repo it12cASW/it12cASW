@@ -19,7 +19,10 @@ def pantallaCrearIssue(request):
 
         sinAsignar = User(username="sin asignar")
         usuarios.append(sinAsignar)
-        return render(request, 'crearIssue.html', {'usuarios' : usuarios})
+
+        prioridades = ["baja", "media", "alta", "ninguna"]
+
+        return render(request, 'crearIssue.html', {'usuarios' : usuarios, "prioridades" : prioridades})
     else:
         return render(request, 'crearIssue.html')
 
@@ -43,6 +46,8 @@ def crearIssue(request):
             creador = User.objects.get(id=request.user.id)
             asignado = request.GET.get('type')
             vigilantes = request.GET.get('vigilante')
+            usuario_asignado = None
+
 
             if asignado == "sin asignar":
                 asignado = None
@@ -55,20 +60,27 @@ def crearIssue(request):
 
                         
             if vigilantes == "sin asignar":
-                vigilantes = None
+                usuario_vigilante = None
             else:
                 usuario_vigilante = User.objects.get(username=vigilantes)
                 
+            # Prioridad
+            prioridad = None
+            if request.GET.get('prioridad') != "ninguna":
+                prioridad = request.GET.get('prioridad')
+
             
-            issue = Issue(asunto=asunto, descripcion=descripcion, creador=creador, asignada=usuario_asignado)
+            issue = Issue(asunto=asunto, descripcion=descripcion, creador=creador, asignada=usuario_asignado, prioridad=prioridad)
             issue.save()
-            issue.addWatcher(usuario_vigilante)
+            if usuario_vigilante:
+                issue.addWatcher(usuario_vigilante)
         
             actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.datetime.now(), tipo="creada", usuario=request.user)
             actividad.save()
 
             watching = Watcher(issue=issue, usuario=creador)
             watching.save()
+
         
         else:
             return render(request, 'crearIssue.html', {'error' : 'El asunto no puede estar vacío', 'usuarios' : usuarios})
@@ -89,7 +101,6 @@ def mostrarIssue(request, idIssue):
             motivo = deadline.motivo
     
     return render(request, 'mostrarIssue.html', {'issue': issue, 'creador' : creador, 'actividades' : actividades, 'motivo' : motivo, 'comments': issue.comments.all()})
-
 
 #Eliminar un vigilante de un issue
 def eliminarVigilante(request, idIssue, idWatcher):
@@ -137,7 +148,6 @@ def agregarVigilante(request, idIssue):
     context = {"mensaje_exito": mensaje_exito, 'issues': issue, 'equipos': equipos, 'equipo': miembro_equipo, 'usuarios': usuarios}
     return render(request, 'form_addWatchers.html', context)
 
-
 # Eliminar un issue dado su id
 def eliminarIssue(request, idIssue):
 
@@ -161,7 +171,8 @@ def mostrarPantallaEditarIssue(request, idIssue):
             aux.append(miembro.miembro)
         sinAsignar = User(username="sin asignar")
         aux.append(sinAsignar)
-        return render(request, 'editarIssue.html', {'issue': issue, 'creador' : creador, 'usuarios' : aux })
+        prioridades = ["baja", "media", "alta", "ninguna"]
+        return render(request, 'editarIssue.html', {'issue': issue, 'creador' : creador, 'usuarios' : aux, "prioridades" : prioridades})
 
     return render(request, 'editarIssue.html', {'issue': issue, 'creador' : creador})
 
@@ -208,6 +219,12 @@ def editarIssue(request, idIssue):
                 user = User.objects.get(username=username_asignado)
                 issue.asignada = user
                 issue.save()
+
+        # Prioridad
+        
+        if request.GET.get('prioridad') != "ninguna":
+            issue.prioridad = request.GET.get('prioridad')
+            issue.save()
 
         actividades = Actividad_Issue.objects.filter(issue_id=idIssue)
         return render(request, 'mostrarIssue.html', {'issue': issue, 'actividades' : actividades, 'comments': issue.comments.all()})
@@ -324,7 +341,6 @@ def quieroBloquear(request, idIssue):
     issue = Issue.objects.get(id=idIssue)
     return render(request, 'bloquearIssue.html', {'issue': issue})
 
-
 def filtrar_issues(request):
     filtro = request.GET.get('filtro')
     opciones = request.GET.get('opciones')
@@ -359,7 +375,6 @@ def filtrar_issues(request):
     for miembro in miebros:
         usuarios.append(miembro.miembro)
     return render(request, 'filterIssues.html', {'issues' : issues, 'equipos' : equipos, 'equipo' : miembro_equipo, 'usuarios' : usuarios})
-
 
 def search_issues(request):
     query = request.GET.get('q')
