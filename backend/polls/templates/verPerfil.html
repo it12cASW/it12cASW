@@ -35,6 +35,17 @@
             {% endfor %} 
 
             <h2>Issues watched</h2>
+            <!--añadir las issues que el usuario observa-->
+            {% for issue in issues %}
+                <div id="issue">
+                    <p id="issueAsunto"><strong><a href="http://127.0.0.1:8000/main/mostrarIssue/{{ issue.id }}/" >{{ issue.asunto }}</a></strong></p>
+                    <p id="issueDescripcion">{{ issue.descripcion }}</p>
+                    <p id="issueAsignada">Asignada a: {{ issue.asignada }}</p>
+                    <p id="issueEstado">Estado: {{ issue.estado }}</p>
+                    <p id="issueFecha">Fecha de creación: {{ issue.fecha_creacion }}</p>
+                    <p id="issueFecha">Fecha de modificación: {{ issue.fecha_modificacion }}</p>
+                </div>
+            {% endfor %}
         </div>
         <div id="perfilContainerDerecha2">
             <h2>Editar perfil</h2>

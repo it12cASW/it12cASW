@@ -67,7 +67,6 @@ class Imagen_Perfil(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, unique=True)
     imagen = models.ImageField(upload_to='imagenes_perfil', null=True, blank=True)
 
-<<<<<<< HEAD
 class Comentario(models.Model):
     id = models.AutoField(primary_key=True)
     autor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
@@ -76,7 +75,6 @@ class Comentario(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, related_name='comments')
     deleted = models.BooleanField(default=False)
 
-=======
 #clase que almacena los usuarios y las issues que observan
 class Watcher(models.Model):
     id = models.AutoField(primary_key=True)
@@ -86,5 +84,4 @@ class Watcher(models.Model):
     def delete(self, *args, **kwargs):
         self.issue.removeWatcher(self.usuario)
         super(Watcher, self).delete(*args, **kwargs)
->>>>>>> #84-Add-Watcher-#85-Remove-Watcher
 

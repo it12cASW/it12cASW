@@ -8,7 +8,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from polls.views import issue_viewset
-from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Imagen_Perfil
+from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Imagen_Perfil, Watcher
 
 def aux(request):
     return render(request, 'login.html')
@@ -110,7 +110,8 @@ def pantallaEditarPerfil(request):
         imagenPerfil = Imagen_Perfil.objects.get(usuario=usuario)
     else:
         imagenPerfil = None
-    return render(request, 'editarPerfil.html', {"user" : request.user, "imagenPerfil" : imagenPerfil})
+
+    return render(request, 'editarPerfil.html', {"user" : request.user, 'watched_issues' : issues, "imagenPerfil" : imagenPerfil})
 
 # Guardar los nuevos datos del perfil
 def actualizarPerfil(request):
@@ -195,7 +196,12 @@ def verPerfil(request, username):
     else:
         imagenPerfil = None
 
-    return render(request, 'verPerfil.html', {"user" : user, "actividades": actividades, "equipo" : equipo_usuario, "imagenPerfil" : imagenPerfil})
+    watchlist = Watcher.objects.filter(usuario=request.user.id)
+    #coger todas las issues de la watchlist
+    issues = []
+    for i in watchlist:
+        issues.append(Issue.objects.get(id=i.issue.id))
+    return render(request, 'verPerfil.html', {"user" : user, "actividades": actividades, "equipo" : equipo_usuario, "imagenPerfil" : imagenPerfil, "issues" : issues})
 
 
 
