@@ -25,6 +25,13 @@
                         {% endfor %}
                     </select>
                 </div>
+                <div id="estado">
+                    <p>ESTADO:</p>
+                    <select name="status">
+                        {% for status in statuss %}
+                            <option name="status" value="{{ status }}">{{ status }}</option>
+                        {% endfor %}
+                    </select>
                 <a>TYPE</a>
                 <a>SEVERITY</a>
                 <a>PRIORITY</a>
