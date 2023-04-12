@@ -168,3 +168,22 @@ def eliminarComment(request, idComment):
     comment.deleted = True
     comment.save()
     return render(request, 'eliminarComment.html', { 'comentario': comment })
+
+def bulkInsertView(request):
+    return render(request, 'bulkInsert.html')
+
+def bulkInsert(request):
+    if request.method == 'GET':
+        if request.GET.get('newIssues') != '':
+
+            for asunto in request.GET.get('newIssues').splitlines():
+                issue = Issue(asunto=asunto, descripcion="", creador=request.user)
+                issue.save()
+
+                actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.datetime.now(), tipo="creada", usuario=request.user)
+                actividad.save()
+
+            return render(request, 'bulkInsert.html')
+
+        else:
+            return render(request, 'bulkInsert.html', {'error': 'El esta vacio'})

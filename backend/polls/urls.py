@@ -33,8 +33,9 @@ urlpatterns = [
     path('pantallaCrearEquipo', equipo_viewset.pantallaCrearEquipo, name='pantallaCrearEquipo'),
     path('crearEquipo/', equipo_viewset.crearEquipo, name='crearEquipo'),
     path('seleccionarEquipo/', user_viewset.seleccionarEquipo, name='seleccionarEquipo'),
+    path('bulkInsertView', issue_viewset.bulkInsertView, name='bulkInsertView'),
+    path('bulkInsert', issue_viewset.bulkInsert, name='bulkInsert'),
 
-
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

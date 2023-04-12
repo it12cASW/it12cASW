@@ -6,15 +6,14 @@
     <input type="text" placeholder="asunto" name="asunto"/> 
 
     <h2>DESCRIPCION</h2>
-    <input type="text" placeholder="descripcion" name="descripcion" /> 
-
-    <h2>COMENTARIOS</h2>
-    <input placeholder="comentarios"/>
-
+    <input type="text" placeholder="descripcion" name="descripcion" />
     
-    <select name="type">
+    <select name="asignada">
+        <option selected="selected">
+        sin asignar
+        </option>
         {% for usuario in usuarios %}
-            <option name="asignada" value="{{ usuario.username }}">{{ usuario.username }}</option>
+            <option name="asignadaOpcion" value="{{ usuario.username }}">{{ usuario.username }}</option>
         {% endfor %}
     </select>
 

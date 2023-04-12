@@ -1,0 +1,14 @@
+<h1>
+    One Item Per Line
+</h1>
+
+<form action="/main/bulkInsert" method="GET">
+    <textarea  name="newIssues" cols="400" rows="8" placeholder="One per line..." ></textarea>
+
+    <button id="createButton" type="submit">Create</button>
+
+    <a id="volverPrincipal" href="http://127.0.0.1:8000/main/login/auth">Volver a la pantalla principal</a>
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+</form>
