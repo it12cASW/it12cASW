@@ -160,3 +160,19 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 # Rutas imagenes
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+#Amazon Web Services bucket
+#instalar packages:
+    #pip install boto3
+    #pip install django-storages
+#Las access_key son temporales
+AWS_ACCES_KEY_ID = 'ASIA42HGDBSN6EKMZ2U6'
+AWS_SECRET_ACCESS_KEY = 'iBmGr56IZ5uXfXfOnmF2NooQqrwEn0a7npZgdv8x'
+AWS_STORAGE_BUCKET_NAME = 'aswproject'
+AWS_S3_SIGNATURE_NAME = 's3v4'
+AWS_S3_REGION_NAME = 'eu-west-1'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+AWS_S3_VERITY = True
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+#AWS_SESSION_TOKEN = 'FwoGZXIvYXdzEOX//////////wEaDJoMhyrZqxnrgVWIeCLSAYullgAvLfiuIyMT4alUlw5z0x57zBkzfAQWxUH1/kEDO//ZQxod36VoJBJC1YC0dj/eI2L1IJG5Lib1E6Jb6F34ja0qh9EBH/KpNhAPyUngVA7m6lCqjWpXzezmIFhTdckkw1wdey/FqxjaOaddw2JtLciJ1kpt2+A0fNt+GKwUAhj7bGJQ4HR2BVx+BSZAeXutFnKDifWdizdVFihijpSQJTpeAALuVCDIjdN1RFIfOsp53pWdecNE5oKHa6AEAJ5tcmXheLA28AD4zj2EgE7aUCiurtqhBjItO5HeXxGZ5Yb3LsY6KrEzyIBuw9/FLRMtTSCjnnh/TdWQ1W6evspAOxUyO88j'
