@@ -19,10 +19,6 @@
             <label for="priority">Prioridad</label>
         </div>
         <div>
-            <input type="radio" id="assign_to" name="filtro" value="assign_to">
-            <label for="assign_to">Asignada</label>
-        </div>
-        <div>
             <input type="radio" id="created_by" name="filtro" value="created_by">
             <label for="created_by">Creador</label>
         </div>
@@ -31,47 +27,31 @@
     <div class="opciones-container">
         <div id="status-options" class="opciones">
             <label for="status-select">Selecciona el estado:</label>
-            <select id="status-select" name="opciones">
-                <option value="new" selected>Nuevo</option>
-                <option value="in_progress">En curso</option>
-                <option value="test">Lista para testear</option>
-                <option value="closed">Cerrada</option>
-                <option value="need_info">Necesita informacion</option>
-                <option value="refused">Rechazada</option>
-                <option value="proposal">Propuesta</option>
+            <select id="status-select" name="status">
+                {% for st in status %}
+                    <option value="{{ st }}">{{ st }}</option>
+                {% endfor %}
             </select>
         </div>
         <div id="assignee-options" class="opciones">
             <label for="assignee-select">Selecciona el usuario:</label>
-            <select id="assignee-select" name="opciones">
+            <select id="assignee-select" name="asignados">
                 {% for user in usuarios %}
                     <option value="{{ user.id }}">{{ user.username }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div id="tag-options" class="opciones">
-            <label for="tag-input">Introduce el tag:</label>
-            <input type="text" id="tag-input" name="opciones">
-        </div>
         <div id="priority-options" class="opciones">
             <label for="priority-select">Selecciona la prioridad:</label>
-            <select id="priority-select" name="opciones">
-                <option value="baja" selected>baja</option>
-                <option value="media">media</option>
-                <option value="alta">alta</option>
-            </select>
-        </div>
-        <div id="assign_to-options" class="opciones">
-            <label for="assign_to-select">Selecciona el usuario:</label>
-            <select id="assign_to-select" name="opciones">
-                {% for user in usuarios %}
-                    <option value="{{ user.id }}">{{ user.username }}</option>
+            <select id="priority-select" name="prioridades">
+                {% for prioridad in prioridades %}
+                    <option value="{{ prioridad }}">{{ prioridad }}</option>
                 {% endfor %}
             </select>
         </div>
         <div id="created_by-options" class="opciones">
             <label for="created_by-select">Selecciona el usuario:</label>
-            <select id="created_by-select" name="opciones">
+            <select id="created_by-select" name="creado_por">
                 {% for user in usuarios %}
                     <option value="{{ user.id }}">{{ user.username }}</option>
                 {% endfor %}

@@ -2,7 +2,7 @@
 from django.db import models
 # Importación de los modelos 
 from django.contrib.auth.models import User
-from .consts import ESTADOS
+from .consts import status , prioridades
 
 
 # Clase issue
@@ -18,8 +18,9 @@ class Issue(models.Model):
     blocked = models.BooleanField(default=False, null=True)
     reason_blocked = models.CharField(max_length=200, default='', null=True)
     deadline = models.DateTimeField(null=True)
-    status = models.IntegerField(max_length=2, choices=ESTADOS, default=1, null=True)
     prioridad = models.CharField(max_length=100, default=None, null=True)
+    status = models.CharField(max_length=100, default=None, null=True)
+
     #si se añade un nuevo watcher, se añade a la lista de watchers
     def addWatcher(self, user):
         self.vigilant.add(user)
