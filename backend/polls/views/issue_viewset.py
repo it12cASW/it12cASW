@@ -367,7 +367,7 @@ def filtrar_issues(request):
             issues = None
     else:
         # Si no se seleccionó ningún filtro, mostramos todos los issues
-        issues = Issue.objects.filter(deleted=False)
+        issues = Issue.objects.filter(creador=request.user.id, deleted=False)
 
     equipos = Equipo.objects.all()
     miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)
