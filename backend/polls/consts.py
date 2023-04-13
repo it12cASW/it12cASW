@@ -13,3 +13,5 @@ ESTADOS = [
     (NECESITA_INFORMACION, 5),
     (LISTA_PARA_TESTEAR, 6),
 ]
+
+prioridades = ["baja", "media", "alta", "ninguna"]
