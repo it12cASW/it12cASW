@@ -9,12 +9,6 @@
 </head>
 {% load socialaccount %}
 <body>
-
-
-    {% if user.is_authenticated %}
-        <p>BIENVENIDO, {{ user.username }} !</p>
-    {% endif %}
-
     {%include "form_filtrarIssues.html"%}
     <div id="contenedorPrincipal">
         <h1>Issues</h1>
@@ -83,24 +77,8 @@
 
             <a href="http://127.0.0.1:8000/main/pantallaCrearEquipo">Crear nuevo equipo</a>
         </div>
-
-        
-
     </div>  
-
-
-
-
-
     
-
-    
-
-    
-
-
-
-
 </body>
 </html>
 

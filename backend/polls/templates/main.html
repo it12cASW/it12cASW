@@ -83,7 +83,7 @@
 
             <a href="http://127.0.0.1:8000/main/pantallaCrearEquipo">Crear nuevo equipo</a>
         </div>
-
+        <input type="hidden" name="issue_ids" value="{% for issue in issues %}{{ issue.id }},{% endfor %}">
         
 
     </div>  

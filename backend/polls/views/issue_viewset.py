@@ -343,7 +343,7 @@ def quieroBloquear(request, idIssue):
 def filtrar_issues(request):
     filtro = request.GET.get('filtro')
     opciones = request.GET.get('opciones')
-
+    
     # Verificamos si se seleccionó algún filtro
     if filtro:
         # Filtramos por el tipo de filtro seleccionado
@@ -359,12 +359,9 @@ def filtrar_issues(request):
             issues = Issue.objects.filter(asignada=opciones, deleted=False)
         elif filtro == 'created_by':
             issues = Issue.objects.filter(creador=opciones, deleted=False)
-        else:
-            # Si no se reconoce el filtro, retornamos un error
-            issues = None
     else:
         # Si no se seleccionó ningún filtro, mostramos todos los issues
-        issues = Issue.objects.filter(deleted=False)
+        issues = Issue.objects.filter(creador=request.user.id, deleted=False)
 
     equipos = Equipo.objects.all()
     miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)
