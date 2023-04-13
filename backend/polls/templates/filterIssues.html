@@ -21,7 +21,7 @@
         <div id="barraSuperior">
 
             <div id="superiorIzquierda">
-                <a id="aplicarFiltros" href="http://127.0.0.1:8000/main/login/auth">OCULTAR FILTRES</a>
+                <a id="aplicarFiltros" style="font-size: large" href="http://127.0.0.1:8000/main/login/auth">OCULTAR FILTRES</a>
                 {% include "form_search_bar.html" %}
                 <input type="checkbox">TAGS</input>
             </div>
@@ -48,7 +48,11 @@
                 <div id="issue" {% if issue.blocked %} style="border-style: solid; border-color: red; border-width: 4px;"{% endif %}>
                     <div class="col"><i class="fa-solid fa-circle"></i></div>
                     <div class="col"><i class="fa-solid fa-circle"></i></div>
-                    <div class="col"><i class="fa-solid fa-circle"></i></div>
+                    {% if issue.prioridad %}
+                        <div class="col">{{ issue.prioridad }}</div>
+                    {% else %}
+                        <div class="col">Ninguna</div>
+                    {% endif %}
                     <div class="col" id="especial"><a href="http://127.0.0.1:8000/main/mostrarIssue/{{ issue.id }}/">{{ issue.asunto }}</a></div>
                     <div class="col"><p> {{ issue.descripcion }}  {{ issue.creador_id }}</p></div>
                     <div class="col">Modified</div>
@@ -119,8 +123,7 @@
         flex-direction: row;
         justify-content: space-between;
         margin-bottom: 20px;
-    }   
-
+    }  
     #barraSuperior{
         width: 90%;
         height: 50px;
@@ -138,7 +141,12 @@
         text-decoration: none;
         margin-right: 20px;
     }
-
+    #superiorIzquierda{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
     #tablaIssues{
         width: 100%;
         height: 100%;

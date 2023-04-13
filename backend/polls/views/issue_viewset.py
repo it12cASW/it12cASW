@@ -1,8 +1,9 @@
+from polls.consts import ESTADOS, prioridades
 from django.shortcuts import render, redirect, redirect, redirect
 from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Watcher, Comentario, Deadline
 from django.contrib.auth.models import User
 import datetime
-from django.db.models import Q, Max
+from django.db.models import Q, Max, Case, When, Value
 from django.db import models
 
 
@@ -19,8 +20,6 @@ def pantallaCrearIssue(request):
 
         sinAsignar = User(username="sin asignar")
         usuarios.append(sinAsignar)
-
-        prioridades = ["baja", "media", "alta", "ninguna"]
 
         return render(request, 'crearIssue.html', {'usuarios' : usuarios, "prioridades" : prioridades})
     else:
@@ -355,7 +354,7 @@ def filtrar_issues(request):
         elif filtro == 'tag':
             issues = Issue.objects.filter(tag=opciones, deleted=False)
         elif filtro == 'priority':
-            issues = Issue.objects.filter(priority=opciones, deleted=False)
+            issues = Issue.objects.filter(prioridad=opciones, deleted=False)
         elif filtro == 'assign_to':
             issues = Issue.objects.filter(asignada=opciones, deleted=False)
         elif filtro == 'created_by':
@@ -379,24 +378,20 @@ def filtrar_issues(request):
 def search_issues(request):
     query = request.GET.get('q')
 
-    issue_ids = request.GET.get('issue_ids', '')
-    issue_ids = [int(id) for id in issue_ids.split(',') if id]
-    issues = Issue.objects.filter(id__in=issue_ids)
-
     if query:
-        results = issues.filter(Q(asunto__icontains=query) | Q(descripcion__icontains=query), deleted=False)
+        results = Issue.objects.filter(Q(asunto__icontains=query) | Q(descripcion__icontains=query), deleted=False)
     else:
-        results = issues.filter(deleted=False)
+        results = Issue.objects.filter(deleted=False)
     
     equipos = Equipo.objects.all()
-    miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)
+    equipo_usuario = Miembro_Equipo.objects.filter(miembro=request.user.id)
     equipo = Miembro_Equipo.objects.filter(miembro=request.user)
     miebros = Miembro_Equipo.objects.filter(equipo=equipo[0].equipo)
     usuarios = []
     for miembro in miebros:
         usuarios.append(miembro.miembro)
 
-    return render(request, 'main.html', {'issues': results, 'equipos' : equipos, 'equipo' : miembro_equipo, 'usuarios' : usuarios})
+    return render(request, 'main.html', {'issues': results, 'equipos' : equipos, 'equipo' : equipo_usuario, 'usuarios' : usuarios})
 
 def ordenar_issues(request):
     issue_ids = request.GET.get('issue_ids', '')
@@ -418,7 +413,16 @@ def ordenar_issues(request):
         issues = issues.annotate(
             max_fecha_actividad=max_fecha_actividad
         ).order_by(order_by_field)
-
+    if orden == 'prioridad' or orden == '-prioridad':
+        issues = issues.annotate(
+            priority_order=Case(
+                When(prioridad='baja', then=Value(3)),
+                When(prioridad='media', then=Value(2)),
+                When(prioridad='alta', then=Value(1)),
+                output_field=models.IntegerField(),
+                default=Value(4),
+            )
+        ).order_by('priority_order' if orden_dir == 'asc' else '-priority_order')
     else:
         issues = issues.order_by(orden)
 

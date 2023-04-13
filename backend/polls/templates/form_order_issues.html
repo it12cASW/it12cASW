@@ -1,20 +1,47 @@
 <form method="get" action="{% url 'ordenar-issues' %}">
-    <label for="select-orden">Ordenar issues por:</label>
-    <select id="select-orden" name="orden">
-        <option value="type">Type</option>
-        <option value="severity">Severity</option>
-        <option value="priority">Priority</option>
-        <option value="asunto">Issue</option>
-        <option value="status">Status</option>
-        <option value="modified">Modified</option>
-        <option value="asignada">Asign to</option>
-    </select>
-    <select id="select-orden-dir" name="orden_dir">
-        <option value="asc">Ascendente</option>
-        <option value="desc">Descendente</option>
-    </select>
-    <input type="hidden" name="issue_ids" value="{% for issue in issues %}{{ issue.id }},{% endfor %}">
-    <button type="submit">Ordenar</button>
+    <div id="orden">
+        <label style="font-size: larger;"  for="select-orden">Ordenar issues por:</label>
+        <select id="select-orden" name="orden">
+            <option value="prioridad">Priority</option>
+            <option value="asunto">Issue</option>
+            <option value="status">Status</option>
+            <option value="modified">Fecha última modificación</option>
+            <option value="asignada">Asign to</option>
+            <option value="creador">Creador</option>
+        </select>
+        <select id="select-orden-dir" name="orden_dir">
+            <option value="asc">Ascendente</option>
+            <option value="desc">Descendente</option>
+        </select>
+        <input type="hidden" name="issue_ids" value="{% for issue in issues %}{{ issue.id }},{% endfor %}">
+        <button id="botonOrden" type="submit">Ordenar</button>
+    </div>
+        
 </form>
+
+<style>
+    #orden {
+        margin-bottom: 10px;
+    }
+    select {
+        font-size: 16px;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+
+    #botonOrden {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 8px 16px;
+        font-size: 16px;
+        background-color: #ffffff;
+        color: #333333;
+        transition: background-color 0.5s ease;
+    }
+
+</style>
+
+
 
   

@@ -40,7 +40,7 @@ class Issue(models.Model):
 # Clase actividad_issue
 class Actividad_Issue(models.Model):
     id = models.AutoField(primary_key=True)
-    issue = models.ForeignKey(Issue, on_delete=models.CASCADE) # id de la issue
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, related_name='actividades') # id de la issue
     creador = models.ForeignKey(User, on_delete=models.CASCADE) # id del creador
     fecha = models.DateTimeField(auto_now_add=True) # fecha de publicacion del cambio
     tipo = models.CharField(max_length=1000, default='') # tipo de cambio
