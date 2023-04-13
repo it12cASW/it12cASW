@@ -1,6 +1,29 @@
-<form method="get" action="{% url 'search_issues' %}">
-    <a>SEARCH:</a>
-    <input type="text" name="q" placeholder="Search" value="{{ query }}" />
-    <input type="hidden" name="issue_ids" value="{% for issue in issues %}{{ issue.id }},{% endfor %}">
+<form action="{% url 'search_issues' %}" method="get">
+    <input type="text" name="q" placeholder="asunto o referencia" value="{{ query }}" />
     <button type="submit">Search</button>
 </form>
+
+<style>
+    input[type="text"] {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 8px;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+    }
+    button[type="submit"] {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 8px 16px;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        background-color: #ffffff;
+        color: #333333;
+        transition: background-color 0.5s ease;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #f2f2f2;
+    }
+
+</style>

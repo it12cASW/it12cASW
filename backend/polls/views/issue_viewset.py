@@ -379,14 +379,10 @@ def filtrar_issues(request):
 def search_issues(request):
     query = request.GET.get('q')
 
-    issue_ids = request.GET.get('issue_ids', '')
-    issue_ids = [int(id) for id in issue_ids.split(',') if id]
-    issues = Issue.objects.filter(id__in=issue_ids)
-
     if query:
-        results = issues.filter(Q(asunto__icontains=query) | Q(descripcion__icontains=query), deleted=False)
+        results = Issue.objects.filter(Q(asunto__icontains=query) | Q(descripcion__icontains=query), deleted=False)
     else:
-        results = issues.filter(deleted=False)
+        results = Issue.objects.filter(deleted=False)
     
     equipos = Equipo.objects.all()
     miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)

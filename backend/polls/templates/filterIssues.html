@@ -21,7 +21,7 @@
         <div id="barraSuperior">
 
             <div id="superiorIzquierda">
-                <a id="aplicarFiltros" href="http://127.0.0.1:8000/main/login/auth">OCULTAR FILTRES</a>
+                <a id="aplicarFiltros" style="font-size: large" href="http://127.0.0.1:8000/main/login/auth">OCULTAR FILTRES</a>
                 {% include "form_search_bar.html" %}
                 <input type="checkbox">TAGS</input>
             </div>
@@ -119,8 +119,7 @@
         flex-direction: row;
         justify-content: space-between;
         margin-bottom: 20px;
-    }   
-
+    }  
     #barraSuperior{
         width: 90%;
         height: 50px;
@@ -138,7 +137,12 @@
         text-decoration: none;
         margin-right: 20px;
     }
-
+    #superiorIzquierda{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
     #tablaIssues{
         width: 100%;
         height: 100%;
