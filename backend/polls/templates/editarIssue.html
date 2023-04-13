@@ -26,6 +26,15 @@
         </select>
     </div>
 
+    <div id="status">
+        <p>Status</p>
+        <select name="status">
+            {% for st in status %}
+                <option name="status" value="{{ st }}">{{ st }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
 
     <input type="submit" value="Editar Issue" />
 </form>

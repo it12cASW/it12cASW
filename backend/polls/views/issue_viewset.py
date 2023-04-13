@@ -1,10 +1,11 @@
-from polls.consts import ESTADOS, prioridades
+from polls.consts import status, prioridades, status_order
 from django.shortcuts import render, redirect, redirect, redirect
 from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Watcher, Comentario, Deadline
 from django.contrib.auth.models import User
 import datetime
 from django.db.models import Q, Max, Case, When, Value
 from django.db import models
+from django.db.models import Case, CharField, Value, When
 
 
 # Mostrar pantalla de creación de un issue
@@ -21,7 +22,7 @@ def pantallaCrearIssue(request):
         sinAsignar = User(username="sin asignar")
         usuarios.append(sinAsignar)
 
-        return render(request, 'crearIssue.html', {'usuarios' : usuarios, "prioridades" : prioridades})
+        return render(request, 'crearIssue.html', {'usuarios' : usuarios, "prioridades" : prioridades, 'status': status})
     else:
         return render(request, 'crearIssue.html')
 
@@ -170,8 +171,7 @@ def mostrarPantallaEditarIssue(request, idIssue):
             aux.append(miembro.miembro)
         sinAsignar = User(username="sin asignar")
         aux.append(sinAsignar)
-        prioridades = ["baja", "media", "alta", "ninguna"]
-        return render(request, 'editarIssue.html', {'issue': issue, 'creador' : creador, 'usuarios' : aux, "prioridades" : prioridades})
+        return render(request, 'editarIssue.html', {'issue': issue, 'creador' : creador, 'usuarios' : aux, "prioridades" : prioridades, 'status': status})
 
     return render(request, 'editarIssue.html', {'issue': issue, 'creador' : creador})
 
@@ -223,6 +223,10 @@ def editarIssue(request, idIssue):
         
         if request.GET.get('prioridad') != "ninguna":
             issue.prioridad = request.GET.get('prioridad')
+            issue.save()
+
+        if request.GET.get('status') and request.GET.get('status') != issue.status:
+            issue.status = request.GET.get('status')
             issue.save()
 
         actividades = Actividad_Issue.objects.filter(issue_id=idIssue)
@@ -342,23 +346,22 @@ def quieroBloquear(request, idIssue):
 
 def filtrar_issues(request):
     filtro = request.GET.get('filtro')
-    opciones = request.GET.get('opciones')
-
+    estados = request.GET.get('estados')
+    prioridades_sel = request.GET.get('prioridades')
+    assigned_to = request.GET.get('assigned_to')
+    creado_por = request.GET.get('creado_por')
+    asignados = request.GET.get('asignados')
     # Verificamos si se seleccionó algún filtro
     if filtro:
         # Filtramos por el tipo de filtro seleccionado
         if filtro == 'status':
-            issues = Issue.objects.filter(status=opciones, deleted=False)
+            issues = Issue.objects.filter(status=estados, deleted=False)
         elif filtro == 'assignee':
-            issues = Issue.objects.filter(associat=opciones, deleted=False)
-        elif filtro == 'tag':
-            issues = Issue.objects.filter(tag=opciones, deleted=False)
+            issues = Issue.objects.filter(asignada=asignados, deleted=False)
         elif filtro == 'priority':
-            issues = Issue.objects.filter(prioridad=opciones, deleted=False)
-        elif filtro == 'assign_to':
-            issues = Issue.objects.filter(asignada=opciones, deleted=False)
+            issues = Issue.objects.filter(prioridad=prioridades_sel, deleted=False)
         elif filtro == 'created_by':
-            issues = Issue.objects.filter(creador=opciones, deleted=False)
+            issues = Issue.objects.filter(creador=creado_por, deleted=False)
         else:
             # Si no se reconoce el filtro, retornamos un error
             issues = None
@@ -373,7 +376,7 @@ def filtrar_issues(request):
     usuarios = []
     for miembro in miebros:
         usuarios.append(miembro.miembro)
-    return render(request, 'filterIssues.html', {'issues' : issues, 'equipos' : equipos, 'equipo' : miembro_equipo, 'usuarios' : usuarios})
+    return render(request, 'filterIssues.html', {'issues' : issues, 'equipos' : equipos, 'equipo' : miembro_equipo, 'usuarios' : usuarios, 'prioridades': prioridades, 'status': status})
 
 def search_issues(request):
     query = request.GET.get('q')
@@ -396,7 +399,7 @@ def search_issues(request):
 def ordenar_issues(request):
     issue_ids = request.GET.get('issue_ids', '')
     issue_ids = [int(id) for id in issue_ids.split(',') if id]
-    issues = Issue.objects.filter(id__in=issue_ids)
+    issues = Issue.objects.filter(id__in=issue_ids, deleted=False)
 
     orden = request.GET.get('orden', 'issue')
     orden_dir = request.GET.get('orden_dir')
@@ -407,13 +410,13 @@ def ordenar_issues(request):
         orden = '-' + orden
 
     if orden == 'modified' or orden == '-modified':
-        max_fecha_actividad = Max('actividad_issue__fecha')
+        max_fecha_actividad = Max('actividades__fecha')
         order_by_field = 'max_fecha_actividad' if orden_dir == 'desc' else '-max_fecha_actividad'
 
         issues = issues.annotate(
             max_fecha_actividad=max_fecha_actividad
         ).order_by(order_by_field)
-    if orden == 'prioridad' or orden == '-prioridad':
+    elif orden == 'prioridad' or orden == '-prioridad':
         issues = issues.annotate(
             priority_order=Case(
                 When(prioridad='baja', then=Value(3)),
@@ -423,10 +426,17 @@ def ordenar_issues(request):
                 default=Value(4),
             )
         ).order_by('priority_order' if orden_dir == 'asc' else '-priority_order')
+    elif orden == 'status' or orden == '-status':
+        status_order_case = Case(
+            *[When(status=value, then=Value(position)) for position, value in enumerate(status_order.keys())],
+            output_field=CharField(),
+        )
+        issues.order_by(status_order_case)
+        if orden_dir == 'desc':
+            issues = issues[::-1]
     else:
         issues = issues.order_by(orden)
 
-    issues = issues.filter(deleted=False)
 
     equipos = Equipo.objects.all()
     miembro_equipo = Miembro_Equipo.objects.filter(miembro=request.user.id)

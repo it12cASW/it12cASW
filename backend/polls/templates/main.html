@@ -54,7 +54,7 @@
                         <div class="col">Ninguna</div>
                     {% endif %}
                     <div class="col" id="especial"><a href="http://127.0.0.1:8000/main/mostrarIssue/{{ issue.id }}/">{{ issue.asunto }}</a></div>
-                    <div class="col"><p> {{ issue.descripcion }}  {{ issue.creador_id }}</p></div>
+                    <div class="col"><p> {{ issue.status }}</p></div>
                     <div class="col">issue.</div>
                     <div class="col"><strong>{{ issue.asignada.username }}</strong></div>
                 </div>   
