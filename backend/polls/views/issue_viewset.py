@@ -69,8 +69,11 @@ def crearIssue(request):
             if request.GET.get('prioridad') != "ninguna":
                 prioridad = request.GET.get('prioridad')
 
-            
-            issue = Issue(asunto=asunto, descripcion=descripcion, creador=creador, asignada=usuario_asignado, prioridad=prioridad)
+            st = None
+            if request.GET.get('status'):
+                st = request.GET.get('status')
+
+            issue = Issue(asunto=asunto, descripcion=descripcion, creador=creador, asignada=usuario_asignado, prioridad=prioridad, status=st)
             issue.save()
             if usuario_vigilante:
                 issue.addWatcher(usuario_vigilante)
@@ -346,7 +349,7 @@ def quieroBloquear(request, idIssue):
 
 def filtrar_issues(request):
     filtro = request.GET.get('filtro')
-    estados = request.GET.get('estados')
+    estados = request.GET.get('status')
     prioridades_sel = request.GET.get('prioridades')
     assigned_to = request.GET.get('assigned_to')
     creado_por = request.GET.get('creado_por')

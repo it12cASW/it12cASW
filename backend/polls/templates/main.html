@@ -41,7 +41,7 @@
                 <div class="col">Priority</div>
                 <div class="col" id="especial">Issue</div>
                 <div class="col">Status</div>
-                <div class="col">Modified</div>
+                <!--<div class="col">Modified</div>-->
                 <div class="col">Asign to</div>
             </div>
             {% for issue in issues %}
@@ -55,7 +55,7 @@
                     {% endif %}
                     <div class="col" id="especial"><a href="http://127.0.0.1:8000/main/mostrarIssue/{{ issue.id }}/">{{ issue.asunto }}</a></div>
                     <div class="col"><p> {{ issue.status }}</p></div>
-                    <div class="col">issue.</div>
+                    <!--<div class="col">issue.</div>-->
                     <div class="col"><strong>{{ issue.asignada.username }}</strong></div>
                 </div>   
             {% endfor %}
