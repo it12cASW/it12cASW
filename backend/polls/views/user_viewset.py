@@ -205,7 +205,15 @@ def verPerfil(request, username):
     issues = []
     for i in watchlist:
         issues.append(Issue.objects.get(id=i.issue.id))
-    return render(request, 'verPerfil.html', {"user" : user, "actividades": actividades, "equipo" : equipo_usuario, "imagenPerfil" : imagenPerfil, "issues" : issues})
+
+
+    # Obtengo los usuarios para ver sus perfiles
+    if User.objects.all().exists():
+        usuarios = User.objects.all()
+    else:
+        usuarios = None
+
+    return render(request, 'verPerfil.html', {"user" : user, "actividades": actividades, "equipo" : equipo_usuario, "imagenPerfil" : imagenPerfil, "issues" : issues, "usuarios": usuarios})
 
 
 

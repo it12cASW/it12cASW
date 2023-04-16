@@ -53,6 +53,14 @@
             <div id="perfilBotonEditarPerfil">
                 <a href="http://127.0.0.1:8000/main/editarPerfil">Editar perfil</a>
             </div>
+
+            <h2>Ver Otros perfiles</h2>
+            {% for usuario in usuarios %}
+            <div id="perfilVerOtrosPerfiles">
+                <a href="http://127.0.0.1:8000/main/verPerfil/{{ usuario.username }}">{{ usuario.username }}</a>
+            </div>
+            {% endfor %}
+
         </div>
     </div>
 </div>
