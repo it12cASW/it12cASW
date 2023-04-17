@@ -363,7 +363,10 @@ def filtrar_issues(request):
         elif filtro == 'assignee':
             issues = Issue.objects.filter(asignada=asignados, deleted=False)
         elif filtro == 'priority':
-            issues = Issue.objects.filter(prioridad=prioridades_sel, deleted=False)
+            if prioridades_sel == 'None':
+                issues = Issue.objects.filter(prioridad=None, deleted=False)
+            else :
+                issues = Issue.objects.filter(prioridad=prioridades_sel, deleted=False)
         elif filtro == 'created_by':
             issues = Issue.objects.filter(creador=creado_por, deleted=False)
         else:
