@@ -9,11 +9,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from polls.views import issue_viewset
 from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Imagen_Perfil, Watcher
+from django.views.decorators.csrf import csrf_protect
 
 def aux(request):
     return render(request, 'login.html')
 
 # Iniciar sesión de un usuario
+@csrf_protect
 def logintest(request):
     if request.method == 'POST':
 
@@ -46,6 +48,7 @@ def logintest(request):
         return render(request, 'login.html', {"error" : "Algo ha ido mal..."})
 
 # Registro de un usuario
+@csrf_protect
 def register(request):
     # quiero obtener todos los datos que me llegan de la request que sera de tipo POST
     aux = request.POST
@@ -117,6 +120,7 @@ def pantallaEditarPerfil(request):
     return render(request, 'editarPerfil.html', {"user" : request.user, "imagenPerfil" : imagenPerfil})
 
 # Guardar los nuevos datos del perfil
+@csrf_protect
 def actualizarPerfil(request):
     
     # Obtengo el usuario sobre el que se realizaran las actulaizaciones

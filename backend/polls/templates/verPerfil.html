@@ -1,7 +1,7 @@
 <div id="perfilContainerPrincipal">
     <div id="perfilContainerIzquierda">
         {% if imagenPerfil %}
-            <img id="logoPerfil" src="http://127.0.0.1:8000/main/media/{{ imagenPerfil.imagen }}" alt="Avatar"">
+            <img id="logoPerfil" src="/media/{{ imagenPerfil.imagen }}" alt="Avatar"">
         {% else %}
             <img id="logoPerfil" src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar">
         {% endif %}
@@ -38,7 +38,7 @@
             <!--añadir las issues que el usuario observa-->
             {% for issue in issues %}
                 <div id="issue">
-                    <p id="issueAsunto"><strong><a href="http://127.0.0.1:8000/main/mostrarIssue/{{ issue.id }}/" >{{ issue.asunto }}</a></strong></p>
+                    <p id="issueAsunto"><strong><a href="/mostrarIssue/{{ issue.id }}/" >{{ issue.asunto }}</a></strong></p>
                     <p id="issueDescripcion">{{ issue.descripcion }}</p>
                     <p id="issueAsignada">Asignada a: {{ issue.asignada }}</p>
                     <p id="issueEstado">Estado: {{ issue.estado }}</p>
@@ -51,13 +51,13 @@
         <div id="perfilContainerDerecha2">
             <h2>Editar perfil</h2>
             <div id="perfilBotonEditarPerfil">
-                <a href="http://127.0.0.1:8000/main/editarPerfil">Editar perfil</a>
+                <a href="/editarPerfil">Editar perfil</a>
             </div>
 
             <h2>Ver Otros perfiles</h2>
             {% for usuario in usuarios %}
             <div id="perfilVerOtrosPerfiles">
-                <a href="http://127.0.0.1:8000/main/verPerfil/{{ usuario.username }}">{{ usuario.username }}</a>
+                <a href="/verPerfil/{{ usuario.username }}">{{ usuario.username }}</a>
             </div>
             {% endfor %}
 

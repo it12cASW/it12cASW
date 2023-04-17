@@ -1,4 +1,4 @@
-<form action="http://127.0.0.1:8000/main/agregar-vigilante/{{issues.id}}/" method="POST">
+<form action="agregar-vigilante/{{issues.id}}/" method="POST">
     <p>AÑADIR WATCHER:</p>
     {% csrf_token %}
     {% if mensaje_error %}
@@ -14,7 +14,7 @@
     </select>
     <input type="submit" value="Añadir">
     <div>
-        <a href="http://127.0.0.1:8000/main/mostrarIssue/{{ issues.id }}/">Volver a la pagina de la Issue</a>
+        <a href="mostrarIssue/{{ issues.id }}/">Volver a la pagina de la Issue</a>
     </div>
 </form>
 

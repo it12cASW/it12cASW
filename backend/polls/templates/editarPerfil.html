@@ -1,12 +1,12 @@
 
 <div>
     
-    <form action="http://127.0.0.1:8000/main/editarPerfil/actualizar" enctype="multipart/form-data" method="post">
+    <form action="/editarPerfil/actualizar" enctype="multipart/form-data" method="post">
         {% csrf_token %}
         <div id="editarPerfilFormContainer">
             <div id="editarPerfilLeftContainer">
                 {% if imagenPerfil %}
-                    <img id="logoPerfil" src="http://127.0.0.1:8000/main/media/{{ imagenPerfil.imagen }}" alt="Avatar"">
+                    <img id="logoPerfil" src="/media/{{ imagenPerfil.imagen }}" alt="Avatar"">
                 {% else %}
                     <img id="logoPerfil" src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar">
                 {% endif %}
@@ -30,7 +30,7 @@
                 {% endif %}
 
                 <input id="editarPerfilSubmitButton" type="submit" value="Guardar cambios">
-                <a id="volverPantallaPrincipal" href="http://127.0.0.1:8000/main/login/auth">Volver a pantalla principal</a>
+                <a id="volverPantallaPrincipal" href="/login/auth">Volver a pantalla principal</a>
             </div>
         </div>
     </form>

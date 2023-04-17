@@ -6,7 +6,7 @@ import datetime
 from django.db.models import Q, Max, Case, When, Value
 from django.db import models
 from django.db.models import Case, CharField, Value, When
-
+from django.views.decorators.csrf import csrf_protect
 
 # Mostrar pantalla de creación de un issue
 def pantallaCrearIssue(request):
@@ -126,6 +126,7 @@ def mostrarUsuariosParaAñadir(request, idIssue):
 
     return render(request, 'form_addWatchers.html', {'issues': issue, 'equipos' : equipos, 'equipo' : miembro_equipo, 'usuarios' : usuarios})
 
+@csrf_protect
 def agregarVigilante(request, idIssue):
     issue = Issue.objects.get(id=idIssue)
     usuario = User.objects.get(id=request.POST.get('vigilante'))
@@ -244,7 +245,7 @@ def pantallaAddDeadline(request, idIssue):
         motivo = deadline.motivo
     return render(request, 'form_addDeadline.html', {'error' : "", 'issue' : issue, 'motivo' : motivo})
 
-
+@csrf_protect
 def addDeadline(request, idIssue):
     try:
         issue = Issue.objects.get(id=idIssue)
