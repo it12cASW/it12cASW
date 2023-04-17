@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from polls.models import Issue, Actividad_Issue, Equipo
+from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo
 from django.contrib.auth.models import User
 import datetime
 
@@ -22,5 +22,6 @@ def crearEquipo(request):
 
         equipos = Equipo.objects.all()
         issues = Issue.objects.filter(creador_id=request.user.id, deleted=False)
-        
-    return render(request, 'main.html', {'issues' : issues, 'equipos' : equipos})
+        user_id = creador.id
+        equipo_usuario = Miembro_Equipo.objects.filter(miembro=user_id)
+    return render(request, 'main.html', {'issues' : issues, 'equipos' : equipos, 'equipo' : equipo_usuario})

@@ -68,7 +68,7 @@ def register(request):
         
 
         equipos = Equipo.objects.all()
-        return render(request, 'main.html', {"equipos" : equipos})
+        return render(request, 'login.html')
     else:
         return render(request, 'register.html', {"error" : "Algo ha ido mal..."})
 

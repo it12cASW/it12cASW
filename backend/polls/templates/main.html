@@ -66,26 +66,25 @@
 
             <a href="/editarPerfil">Editar perfil</a>
 
+
+            {% if equipo %}
+                <h1>ESTAS EN EL EQUIPO:</h1>
+                <h2>{{ equipo.nombre }}</h2>
+            {% else %}
+                <h2>AUN NO TIENES EQUIPO</h2>
+                <form action="/seleccionarEquipo/" method="GET">
+                    <select name="equipo">
+                        {% for equipo in equipos %}
+                            <option value="{{ equipo.id }}" name="equipo">{{ equipo.nombre }}</option>
+                        {% endfor %}
+                    <input type="submit" value="Seleccionar equipo">
+                </form>
+            {% endif %}
+
             <a href="/pantallaCrearEquipo">Crear nuevo equipo</a>
         </div>
         <input type="hidden" name="issue_ids" value="{% for issue in issues %}{{ issue.id }},{% endfor %}">
-        
-
     </div>  
-
-
-
-
-
-    
-
-    
-
-    
-
-
-
-
 </body>
 </html>
 
@@ -139,6 +138,7 @@
         flex-direction: column;
         align-items: center;
         border: 2px solid black;
+        margin-bottom: 10px;
     }
 
     #issue {
