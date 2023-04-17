@@ -37,7 +37,8 @@ def logintest(request):
             print("tengo el id")
             issues = Issue.objects.filter(creador_id=user_id, deleted=False)
             equipos = Equipo.objects.all()
-            equipo_usuario = Miembro_Equipo.objects.get(miembro=user_id)
+            if equipos != None:
+                equipo_usuario = Miembro_Equipo.objects.filter(miembro=user_id)
             return render(request, 'main.html', {"issues" : issues, "equipos" : equipos, "equipo" : equipo_usuario})
         else:
 
