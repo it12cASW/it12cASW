@@ -7,7 +7,7 @@
 | Juan Clusellas | @jclusi | clusellas |
 | Joan Martínez | @joanmartinezsoria | JoanMartinezSoria |
 
-Aplicacion deployada en: it12casw.fly.dev
+Aplicacion deployada en: https://it12casw-backend.fly.dev/
 # Más información
 
 ### Para ejecutar la parte de frontend
