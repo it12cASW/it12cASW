@@ -48,11 +48,11 @@ Ahora podremos abrir la ventana del cliente ( react ) con la URL que nos del Rea
 
 ###### PASO 1: Installar el CLI de fly.io
 - mirar esta pagina https://fly.io/docs/hands-on/install-flyctl/ 
-###### PASO 2: Hacer login en fly desde la consola
+###### PASO 2: Hacer login en fly desde la consola(solo necesario la primera vez)
 - fly auth login
 ###### PASO 3: Hacer el deploy de la app
 - fly deploy
-###### PASO 4: Aplicar las migraciones en la app
+###### PASO 4: Aplicar las migraciones en la app (se tiene que hacer cada vez que se hace un deploy)
 - fly ssh console
 - cd code
 - python manage.py migrate
