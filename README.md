@@ -43,3 +43,17 @@ Ahora podremos abrir la ventana del cliente ( react ) con la URL que nos del Rea
 
 ###### Ver tablas de BD
 - python3 manage.py inspectdb
+
+# COMO HACER DEPLOY
+
+###### PASO 1: Installar el CLI de fly.io
+- mirar esta pagina https://fly.io/docs/hands-on/install-flyctl/ 
+###### PASO 2: Hacer login en fly desde la consola
+- fly auth login
+###### PASO 3: Hacer el deploy de la app
+- fly deploy
+###### PASO 4: Aplicar las migraciones en la app
+- fly ssh console
+- cd code
+- python manage.py migrate
+- exit
