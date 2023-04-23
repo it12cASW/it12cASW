@@ -50,7 +50,7 @@ Ahora podremos abrir la ventana del cliente ( react ) con la URL que nos del Rea
 - mirar esta pagina https://fly.io/docs/hands-on/install-flyctl/ 
 ###### PASO 2: Hacer login en fly desde la consola(solo necesario la primera vez)
 - fly auth login
-###### PASO 3: Hacer el deploy de la app
+###### PASO 3: Hacer el deploy de la app (se debe estar en la carpeta backend para que funcione)
 - fly deploy
 ###### PASO 4: Aplicar las migraciones en la app (se tiene que hacer cada vez que se hace un deploy)
 - fly ssh console
