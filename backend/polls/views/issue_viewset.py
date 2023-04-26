@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from polls.consts import status, prioridades, status_order
 from django.shortcuts import render, redirect, redirect, redirect
 from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Watcher, Comentario, Deadline
@@ -6,7 +7,15 @@ import datetime
 from django.db.models import Q, Max, Case, When, Value
 from django.db import models
 from django.db.models import Case, CharField, Value, When
+import boto3
+from django.conf import settings
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
+s3 = boto3.client('s3',
+                  aws_access_key_id=settings.AWS_ACCES_KEY_ID,
+                  aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                  region_name=settings.AWS_S3_REGION_NAME)
 
 # Mostrar pantalla de creación de un issue
 def pantallaCrearIssue(request):
@@ -447,4 +456,13 @@ def ordenar_issues(request):
         usuarios.append(miembro.miembro)
 
     return render(request, 'main.html', {'issues': issues, 'equipos': equipos, 'equipo': miembro_equipo, 'usuarios': usuarios})
+
+def upload_file(request):
+    if request.method == 'POST' and request.FILES['file']:
+        myfile = request.FILES['file']
+        file_name = myfile.name
+        file_path = default_storage.save(file_name, ContentFile(myfile.read()))
+        s3.upload_file(file_path, settings.AWS_STORAGE_BUCKET_NAME, file_name)
+        return HttpResponse('File uploaded successfully')
+    return render(request, 'upload.html')
 

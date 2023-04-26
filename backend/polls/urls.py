@@ -36,6 +36,7 @@ urlpatterns = [
     path('pantallaAddDeadline/<int:idIssue>/', issue_viewset.pantallaAddDeadline, name='pantallaAñadirDeadline'),
     path('addDeadline/<int:idIssue>/', issue_viewset.addDeadline, name='añadirDeadline'),
     path('eliminarDeadline/<int:idIssue>/', issue_viewset.eliminarDeadline, name='eliminarDeadline'),
+    path('addAttachments', issue_viewset.upload_file, name='addAttachments'),
     #Eliminar vigilante de la issue
     path('eliminar-vigilante/<int:idIssue>/<int:idWatcher>/', issue_viewset.eliminarVigilante, name='eliminar_vigilante'),
     path('pantalla-agregar-vigilante/<int:idIssue>/', issue_viewset.mostrarUsuariosParaAñadir, name='mostrar-pantalla-vigilante'),
