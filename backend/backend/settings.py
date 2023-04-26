@@ -49,12 +49,16 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '517612110729-sssdvp4v505h2mul4qpvtbutfakrfstl.a
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 # SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 
+<<<<<<< Updated upstream
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = 'https://it12casw-backend.fly.dev/login/auth'
+=======
+# SOCIAL_AUTH_REDIRECT_IS_HTTPS = 'http://127.0.0.1:8000/main/login/auth'
+>>>>>>> Stashed changes
 # SOCIAL_AUTH_REDIRECT_IS_HTTPS = 'https://it12casw-backend.fly.dev/login/auth'
 
 # LOGIN_REDIRECT_URL = 'http://127.0.0.1:8000/main/login/auth'
-# LOGIN_REDIRECT_URL = 'https://it12casw-backend.fly.dev/login/auth'
-LOGIN_REDIRECT_URL = 'https://it12casw-backend.fly.dev/accounts/google/login/callback/'
+LOGIN_REDIRECT_URL = 'https://it12casw-backend.fly.dev/login/auth'
+# LOGIN_REDIRECT_URL = 'https://it12casw-backend.fly.dev/accounts/google/login/callback/'
 
 
 
