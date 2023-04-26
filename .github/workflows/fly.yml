@@ -13,7 +13,7 @@ jobs:
       - run: flyctl deploy backend --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-      - run: fly ssh console
+      - run: flyctl ssh console
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
       - run: cd code
