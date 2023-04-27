@@ -3,14 +3,29 @@ on:
   push:
     branches:
       - Deploy-Fly.io
+
 jobs:
   deploy:
     name: Deploy app
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
+
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy backend --remote-only
+
+      - name: Deploy app
+        run: flyctl deploy backend --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: SSH into app and run migration
+        run: |
+          flyctl ssh console -a it12casw-backend
+          cd code
+          python manage.py migrate
+          exit
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
 
