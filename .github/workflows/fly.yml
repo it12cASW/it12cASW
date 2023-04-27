@@ -13,7 +13,4 @@ jobs:
       - run: flyctl deploy backend --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-       - run: flyctl ssh console -a it12casw-backend --command "cd code && python manager.py migrate && exit"
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
