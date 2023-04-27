@@ -20,11 +20,7 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: SSH into app and run migration
-        run: |
-          flyctl ssh console -a it12casw-backend
-          cd code
-          python manage.py migrate
-          exit
+        run: flyctl ssh console -a it12casw-backend --command "python code/manage.py migrate"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
