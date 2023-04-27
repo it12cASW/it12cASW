@@ -1,8 +1,8 @@
-name: Deploy to Fly and Run Commands
+name: Fly Deploy
 on:
   push:
     branches:
-      - main
+      - Deploy-Fly.io
 jobs:
   deploy:
     runs-on: ubuntu-latest
