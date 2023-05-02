@@ -4,10 +4,18 @@ from allauth.account.views import LoginView
 from django.conf.urls.static import static
 from django.conf import settings
 
+from rest_framework import routers
+from .open_api.issue_views import IssueViews
+
+
+
+router = routers.SimpleRouter()
+router.register(r'issues', IssueViews)
+
 
 urlpatterns = [
 
-    # Principal
+                  # Principal
     path('', index_viewset.index, name='index'),
 
     # Usuario
@@ -54,6 +62,13 @@ urlpatterns = [
     #Busqueda
     path('search/', issue_viewset.search_issues, name='search_issues'),
 
+
+
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += router.urls
+
+
 
 
