@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'allauth.account', # must
     'allauth.socialaccount', # must
     'allauth.socialaccount.providers.google', # new
+
+    # rest API
+    'rest_framework',
 ]
 
 # SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '812040518166-trifui9v2mc6nnhgkbud5hn4kj5g6c4s.apps.googleusercontent.com'

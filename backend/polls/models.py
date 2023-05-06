@@ -37,7 +37,6 @@ class Issue(models.Model):
     def __str__(self):
         return f"{self.asunto} ({self.id})"
 
-
 # Clase actividad_issue
 class Actividad_Issue(models.Model):
     id = models.AutoField(primary_key=True)
@@ -81,6 +80,7 @@ class Imagen_Perfil(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, unique=True)
     imagen = models.ImageField(upload_to='imagenes_perfil', null=True, blank=True)
 
+# Clase que contiene los comentarios
 class Comentario(models.Model):
     id = models.AutoField(primary_key=True)
     autor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
@@ -98,6 +98,7 @@ class Watcher(models.Model):
     def delete(self, *args, **kwargs):
         self.issue.removeWatcher(self.usuario)
         super(Watcher, self).delete(*args, **kwargs)
+
 
 class Deadline(models.Model):
     id = models.AutoField(primary_key=True)

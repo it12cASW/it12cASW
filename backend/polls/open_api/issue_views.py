@@ -9,7 +9,7 @@ from polls.models import Issue
 
 class IssueViews(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     serializer_class = IssueSerializer
-    queryset = Issue.objects.all()
+    queryset = Issue.objects.all() # Conjunto de datos que podemos consultar
 
     def get_queryset(self):
         queryset = Issue.objects.all()
@@ -22,3 +22,6 @@ class IssueViews(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Retrieve
     def update(self, request):
         super(self, request).update(request)
         return Response({'status': 'Issue updated'})
+
+
+

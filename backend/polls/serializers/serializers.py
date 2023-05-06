@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from polls.models import Issue
+from polls.models import Issue, Deadline, Comentario, Watcher 
 from django.contrib.auth.models import User
 
 class UserSerializer(serializers.Serializer):
@@ -53,3 +53,55 @@ class IssueSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+class CommentSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    autor = UserSerializer(required=False)
+    contenido = serializers.CharField(max_length=1000, required=False)
+    fecha = serializers.DateTimeField(required=False)
+    issue = IssueSerializer(required=False)
+    deleted = serializers.BooleanField(default=False, required=False)
+
+    # Para POST
+    def create(self, validated_data):
+        return Comentario.objects.create(**validated_data)
+
+    # Para PUT
+    def update(self, instance, validated_data):
+        instance.autor = validated_data.get('autor', instance.autor)
+        instance.contenido = validated_data.get('contenido', instance.contenido)
+        instance.fecha = validated_data.get('fecha', instance.fecha)
+        instance.issue = validated_data.get('issue', instance.issue)
+        instance.deleted = validated_data.get('deleted', instance.deleted)
+        instance.save()
+        return instance
+
+class DeadlineSerializer(serializers.Serializer):
+    
+    id = serializers.IntegerField(read_only=True)
+    issue = IssueSerializer(required=False)
+    deadline = serializers.DateTimeField(required=False)
+    motivo = serializers.CharField(max_length=1000, required=False)
+
+    def create(self, validated_data):
+        return Deadline.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.issue = validated_data.get('issue', instance.issue)
+        instance.deadline = validated_data.get('deadline', instance.deadline)
+        instance.motivo = validated_data.get('motivo', instance.motivo)
+        instance.save()
+        return instance
+    
+class WatcherSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    issue = IssueSerializer(required=False)
+    usuario = UserSerializer(required=False)
+
+    def create(self, validated_data):
+        return Watcher.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.issue = validated_data.get('issue', instance.issue)
+        instance.user = validated_data.get('user', instance.user)
+        instance.save()
+        return instance

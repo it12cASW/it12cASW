@@ -6,68 +6,77 @@ from django.conf import settings
 
 from rest_framework import routers
 from .open_api.issue_views import IssueViews
+from .open_api.comment_views import CommentViews
+from .open_api.deadline_views import DeadlineView
+from .open_api.watcher_views import WatcherViews
 
 
 
-router = routers.SimpleRouter()
-router.register(r'issues', IssueViews)
+# router = routers.SimpleRouter()
+router = routers.DefaultRouter()
+router.register(r'issues', IssueViews) # Con esta ruta voy a 'IssueViews', que es el viewset que cree en open_api/issue_views.py (una para cada: POST, GET, PUT, DELETE)
+router.register(r'comment', CommentViews)
+router.register(r'deadline', DeadlineView)
+router.register(r'watcher', WatcherViews)
 
 
-urlpatterns = [
+urlpatterns = router.urls
 
-                  # Principal
-    path('', index_viewset.index, name='index'),
+# urlpatterns = [
 
-    # Usuario
-    path('register/', user_viewset.register, name='register'),
-    path('login/', user_viewset.logintest, name='logintest'),
-    path('login/auth', user_viewset.login_with_google, name='login_with_google'),
-    path('is', user_viewset.aux, name='aux'),
-    path('logout', user_viewset.logoutTest, name='logoutTest'),
-    path('editarPerfil', user_viewset.pantallaEditarPerfil, name='pantallaEditarPerfil'),
-    path('editarPerfil/actualizar', user_viewset.actualizarPerfil, name='actualizarPerfil'),
-    path('verPerfil/<str:username>/', user_viewset.verPerfil, name='verPerfil'),
+#                   # Principal
+#     path('', index_viewset.index, name='index'),
 
-    # Issue
-    path('pantallaCrearIssue', issue_viewset.pantallaCrearIssue, name='pantallaCrearIssue'),
-    path('crearIssue', issue_viewset.crearIssue, name='crearIssue'),
-    path('mostrarIssue/<int:idIssue>/', issue_viewset.mostrarIssue, name='mostrarIssue'),
-    path('eliminarIssue/<int:idIssue>/', issue_viewset.eliminarIssue, name='eliminarIssue'),
-    path('mostrarPantallaEditarIssue/<int:idIssue>/', issue_viewset.mostrarPantallaEditarIssue, name='mostrarPantallaEditarIssue'),
-    path('editarIssue/<int:idIssue>/', issue_viewset.editarIssue, name='editarIssue'),
-    path('addComment/<int:idIssue>/', issue_viewset.addComment, name='añadirComments'),
-    path('bulkInsertView', issue_viewset.bulkInsertView, name='bulkInsertView'),
-    path('bulkInsert', issue_viewset.bulkInsert, name='bulkInsert'),
-    path('quieroBloquear/<int:idIssue>/', issue_viewset.quieroBloquear, name='quieroBloquear'),
-    path('bloquearIssue/<int:idIssue>/', issue_viewset.bloquearIssue, name='bloquearIssue'),
-    path('desbloquearIssue/<int:idIssue>/', issue_viewset.desbloquearIssue, name='desbloquearIssue'),
-    path('pantallaAddDeadline/<int:idIssue>/', issue_viewset.pantallaAddDeadline, name='pantallaAñadirDeadline'),
-    path('addDeadline/<int:idIssue>/', issue_viewset.addDeadline, name='añadirDeadline'),
-    path('eliminarDeadline/<int:idIssue>/', issue_viewset.eliminarDeadline, name='eliminarDeadline'),
-    #Eliminar vigilante de la issue
-    path('eliminar-vigilante/<int:idIssue>/<int:idWatcher>/', issue_viewset.eliminarVigilante, name='eliminar_vigilante'),
-    path('pantalla-agregar-vigilante/<int:idIssue>/', issue_viewset.mostrarUsuariosParaAñadir, name='mostrar-pantalla-vigilante'),
-    path('agregar-vigilante/<int:idIssue>/', issue_viewset.agregarVigilante, name='agregar_vigilante'),
-    # Equipo
-    path('pantallaCrearEquipo', equipo_viewset.pantallaCrearEquipo, name='pantallaCrearEquipo'),
-    path('crearEquipo/', equipo_viewset.crearEquipo, name='crearEquipo'),
-    path('seleccionarEquipo/', user_viewset.seleccionarEquipo, name='seleccionarEquipo'),
+#     # Usuario
+#     path('register/', user_viewset.register, name='register'),
+#     path('login/', user_viewset.logintest, name='logintest'),
+#     path('login/auth', user_viewset.login_with_google, name='login_with_google'),
+#     path('is', user_viewset.aux, name='aux'),
+#     path('logout', user_viewset.logoutTest, name='logoutTest'),
+#     path('editarPerfil', user_viewset.pantallaEditarPerfil, name='pantallaEditarPerfil'),
+#     path('editarPerfil/actualizar', user_viewset.actualizarPerfil, name='actualizarPerfil'),
+#     path('verPerfil/<str:username>/', user_viewset.verPerfil, name='verPerfil'),
 
-    # Filtros
-    path('filtrar-issues/', issue_viewset.filtrar_issues, name='filtrar-issues'),
+#     # Issue
+#     path('pantallaCrearIssue', issue_viewset.pantallaCrearIssue, name='pantallaCrearIssue'),
+#     path('crearIssue', issue_viewset.crearIssue, name='crearIssue'),
+#     path('mostrarIssue/<int:idIssue>/', issue_viewset.mostrarIssue, name='mostrarIssue'),
+#     path('eliminarIssue/<int:idIssue>/', issue_viewset.eliminarIssue, name='eliminarIssue'),
+#     path('mostrarPantallaEditarIssue/<int:idIssue>/', issue_viewset.mostrarPantallaEditarIssue, name='mostrarPantallaEditarIssue'),
+#     path('editarIssue/<int:idIssue>/', issue_viewset.editarIssue, name='editarIssue'),
+#     path('addComment/<int:idIssue>/', issue_viewset.addComment, name='añadirComments'),
+#     path('bulkInsertView', issue_viewset.bulkInsertView, name='bulkInsertView'),
+#     path('bulkInsert', issue_viewset.bulkInsert, name='bulkInsert'),
+#     path('quieroBloquear/<int:idIssue>/', issue_viewset.quieroBloquear, name='quieroBloquear'),
+#     path('bloquearIssue/<int:idIssue>/', issue_viewset.bloquearIssue, name='bloquearIssue'),
+#     path('desbloquearIssue/<int:idIssue>/', issue_viewset.desbloquearIssue, name='desbloquearIssue'),
+#     path('pantallaAddDeadline/<int:idIssue>/', issue_viewset.pantallaAddDeadline, name='pantallaAñadirDeadline'),
+#     path('addDeadline/<int:idIssue>/', issue_viewset.addDeadline, name='añadirDeadline'),
+#     path('eliminarDeadline/<int:idIssue>/', issue_viewset.eliminarDeadline, name='eliminarDeadline'),
+#     #Eliminar vigilante de la issue
+#     path('eliminar-vigilante/<int:idIssue>/<int:idWatcher>/', issue_viewset.eliminarVigilante, name='eliminar_vigilante'),
+#     path('pantalla-agregar-vigilante/<int:idIssue>/', issue_viewset.mostrarUsuariosParaAñadir, name='mostrar-pantalla-vigilante'),
+#     path('agregar-vigilante/<int:idIssue>/', issue_viewset.agregarVigilante, name='agregar_vigilante'),
+#     # Equipo
+#     path('pantallaCrearEquipo', equipo_viewset.pantallaCrearEquipo, name='pantallaCrearEquipo'),
+#     path('crearEquipo/', equipo_viewset.crearEquipo, name='crearEquipo'),
+#     path('seleccionarEquipo/', user_viewset.seleccionarEquipo, name='seleccionarEquipo'),
 
-    #Ordenar
-    path('ordenar-issues/', issue_viewset.ordenar_issues, name='ordenar-issues'),
+#     # Filtros
+#     path('filtrar-issues/', issue_viewset.filtrar_issues, name='filtrar-issues'),
 
-    #Busqueda
-    path('search/', issue_viewset.search_issues, name='search_issues'),
+#     #Ordenar
+#     path('ordenar-issues/', issue_viewset.ordenar_issues, name='ordenar-issues'),
+
+#     #Busqueda
+#     path('search/', issue_viewset.search_issues, name='search_issues'),
 
 
 
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-urlpatterns += router.urls
+
 
 
 
