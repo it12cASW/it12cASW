@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'allauth.account', # must
     'allauth.socialaccount', # must
     'allauth.socialaccount.providers.google', # new
+
+    # API rest
+    'rest_framework',
 ]
 
 # SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '812040518166-trifui9v2mc6nnhgkbud5hn4kj5g6c4s.apps.googleusercontent.com'
@@ -145,6 +148,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:9000",
     "http://localhost:3000",
+    "https://swagger.io",
 ]
 
 
@@ -183,3 +187,13 @@ AWS_DEFAULT_ACL = None
 AWS_S3_VERITY = True
 # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 #AWS_SESSION_TOKEN = 'FwoGZXIvYXdzEOX//////////wEaDJoMhyrZqxnrgVWIeCLSAYullgAvLfiuIyMT4alUlw5z0x57zBkzfAQWxUH1/kEDO//ZQxod36VoJBJC1YC0dj/eI2L1IJG5Lib1E6Jb6F34ja0qh9EBH/KpNhAPyUngVA7m6lCqjWpXzezmIFhTdckkw1wdey/FqxjaOaddw2JtLciJ1kpt2+A0fNt+GKwUAhj7bGJQ4HR2BVx+BSZAeXutFnKDifWdizdVFihijpSQJTpeAALuVCDIjdN1RFIfOsp53pWdecNE5oKHa6AEAJ5tcmXheLA28AD4zj2EgE7aUCiurtqhBjItO5HeXxGZ5Yb3LsY6KrEzyIBuw9/FLRMtTSCjnnh/TdWQ1W6evspAOxUyO88j'
+
+
+# API rest
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
