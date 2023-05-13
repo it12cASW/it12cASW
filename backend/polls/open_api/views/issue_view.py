@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from polls.models import Issue, Actividad_Issue
 from django.contrib.auth.models import User
+from django.db.models import Q
 from polls.open_api.serializers.issue_serializer import IssueSerializer
 from rest_framework.decorators import api_view, action
 from rest_framework import request
@@ -9,7 +10,6 @@ from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import permission_classes, authentication_classes
-
 from rest_framework import status
 from rest_framework.response import Response
 from datetime import datetime
@@ -22,8 +22,11 @@ class IssueViewSet(ModelViewSet):
 
     @action(methods=['get'], detail=False, url_path='issues')
     def get_queryset(self):
-
-        result = Issue.objects.filter(deleted=False)
+        query = self.request.query_params.get('search')
+        if query:
+            result = Issue.objects.filter(Q(asunto__icontains=query) | Q(descripcion__icontains=query), deleted=False)
+        else:
+            result = Issue.objects.filter(deleted=False)
         return result
 
     @action(methods=['post'], detail=False, url_path='create')

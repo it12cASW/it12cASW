@@ -99,6 +99,14 @@ paths:
       - Issues
       summary: Devuelve todas las issues
       operationId: get_issues
+      parameters:
+      - in: query
+        name: search
+        schema: 
+          type: string
+        description: Busqueda de issues segun el texto introducido
+        
+      
       responses:
         '200':
           description: se han pasado todas las issues correctamente
