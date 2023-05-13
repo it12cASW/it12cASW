@@ -87,6 +87,149 @@ paths:
           description: No se han introducido todos los datos
         '409':
           description: El usuario ya existe
+  /issues:
+    get:
+      summary: Obtener las issues
+      responses:
+        '401':
+          description: El token es inválido
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    post:
+      summary: Crear issue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateIssue'
+      responses:
+        '201':
+          description: Se ha creado la issue
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Los campos pasados son insuficientes
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '401':
+          description: El token no es válido
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '409':
+          description: Algun parámetro introducido es inválido
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    put:
+      summary: Editar una issue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditIssue'
+      responses:
+        '400':
+          description: Faltan parámetros
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '401':
+          description: El token no es válido
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '409':
+          description: Alguno de los parámetros no existe
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '200':
+          description: Se ha editado la issue correctamente
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    
+  /issues/delete:
+    post:
+      summary: Eliminar una issue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteIssue'
+            example:
+              id_issue: 33
+      responses:
+        '400':
+          description: No se ha podido encontrar la Issue
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '200':
+            description: Se ha eliminado la issue correctamente
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        '401':
+          description: El token no es válido
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
 components:
   schemas:
     User:
@@ -124,3 +267,94 @@ components:
           type: array
           items:
             type: string
+    CreateIssue:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id_creador:
+              type: integer
+            asunto:
+              type: string
+            descripcion:
+              type: string
+            asignado:
+              type: integer
+            asociado:
+              type: integer
+            blocked:
+              type: boolean
+            reason_blocked:
+              type: string
+            deadline:
+              type: string
+              format: date-time
+            prioridad:
+              type: string
+            status:
+              type: string
+      required:
+        - data
+        - id_creador
+        - asunto
+        - descripcion 
+    DeleteIssue:
+      type: object
+      properties:
+        id_issue:
+          type: integer
+    IssueData:
+      type: object
+      properties:
+        asunto:
+          type: string
+        descripcion:
+          type: string
+        asignado:
+          type: integer
+        asociado:
+          type: integer
+        blocked:
+          type: boolean
+        reason_blocked:
+          type: string
+        deadline:
+          type: string
+          format: date-time
+        prioridad:
+          type: string
+        status:
+          type: string
+    EditIssue:
+      type: object
+      properties:
+        id_issue:
+          type: integer
+        id_user:
+          type: integer
+        data:
+          $ref: '#/components/schemas/IssueData'
+        
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
