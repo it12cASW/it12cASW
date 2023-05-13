@@ -91,31 +91,6 @@ class IssueViewSet(ModelViewSet):
     #     "id_issue": 33
     # }
 
-    @action(methods=['delete'], detail=False, url_path='delete')
-    def deleteIssue(self, request, format=None):        
-        # Compruebo que estan todos los campos
-        id_issue = request.data['id_issue']
-        if not id_issue:
-            return Response({'message': 'Please provide all the required fields'}, status=status.HTTP_400_BAD_REQUEST)
-        elif not Issue.objects.filter(id=id_issue).exists():
-            return Response({'message': 'La issue no existe'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Obtengo el usuario que hace al peticion
-        # userPeticion = token_object.user
-        # userCreador = Issue.objects.get(id=id_issue).creador
-        # if userPeticion != userCreador:
-        #     return Response({'message': 'Solo el creador puede borrar la issue'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Borro la issue
-        issue = Issue.objects.get(id=id_issue)
-        if issue.deleted == 1:
-            return Response({'message': 'La issue no existe'}, status=status.HTTP_400_BAD_REQUEST)
-
-        issue.deleted = 1
-        issue.save()
-        
-        return Response({'message': 'Issue borrado correctamente'}, status=status.HTTP_200_OK)
-
     @action(methods=['put'], detail=False, url_path='edit')
     def editIssue(self, request, format=None):
         # Compruebo que estan todos los campos y que la issue existe
@@ -206,8 +181,8 @@ class IssueViewSet(ModelViewSet):
         
         return Response({'message': 'Issue borrado correctamente'}, status=status.HTTP_200_OK)
     
-    @action(methods=['put'], detail=True, url_path='addAsociated')
-    def addAsociated(self, request, pk=None):
+    @action(methods=['put'], detail=True, url_path='addAssociated')
+    def addAssociated(self, request, pk=None):
         issue = self.get_object()
         if not issue or issue.deleted == 1: 
             return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
@@ -223,7 +198,19 @@ class IssueViewSet(ModelViewSet):
         issue.save()
 
         return Response({'message': 'Se ha asociado correctamente el usuario a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
+    
+    @action(methods=['put'], detail=True, url_path='deleteAssociated')
+    def deleteAssociated(self, request, pk=None):
+        issue = self.get_object()
+        if not issue or issue.deleted == 1: 
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        elif not issue.associat: 
+            return Response({'message': 'La issue no tiene un usuario asociado'}, status=status.HTTP_400_BAD_REQUEST)
         
+        issue.associat = None
+        issue.save()
+
+        return Response({'message': 'Se ha eliminado correctamente el usuario asociado a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
 
         
             

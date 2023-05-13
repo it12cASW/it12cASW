@@ -239,7 +239,7 @@ paths:
                       description: ID del usuario al que se le quiere associar la Issue
       responses:
         '200':
-            description: Se ha eliminado la issue correctamente
+            description: Se ha añadido el usuario como asociado a la issue correctamente
             content: 
               application/json:
                 schema:
@@ -250,7 +250,7 @@ paths:
                     items: 
                       $ref: '#/components/schemas/Issue'
         '400':
-            description: Los datos introducidos, idIssue o idUser no son correctos 
+            description: Los datos introducidos, idIssue o idUser, no son correctos 
             content: 
               application/json:
                 schema:
@@ -278,7 +278,52 @@ paths:
                     type: string
       security:
       - ApiKeyAuth: []
-  
+  /issues/{idIssue}/deleteAssociated/:
+    put:
+      tags:
+      - Asociados
+      summary: Elimina el usuario que esta asociado a la issue
+      operationId: delete_asociated
+      parameters:
+      - name: idIssue
+        in: path
+        description: ID de la Issue a la qual se le debe eliminar el usuario asociado
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+            description: Se ha eliminado el usuario associado a la issue correctamente
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                    items: 
+                      $ref: '#/components/schemas/Issue'
+        '400':
+            description: La issue no existe 
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        '401':
+            description: El token no es válido
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+      security:
+      - ApiKeyAuth: []
 components:
   schemas:
     User:
