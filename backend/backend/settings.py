@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     # API rest
     'rest_framework',
+    'rest_framework.authtoken', # token authentication
 ]
 
 # SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '812040518166-trifui9v2mc6nnhgkbud5hn4kj5g6c4s.apps.googleusercontent.com'
@@ -148,7 +149,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:9000",
     "http://localhost:3000",
-    "https://swagger.io",
+    # "https://swagger.io",
 ]
 
 
@@ -193,7 +194,8 @@ AWS_S3_VERITY = True
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+
+    # ]
 }
