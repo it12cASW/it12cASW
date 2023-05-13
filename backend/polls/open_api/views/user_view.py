@@ -35,11 +35,11 @@ class UserViewSet(ModelViewSet):
         print("usuario y contraseña correctos")
         if user is not None:
             token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key})
+            return Response({'message': 'User logged in successfully', 'token':token.key}, status=status.HTTP_200_OK)
         else:
             return Response({'message': 'Usuario o contraseña incorrectos'}, status=status.HTTP_404_NOT_FOUND)
     
-        return Response({'message': 'User logged in successfully', 'token':token.key}, status=status.HTTP_200_OK)
+        
 
     @action(methods=['post'], detail=False, url_path='register')
     def register(self, request, format=None):

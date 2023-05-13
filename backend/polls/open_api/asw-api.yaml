@@ -5,8 +5,10 @@ info:
 servers:
   - url: http://127.0.0.1:8000/api
 paths:
-  /users:
+  /users/:
     get:
+      tags:
+      - Users
       summary: Devuelve todos los usuarios
       operationId: get_users
       responses:
@@ -20,6 +22,8 @@ paths:
                   $ref: '#/components/schemas/User'
   /users/login/:
     post:
+      tags:
+      - Users
       summary: Iniciar sesión de usuario
       operationId: user_login
       requestBody:
@@ -50,8 +54,10 @@ paths:
           description: No se han proporcionado todos los datos
         '404':
           description: Usuario o contraseña incorrectos
-  /users/register:
+  /users/register/:
     post:
+      tags:
+      - Users
       summary: Registro de usuario
       operationId: user_registration
       requestBody:
@@ -87,6 +93,192 @@ paths:
           description: No se han introducido todos los datos
         '409':
           description: El usuario ya existe
+  /issues/:
+    get:
+      tags:
+      - Issues
+      summary: Devuelve todas las issues
+      operationId: get_issues
+      responses:
+        '200':
+          description: se han pasado todas las issues correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Issue'
+      security:
+      - ApiKeyAuth: []
+  /issues/create/:
+    post:
+      tags:
+      - Issues
+      summary: Crear una issue
+      operationId: create_issues
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id_creador:
+                  type: integer
+                asunto:
+                  type: string
+                descripcion:
+                  type: string
+                asociado: 
+                  type: integer
+                asignado:
+                  type: integer
+                blocked: 
+                  type: boolean
+                reason_blocked:
+                  type: string
+                deadline:
+                  type: string
+                  format: date-time
+                prioridad:
+                  type: string
+                status:
+                  type: string
+              required:
+                - id_creador
+                - asunto
+                - description
+                  
+      responses:
+        '201':
+            description: Se ha creado la issue correctamente
+            content:
+              application/json:
+                schema:
+                  type: object
+                  items: 
+                    $ref: '#/components/schemas/Issue'
+        '400':
+          description: El usuario no ha introducido los datos necesarios
+        '401':
+          description: Falta el token de autentificación
+        '409':
+          description: Alguno de los usuarios introducido no existe
+      security:
+      - ApiKeyAuth: []
+      
+  /issues/{idIssue}/delete/:
+    post:
+      tags:
+      - Issues
+      summary: Eliminar una issue
+      operationId: delete_issue
+      parameters:
+      - name: idIssue
+        in: path
+        description: ID de la Issue a eliminar
+        required: true
+        schema:
+          type: integer
+          format: int64
+      
+      responses:
+        '400':
+          description: No se ha podido encontrar la Issue
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '200':
+            description: Se ha eliminado la issue correctamente
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        '401':
+          description: El token no es válido
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+      - ApiKeyAuth: []
+  
+  /issues/{idIssue}/addAsociated/:
+    put:
+      tags:
+      - Asociados
+      summary: Añade un usuario como asociado a una issue
+      operationId: add_asociated
+      parameters:
+      - name: idIssue
+        in: path
+        description: ID de la Issue a la qual se le debe añadir el asociado
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties: 
+                    idUser:
+                      type: integer
+                      description: ID del usuario al que se le quiere associar la Issue
+      responses:
+        '200':
+            description: Se ha eliminado la issue correctamente
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                    items: 
+                      $ref: '#/components/schemas/Issue'
+        '400':
+            description: Los datos introducidos, idIssue o idUser no son correctos 
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        '401':
+            description: El token no es válido
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        '404':
+          description: No se ha podido encontrar la Issue
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+      - ApiKeyAuth: []
+  
 components:
   schemas:
     User:
@@ -124,3 +316,69 @@ components:
           type: array
           items:
             type: string
+    Issue:
+      type: object
+      properties:
+        id:
+          type: integer
+        asunto:
+          type: string
+        descripcion:
+          type: string
+        creador:
+          type: object
+          properties:
+            id:
+              type: integer
+            username:
+              type: string
+            email:
+              type: string
+        associat:
+          type: object
+          properties:
+            id:
+              type: integer
+            username:
+              type: string
+            email:
+              type: string
+        vigilant:
+          type: object
+          properties:
+            id:
+              type: integer
+            username:
+              type: string
+            email:
+              type: string
+        deleted:
+          type: boolean
+        asignada:
+          type: object
+          properties:
+            id:
+              type: integer
+            username:
+              type: string
+            email:
+              type: string
+        blocked:
+          type: boolean
+        reason_blocked:
+          type: string
+        deadline:
+          type: string
+          format: date-time
+        prioridad:
+          type: string
+        status:
+          type: string
+        
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header
+      description: "Token <Valor_del_Token>"
