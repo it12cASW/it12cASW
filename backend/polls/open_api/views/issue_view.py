@@ -63,7 +63,7 @@ class IssueViewSet(ModelViewSet):
 
         # Check if token is valid
         if not token_object:
-            return Response({'message': 'Token is not valid'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'message': 'Token no válido'}, status=status.HTTP_401_UNAUTHORIZED)
 
         # Compruebo que estan todos los campos
         id_creador = request.data['data']['id_creador']
@@ -71,7 +71,7 @@ class IssueViewSet(ModelViewSet):
         descripcion = request.data['data']['descripcion']
 
         if not id_creador or not asunto or not descripcion:
-            return Response({'message': 'Please provide all the required fields'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'No se han introducido todos los campos'}, status=status.HTTP_400_BAD_REQUEST)
         
         # Creo la issue
         creadorObj = User.objects.get(id=id_creador)
@@ -119,6 +119,7 @@ class IssueViewSet(ModelViewSet):
         issue.save()
 
         # Añado una actividad
+        actividad = Actividad_Issue(issue=issue, creador=creadorObj, tipo='creacion', fecha=datetime.now(), usuario=creadorObj)
 
         return Response({'message': 'Issue creado correctamente', 'issue': IssueSerializer(issue).data}, status=status.HTTP_201_CREATED)
 
@@ -128,7 +129,7 @@ class IssueViewSet(ModelViewSet):
     #     "id_issue": 33
     # }
 
-    @action(methods=['delete'], detail=False, url_path='delete')
+    @action(methods=['post'], detail=False, url_path='delete')
     def deleteIssue(self, request, format=None):
 
         # Comprobamos el token
@@ -162,6 +163,25 @@ class IssueViewSet(ModelViewSet):
         issue.save()
         
         return Response({'message': 'Issue borrado correctamente'}, status=status.HTTP_200_OK)
+
+
+    # http://127.0.0.1:8000/api/issues/delete/
+
+    # {
+    #     "id_issue": 1,
+    #     "id_user": 1,
+    #     "data": {
+    #         "asunto": "MODIFICACION",
+    #         "descripcion": "ASUNTO TEST API 1",
+    #         "asignado": 1,
+    #         "asociado": 2,
+    #         "blocked": true,
+    #         "reason_blocked": "bloqueado para test",
+    #         "deadline": "2023-04-21 00:00:00",
+    #         "prioridad": "baja",
+    #         "status": "cancelado"
+    #     }   
+    # }
 
     @action(methods=['put'], detail=False, url_path='edit')
     def editIssue(self, request, format=None):
