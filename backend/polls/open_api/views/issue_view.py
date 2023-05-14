@@ -1,12 +1,15 @@
 from rest_framework.viewsets import ModelViewSet
 from polls.models import Issue, Actividad_Issue
+from polls.consts import status, prioridades, status_order
 from django.contrib.auth.models import User
-from django.db.models import Q
+from django.db.models import Q, Max, Case, When, Value, CharField
+from django.db import models
 from polls.open_api.serializers.issue_serializer import IssueSerializer
 from rest_framework.decorators import api_view, action
 from rest_framework import request
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import permission_classes, authentication_classes
@@ -23,17 +26,22 @@ class IssueViewSet(ModelViewSet):
     @action(methods=['get'], detail=False, url_path='issues')
     def get_queryset(self):
         search = self.request.query_params.get('search')
-        status = self.request.query_params.get('status')
+        status_f = self.request.query_params.get('status')
         priority = self.request.query_params.get('priority')
         creator = self.request.query_params.get('creator')
         assigned = self.request.query_params.get('assigned')
         asociated = self.request.query_params.get('asociated')
 
+        order_field = self.request.query_params.get('order_field')
+        order = self.request.query_params.get('order')
+        
         filters = Q(deleted=False)
+        #busqueda de issues por los campos
         if search:
             filters &= (Q(asunto__icontains=search) | Q(descripcion__icontains=search))
-        if status:
-            filters &= Q(status=status)
+        #para filtrar por los campos
+        if status_f:
+            filters &= Q(status=status_f)
         if priority:
             filters &= Q(prioridad=priority)
         if creator:
@@ -42,9 +50,50 @@ class IssueViewSet(ModelViewSet):
             filters &= Q(asignada__username__icontains=assigned)
         if asociated:
             filters &= Q(associat__username__icontains=asociated)
-        
-        results = Issue.objects.filter(filters)
-        return results
+        #obtenemos los datos filtrados
+        issues = Issue.objects.filter(filters)
+        if order_field in ['prioridad', 'asunto', 'status', 'modified', 'asignada', 'creador']:
+            if order == 'asc' or not order:
+                order = ''
+            else:
+                order = '-'
+            #ordenar las issues
+            if order_field == 'prioridad':
+                results = issues.annotate(
+                    priority_order=Case(
+                        When(prioridad='baja', then=Value(1)),
+                        When(prioridad='media', then=Value(2)),
+                        When(prioridad='alta', then=Value(3)),
+                        output_field=models.IntegerField(),
+                        default=Value(0),
+                    )
+                ).order_by('priority_order' if order == 'asc' else '-priority_order')
+            elif order_field == 'status':
+                status_order_case = Case(
+                    *[When(status=value, then=Value(position)) for position, value in enumerate(status_order.keys())],
+                    output_field=CharField(),
+                )
+                results = issues.order_by(status_order_case)
+                if order == 'desc':
+                    results = results[::-1]
+            elif order_field == 'modified':
+                max_fecha_actividad = Max('actividades__fecha')
+                order_by_field = 'max_fecha_actividad' if order == 'desc' else '-max_fecha_actividad'
+
+                results = issues.annotate(
+                    max_fecha_actividad=max_fecha_actividad
+                ).order_by(order_by_field)
+            elif order_field == 'asignada':
+                results = issues.order_by(order + 'asignada__username')
+            elif order_field == 'creador':
+                results = issues.order_by(order + 'creador__username')
+            else:
+                results = issues.order_by(order + order_field)
+            return results
+        #en caso de que no se especifique el orden se ordena por prioridad enviamos las issues
+        else: 
+            return issues
+
 
     @action(methods=['post'], detail=False, url_path='create')
     def createIssue(self, request, format=None):
