@@ -4,6 +4,7 @@ from polls.consts import status, prioridades, status_order
 from django.contrib.auth.models import User
 from django.db.models import Q, Max, Case, When, Value, CharField
 from django.db import models
+from django.http import Http404
 from polls.open_api.serializers.issue_serializer import IssueSerializer
 from rest_framework.decorators import api_view, action
 from rest_framework import request
@@ -252,11 +253,14 @@ class IssueViewSet(ModelViewSet):
     
     @action(methods=['put'], detail=True, url_path='associated')
     def addAssociated(self, request, pk=None):
-        issue = self.get_object()
-        if not issue or issue.deleted == 1: 
+        try:
+            issue = self.get_object()
+        except Http404:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        if issue.deleted == 1: 
             return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
         elif issue.associat: 
-            return Response({'message': 'La issue ya tiene un usuario associado'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'La issue ya tiene un usuario associado'}, status=status.HTTP_409_CONFLICT)
         idUser = request.data['idUser'] 
         #si el usuario no existe mensage de error
         if not User.objects.filter(id=idUser).exists():
@@ -270,8 +274,11 @@ class IssueViewSet(ModelViewSet):
     
     @action(methods=['delete'], detail=True, url_path='associated/delete')
     def deleteAssociated(self, request, pk=None):
-        issue = self.get_object()
-        if not issue or issue.deleted == 1: 
+        try:
+            issue = self.get_object()
+        except Http404:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        if issue.deleted == 1: 
             return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
         elif not issue.associat: 
             return Response({'message': 'La issue no tiene un usuario asociado'}, status=status.HTTP_400_BAD_REQUEST)
@@ -282,12 +289,15 @@ class IssueViewSet(ModelViewSet):
         return Response({'message': 'Se ha eliminado correctamente el usuario asociado a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
 
     @action(methods=['put'], detail=True, url_path='asigned')
-    def addAssociated(self, request, pk=None):
-        issue = self.get_object()
-        if not issue or issue.deleted == 1: 
+    def addAsigned(self, request, pk=None):
+        try:
+            issue = self.get_object()
+        except Http404:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        if issue.deleted == 1: 
             return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
         elif issue.asignada: 
-            return Response({'message': 'La issue ya tiene un usuario asignado'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'La issue ya tiene un usuario asignado'}, status=status.HTTP_409_CONFLICT)
         idUser = request.data['idUser'] 
         #si el usuario no existe mensage de error
         if not User.objects.filter(id=idUser).exists():
@@ -300,9 +310,12 @@ class IssueViewSet(ModelViewSet):
         return Response({'message': 'Se ha asignado correctamente el usuario a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
     
     @action(methods=['delete'], detail=True, url_path='asigned/delete')
-    def deleteAssociated(self, request, pk=None):
-        issue = self.get_object()
-        if not issue or issue.deleted == 1: 
+    def deleteAsigned(self, request, pk=None):
+        try:
+            issue = self.get_object()
+        except Http404:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        if issue.deleted == 1: 
             return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
         elif not issue.asignada: 
             return Response({'message': 'La issue no tiene un usuario asignado'}, status=status.HTTP_400_BAD_REQUEST)
