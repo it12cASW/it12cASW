@@ -584,4 +584,4 @@ components:
       type: apiKey
       name: Authorization
       in: header
-      description: "Token <Valor_del_Token>"
+      description: "Para introducir el token, poner: ''Token <Valor_del_Token>''"
