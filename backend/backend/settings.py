@@ -38,6 +38,10 @@ INSTALLED_APPS = [
     'allauth.account', # must
     'allauth.socialaccount', # must
     'allauth.socialaccount.providers.google', # new
+
+    # API rest
+    'rest_framework',
+    'rest_framework.authtoken', # token authentication
 ]
 
 # Primera opción para el LOCAL
@@ -151,6 +155,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:9000",
     "http://localhost:3000",
+    "https://editor.swagger.io",
     "https://it12casw-backend.fly.dev"
 ]
 
