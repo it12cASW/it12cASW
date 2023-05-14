@@ -22,12 +22,29 @@ class IssueViewSet(ModelViewSet):
 
     @action(methods=['get'], detail=False, url_path='issues')
     def get_queryset(self):
-        query = self.request.query_params.get('search')
-        if query:
-            result = Issue.objects.filter(Q(asunto__icontains=query) | Q(descripcion__icontains=query), deleted=False)
-        else:
-            result = Issue.objects.filter(deleted=False)
-        return result
+        search = self.request.query_params.get('search')
+        status = self.request.query_params.get('status')
+        priority = self.request.query_params.get('priority')
+        creator = self.request.query_params.get('creator')
+        assigned = self.request.query_params.get('assigned')
+        asociated = self.request.query_params.get('asociated')
+
+        filters = Q(deleted=False)
+        if search:
+            filters &= (Q(asunto__icontains=search) | Q(descripcion__icontains=search))
+        if status:
+            filters &= Q(status=status)
+        if priority:
+            filters &= Q(prioridad=priority)
+        if creator:
+            filters &= Q(creador__username__icontains=creator)
+        if assigned:
+            filters &= Q(asignada__username__icontains=assigned)
+        if asociated:
+            filters &= Q(associat__username__icontains=asociated)
+        
+        results = Issue.objects.filter(filters)
+        return results
 
     @action(methods=['post'], detail=False, url_path='create')
     def createIssue(self, request, format=None):
@@ -184,7 +201,7 @@ class IssueViewSet(ModelViewSet):
         
         return Response({'message': 'Issue borrado correctamente'}, status=status.HTTP_200_OK)
     
-    @action(methods=['put'], detail=True, url_path='addAssociated')
+    @action(methods=['put'], detail=True, url_path='associated')
     def addAssociated(self, request, pk=None):
         issue = self.get_object()
         if not issue or issue.deleted == 1: 
@@ -202,7 +219,7 @@ class IssueViewSet(ModelViewSet):
 
         return Response({'message': 'Se ha asociado correctamente el usuario a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
     
-    @action(methods=['put'], detail=True, url_path='deleteAssociated')
+    @action(methods=['delete'], detail=True, url_path='associated/delete')
     def deleteAssociated(self, request, pk=None):
         issue = self.get_object()
         if not issue or issue.deleted == 1: 
@@ -215,5 +232,34 @@ class IssueViewSet(ModelViewSet):
 
         return Response({'message': 'Se ha eliminado correctamente el usuario asociado a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
 
+    @action(methods=['put'], detail=True, url_path='asigned')
+    def addAssociated(self, request, pk=None):
+        issue = self.get_object()
+        if not issue or issue.deleted == 1: 
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        elif issue.asignada: 
+            return Response({'message': 'La issue ya tiene un usuario asignado'}, status=status.HTTP_400_BAD_REQUEST)
+        idUser = request.data['idUser'] 
+        #si el usuario no existe mensage de error
+        if not User.objects.filter(id=idUser).exists():
+            return Response({'message': 'El usuario a asignar no existe'}, status=status.HTTP_409_CONFLICT)
         
+        user = User.objects.get(id=idUser)
+        issue.asignada = user
+        issue.save()
+
+        return Response({'message': 'Se ha asignado correctamente el usuario a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
+    
+    @action(methods=['delete'], detail=True, url_path='asigned/delete')
+    def deleteAssociated(self, request, pk=None):
+        issue = self.get_object()
+        if not issue or issue.deleted == 1: 
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        elif not issue.asignada: 
+            return Response({'message': 'La issue no tiene un usuario asignado'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        issue.asignada = None
+        issue.save()
+
+        return Response({'message': 'Se ha eliminado correctamente el usuario asignado a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
             
