@@ -1,5 +1,5 @@
 
-<div id="issueMainContainer">
+<div id="issueContainer">
 
     <div id="issueContenedorIzquierda">
         <div id="issueInformacionGeneral">
@@ -40,7 +40,7 @@
 
             <div id="issueComentarios">
                 <h2>Añade comentarios</h2>
-                <form action="/main/addComment/{{ issue.id }}" method="GET">
+                <form action="/addComment/{{ issue.id }}" method="GET">
                     <input type="text" name="contenido" placeholder="contenido" />
                     <button id="createButton" type="submit">Create</button>
                 </form>
@@ -68,22 +68,22 @@
             <div class="vigilantes">
             {% for vigilante in issue.vigilant.all %}
                 <span class="vigilante">{{ vigilante.username }}</span>
-                <a class="botonOpcion" href="http://127.0.0.1:8000/main/eliminar-vigilante/{{issue.id}}/{{ vigilante.id}}/" class="eliminar-vigilante-btn"> Eliminar vigilante</a>
+                <a class="botonOpcion" href="/eliminar-vigilante/{{issue.id}}/{{ vigilante.id}}/" class="eliminar-vigilante-btn"> Eliminar vigilante</a>
             {% endfor %}
             </div>
-            <a class="botonOpcion" href="http://127.0.0.1:8000/main/pantalla-agregar-vigilante/{{issue.id}}/" class="eliminar-vigilante-btn"> Añadir vigilante</a>
+            <a class="botonOpcion" href="/pantalla-agregar-vigilante/{{issue.id}}/" class="eliminar-vigilante-btn"> Añadir vigilante</a>
         </div>
 
         <div id="issueContenedorBotones">
-            <a class="botonOpcion" href="http://127.0.0.1:8000/main/pantallaAddDeadline/{{ issue.id }}/">{%if issue.deadline %} Editar la deadline de la issue{%else%}Añadir deadline a la issue{%endif%}</a>
-            <a class="botonOpcion" href="http://127.0.0.1:8000/main/eliminarIssue/{{ issue.id }}/">Eliminar Issue</a>
-            <a class="botonOpcion" href="http://127.0.0.1:8000/main/mostrarPantallaEditarIssue/{{ issue.id }}/">Editar Issue</a>
+            <a class="botonOpcion" href="/pantallaAddDeadline/{{ issue.id }}/">{%if issue.deadline %} Editar la deadline de la issue{%else%}Añadir deadline a la issue{%endif%}</a>
+            <a class="botonOpcion" href="/eliminarIssue/{{ issue.id }}/">Eliminar Issue</a>
+            <a class="botonOpcion" href="/mostrarPantallaEditarIssue/{{ issue.id }}/">Editar Issue</a>
             {% if issue.blocked %}
-                <a class="botonOpcion" style="color:red" href="http://127.0.0.1:8000/main/desbloquearIssue/{{ issue.id }}/">Desbloquear Issue</a>
+                <a class="botonOpcion" style="color:red" href="/desbloquearIssue/{{ issue.id }}/">Desbloquear Issue</a>
             {% else %}
-                <a class="botonOpcion" style="color:red" href="http://127.0.0.1:8000/main/quieroBloquear/{{ issue.id }}/">Bloquear Issue</a>
+                <a class="botonOpcion" style="color:red" href="/quieroBloquear/{{ issue.id }}/">Bloquear Issue</a>
             {% endif %}
-            <a class="botonOpcion" href="http://127.0.0.1:8000/main/login/auth">Volver a pagina principal</a>
+            <a class="botonOpcion" href="/login/auth">Volver a pagina principal</a>
         </div>
     </div>
 </div>
@@ -128,7 +128,7 @@
 
 
     /* MIGUEL */
-    #issueMainContainer {
+    #issueContainer {
         display: flex;
         flex-direction: row;
         justify-content: space-between;

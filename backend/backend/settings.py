@@ -1,5 +1,5 @@
 from pathlib import Path
-
+#importar User de polls
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -17,7 +17,7 @@ SECRET_KEY = 'django-insecure-d2**29b%qn3w52-l1*u0a&r&5)!xna#vtuq4rz#!@3$h9tt9vf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition -> cuando ejecuto migrate creo las tablas para estas apps
@@ -44,16 +44,22 @@ INSTALLED_APPS = [
     'rest_framework.authtoken', # token authentication
 ]
 
-# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '812040518166-trifui9v2mc6nnhgkbud5hn4kj5g6c4s.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '517612110729-ticc5u2mhr5ru2en798ios632bcsaaf7.apps.googleusercontent.com'
+# Primera opción para el LOCAL
+# Segunda opción para el DEPLOY
 
-# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '517612110729-sssdvp4v505h2mul4qpvtbutfakrfstl.apps.googleusercontent.com'
+# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '517612110729-ticc5u2mhr5ru2en798ios632bcsaaf7.apps.googleusercontent.com'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 
 # SOCIAL_AUTH_REDIRECT_IS_HTTPS = 'http://127.0.0.1:8000/main/login/auth'
-SOCIAL_AUTH_REDIRECT_IS_HTTPS = 'https://it12casw-backend.fly.dev/login/auth'
+# SOCIAL_AUTH_REDIRECT_IS_HTTPS = 'https://it12casw-backend.fly.dev/login/auth'
 
-LOGIN_REDIRECT_URL = 'https://it12casw-backend.fly.dev/login/auth'
+# LOGIN_REDIRECT_URL = 'http://127.0.0.1:8000/main/login/auth'
+LOGIN_REDIRECT_URL = '/login/auth'
+# LOGIN_REDIRECT_URL = 'https://it12casw-backend.fly.dev/accounts/google/login/callback/'
+
 
 
 MIDDLEWARE = [
@@ -150,6 +156,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:9000",
     "http://localhost:3000",
     "https://editor.swagger.io",
+    "https://it12casw-backend.fly.dev"
 ]
 
 
@@ -166,7 +173,7 @@ AUTHENTICATION_BACKENDS = [
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # Decir que la clase usuario es mia, para hacer la autenticacion en mi BD
-# AUTH_USER_MODEL = 'polls.User'
+#AUTH_USER_MODEL = User
 
 
 # Rutas imagenes
@@ -188,14 +195,4 @@ AWS_DEFAULT_ACL = None
 AWS_S3_VERITY = True
 # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 #AWS_SESSION_TOKEN = 'FwoGZXIvYXdzEOX//////////wEaDJoMhyrZqxnrgVWIeCLSAYullgAvLfiuIyMT4alUlw5z0x57zBkzfAQWxUH1/kEDO//ZQxod36VoJBJC1YC0dj/eI2L1IJG5Lib1E6Jb6F34ja0qh9EBH/KpNhAPyUngVA7m6lCqjWpXzezmIFhTdckkw1wdey/FqxjaOaddw2JtLciJ1kpt2+A0fNt+GKwUAhj7bGJQ4HR2BVx+BSZAeXutFnKDifWdizdVFihijpSQJTpeAALuVCDIjdN1RFIfOsp53pWdecNE5oKHa6AEAJ5tcmXheLA28AD4zj2EgE7aUCiurtqhBjItO5HeXxGZ5Yb3LsY6KrEzyIBuw9/FLRMtTSCjnnh/TdWQ1W6evspAOxUyO88j'
-
-
-# API rest
-REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-
-    # ]
-}
+CSRF_TRUSTED_ORIGINS = ['https://*.fly.dev',]

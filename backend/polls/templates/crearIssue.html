@@ -1,6 +1,6 @@
 <div id="MainContainer">
     <h1>Nuevo issue</h1>
-    <form action="/main/crearIssue" method="GET">
+    <form action="/crearIssue" method="GET">
         <div id="midContainer">
             <div id="leftContainer">
                 
@@ -53,7 +53,7 @@
         </div>
         <button id="createButton" type="submit">Create</button>
     </form>
-    <a id="volverPrincipal" href="http://127.0.0.1:8000/main/login/auth">Volver a la pantalla principal</a>
+    <a id="volverPrincipal" href="/login/auth">Volver a la pantalla principal</a>
     {% if error %}
         <p>{{ error }}</p>
     {% endif %}

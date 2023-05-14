@@ -10,6 +10,7 @@ status_order = {'NUEVO': 0,
 
 prioridades = ["baja", "media", "alta", "ninguna"]
 
+
 STATUS_CHOICES = (
         ('NUEVO', 'Nuevo'),
         ('EN_PROCESO', 'En proceso'),

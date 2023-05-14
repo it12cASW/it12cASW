@@ -15,14 +15,14 @@
         <div id="barraSuperior">
 
             <div id="superiorIzquierda">
-                <a id="aplicarFiltros" style="font-size: large" href="http://127.0.0.1:8000/main/login/auth">OCULTAR FILTRES</a>
+                <a id="aplicarFiltros" style="font-size: large" href="/login/auth">OCULTAR FILTRES</a>
                 {% include "form_search_bar.html" %}
                 <input type="checkbox">TAGS</input>
             </div>
             <div id="superiorDerecha">
-                <a id="crearIssue" href="http://127.0.0.1:8000/main/pantallaCrearIssue">Crea un nuevo issue</a>
-                <a href="http://127.0.0.1:8000/main/bulkInsertView">BULK</a>
-                <a href="http://127.0.0.1:8000/main/verPerfil/{{ user.username }}/">Ver Perfil</a>
+                <a id="crearIssue" href="/pantallaCrearIssue">Crea un nuevo issue</a>
+                <a href="/bulkInsertView">BULK</a>
+                <a href="/verPerfil/{{ user.username }}/">Ver Perfil</a>
             </div>
             
         </div>
@@ -47,7 +47,7 @@
                     {% else %}
                         <div class="col">Ninguna</div>
                     {% endif %}
-                    <div class="col" id="especial"><a href="http://127.0.0.1:8000/main/mostrarIssue/{{ issue.id }}/">{{ issue.asunto }}</a></div>
+                    <div class="col" id="especial"><a href="/mostrarIssue/{{ issue.id }}/">{{ issue.asunto }}</a></div>
                     <div class="col"><p> {{ issue.status }}</p></div>
                     <div class="col"><strong>{{ issue.asignada.username }}</strong></div>
                 </div>   
@@ -55,9 +55,9 @@
         </div>
 
         <div id="mainExtras">
-            <a href="http://127.0.0.1:8000/main/logout">Logout</a>
+            <a href="/logout">Logout</a>
 
-            <a href="http://127.0.0.1:8000/main/editarPerfil">Editar perfil</a>
+            <a href="/editarPerfil">Editar perfil</a>
 
         </div>
     </div>  
