@@ -133,7 +133,16 @@ paths:
         schema: 
           type: string
         description: Filtrado de las issues segun el usuario asociado a la issue
-      
+      - in: query
+        name: order_field
+        schema:
+          type: string
+        description: Campo por el qual se quiere ordenar la issue
+      - in: query
+        name: order
+        schema:
+          type: string
+        description: el orden a seguir para ordenar las issues
       responses:
         '200':
           description: se han pasado todas las issues correctamente
