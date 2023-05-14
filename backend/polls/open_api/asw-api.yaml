@@ -100,7 +100,7 @@ paths:
     get:
       tags:
       - Issues
-      summary: Devuelve todas las issues
+      summary: Devuelve todas las issues y se pueden filtrar y ordenar
       operationId: get_issues
       parameters:
       - in: query
@@ -128,6 +128,11 @@ paths:
         schema: 
           type: string
         description: Filtrado de las issues segun el creador de la issue
+      - in: query
+        name: asociated
+        schema: 
+          type: string
+        description: Filtrado de las issues segun el usuario asociado a la issue
       
       responses:
         '200':
@@ -243,7 +248,7 @@ paths:
       security:
       - ApiKeyAuth: []
   
-  /issues/{idIssue}/addAsociated/:
+  /issues/{idIssue}/associated/:
     put:
       tags:
       - Asociados
@@ -308,8 +313,9 @@ paths:
                     type: string
       security:
       - ApiKeyAuth: []
-  /issues/{idIssue}/deleteAssociated/:
-    put:
+  
+  /issues/{idIssue}/associated/delete/:
+    delete:
       tags:
       - Asociados
       summary: Elimina el usuario que esta asociado a la issue
@@ -325,6 +331,119 @@ paths:
       responses:
         '200':
             description: Se ha eliminado el usuario associado a la issue correctamente
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                    items: 
+                      $ref: '#/components/schemas/Issue'
+        '400':
+            description: La issue no existe 
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        '401':
+            description: El token no es válido
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+      security:
+      - ApiKeyAuth: []
+    
+  /issues/{idIssue}/asigned/:
+    put:
+      tags:
+      - Asignados
+      summary: Añade un usuario como asignado a una issue
+      operationId: add_asigned
+      parameters:
+      - name: idIssue
+        in: path
+        description: ID de la Issue a la qual se le debe añadir el usuario asignado
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties: 
+                    idUser:
+                      type: integer
+                      description: ID del usuario al que se le quiere asignar la Issue
+      responses:
+        '200':
+            description: Se ha añadido el usuario como asignado a la issue correctamente
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                    items: 
+                      $ref: '#/components/schemas/Issue'
+        '400':
+            description: Los datos introducidos, idIssue o idUser, no son correctos 
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        '401':
+            description: El token no es válido
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        '404':
+          description: No se ha podido encontrar la Issue
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+      - ApiKeyAuth: []
+  
+  /issues/{idIssue}/asigned/delete/:
+    delete:
+      tags:
+      - Asignados
+      summary: Elimina el usuario que esta asignado a la issue
+      operationId: delete_asigned
+      parameters:
+      - name: idIssue
+        in: path
+        description: ID de la Issue a la qual se le debe eliminar el usuario asignado
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+            description: Se ha eliminado el usuario asignado a la issue correctamente
             content: 
               application/json:
                 schema:
