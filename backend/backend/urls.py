@@ -5,8 +5,8 @@ from django.contrib.auth import views as auth_views
 from polls.open_api.router import router
 
 urlpatterns = [
+    path('', include('polls.urls')),
     path('admin/', admin.site.urls),
-    path('main/', include('polls.urls')),
     path('api/', include('polls.open_api.router')),
     path('accounts/', include('allauth.urls')),
 ]
