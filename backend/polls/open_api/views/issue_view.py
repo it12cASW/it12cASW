@@ -6,6 +6,7 @@ from django.db.models import Q, Max, Case, When, Value, CharField
 from django.db import models
 from django.http import Http404
 from polls.open_api.serializers.issue_serializer import IssueSerializer
+from polls.open_api.serializers.user_serializer import UserSerializer
 from rest_framework.decorators import api_view, action
 from rest_framework import request
 from rest_framework.authtoken.models import Token
@@ -250,28 +251,35 @@ class IssueViewSet(ModelViewSet):
         issue.save()
         
         return Response({'message': 'Issue borrado correctamente'}, status=status.HTTP_200_OK)
-    
-    @action(methods=['put'], detail=True, url_path='associated')
-    def addAssociated(self, request, pk=None):
+ 
+    @action(methods=['get','put'], detail=True, url_path='associated')
+    def Associated(self, request, pk=None):
         try:
             issue = self.get_object()
         except Http404:
             return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
         if issue.deleted == 1: 
             return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
-        elif issue.associat: 
-            return Response({'message': 'La issue ya tiene un usuario associado'}, status=status.HTTP_409_CONFLICT)
-        idUser = request.data['idUser'] 
-        #si el usuario no existe mensage de error
-        if not User.objects.filter(id=idUser).exists():
-            return Response({'message': 'El asociado no existe'}, status=status.HTTP_409_CONFLICT)
-        
-        user = User.objects.get(id=idUser)
-        issue.associat = user
-        issue.save()
+        if request.method == 'PUT':
 
-        return Response({'message': 'Se ha asociado correctamente el usuario a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
-    
+            if issue.associat: 
+                return Response({'message': 'La issue ya tiene un usuario associado'}, status=status.HTTP_409_CONFLICT)
+        
+            idUser = request.data['idUser'] 
+            #si el usuario no existe mensage de error
+            if not User.objects.filter(id=idUser).exists():
+                return Response({'message': 'El asociado no existe'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            user = User.objects.get(id=idUser)
+            issue.associat = user
+            issue.save()
+
+            return Response({'message': 'Se ha asociado correctamente el usuario a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
+        elif request.method == 'GET':
+            user = User.objects.get(id=issue.associat.id)
+
+            return Response({'associated': UserSerializer(user).data}, status=status.HTTP_200_OK)
+        
     @action(methods=['delete'], detail=True, url_path='associated/delete')
     def deleteAssociated(self, request, pk=None):
         try:
@@ -288,27 +296,32 @@ class IssueViewSet(ModelViewSet):
 
         return Response({'message': 'Se ha eliminado correctamente el usuario asociado a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
 
-    @action(methods=['put'], detail=True, url_path='asigned')
-    def addAsigned(self, request, pk=None):
+    @action(methods=['get','put'], detail=True, url_path='asigned')
+    def Asigned(self, request, pk=None):
         try:
             issue = self.get_object()
         except Http404:
             return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
         if issue.deleted == 1: 
             return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
-        elif issue.asignada: 
-            return Response({'message': 'La issue ya tiene un usuario asignado'}, status=status.HTTP_409_CONFLICT)
-        idUser = request.data['idUser'] 
-        #si el usuario no existe mensage de error
-        if not User.objects.filter(id=idUser).exists():
-            return Response({'message': 'El usuario a asignar no existe'}, status=status.HTTP_409_CONFLICT)
+        if request.method == 'PUT':
+            if issue.asignada: 
+                return Response({'message': 'La issue ya tiene un usuario asignado'}, status=status.HTTP_409_CONFLICT)
+            idUser = request.data['idUser'] 
+            #si el usuario no existe mensage de error
+            if not User.objects.filter(id=idUser).exists():
+                return Response({'message': 'El usuario a asignar no existe'}, status=status.HTTP_400_BAD_REQUEST)
         
-        user = User.objects.get(id=idUser)
-        issue.asignada = user
-        issue.save()
+            user = User.objects.get(id=idUser)
+            issue.asignada = user
+            issue.save()
 
-        return Response({'message': 'Se ha asignado correctamente el usuario a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
-    
+            return Response({'message': 'Se ha asignado correctamente el usuario a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
+        elif request.method == 'GET':
+            user = User.objects.get(id=issue.asignada.id)
+
+            return Response({'asigned': UserSerializer(user).data}, status=status.HTTP_200_OK)
+        
     @action(methods=['delete'], detail=True, url_path='asigned/delete')
     def deleteAsigned(self, request, pk=None):
         try:
@@ -324,4 +337,22 @@ class IssueViewSet(ModelViewSet):
         issue.save()
 
         return Response({'message': 'Se ha eliminado correctamente el usuario asignado a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
-            
+
+    @action(methods=['get','put'], detail=True, url_path='watchers')
+    def Watchers(self, request, pk=None):
+        try:
+            issue = self.get_object()
+        except Http404:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        if issue.deleted == 1:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        if request.method == 'GET':
+            users = issue.vigilant.all()
+            return Response({'vigilant': UserSerializer(users, many=True).data}, status=status.HTTP_200_OK)
+        elif request.method == 'PUT':
+            idUser = request.data['idUser']
+            if not User.objects.filter(id=idUser).exists():
+                return Response({'message': 'El usuario vigilante no existe'}, status=status.HTTP_400_BAD_REQUEST)
+            user = User.objects.get(id=idUser)
+            issue.addWatcher(user)
+            return Response({'message': 'Se ha añadido al vigilante correctamente a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
