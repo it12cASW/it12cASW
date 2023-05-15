@@ -348,7 +348,7 @@ class IssueViewSet(ModelViewSet):
             return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
         if request.method == 'GET':
             users = issue.vigilant.all()
-            return Response({'vigilant': UserSerializer(users, many=True).data}, status=status.HTTP_200_OK)
+            return Response({'message': 'El vigilante se ha añadido a la issue correctamente','vigilant': UserSerializer(users, many=True).data}, status=status.HTTP_200_OK)
         elif request.method == 'PUT':
             idUser = request.data['idUser']
             if not User.objects.filter(id=idUser).exists():
