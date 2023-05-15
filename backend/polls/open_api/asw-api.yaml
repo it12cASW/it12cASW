@@ -2,6 +2,7 @@ openapi: 3.0.0
 info:
   title: User API
   version: 1.0.0
+  description: API para la gestión, uso de https://editor.swagger.io/ para hacer las pruebas de la API
 servers:
   - url: http://127.0.0.1:8000/api
     description: Servidor de desarrollo
@@ -700,7 +701,7 @@ paths:
                   message:
                     type: string
         '409':
-          description: La issue ya tiene un usuario asociado
+          description: El usuario pasado en el body ya es vigilante de la issue
           content:
             application/json:
               schema:
@@ -712,10 +713,10 @@ paths:
       - ApiKeyAuth: []
   
   /issues/{idIssue}/watchers/delete/:
-    delete:
+    put:
       tags:
       - Watchers
-      summary: Elimina el usuario que esta vigilando a la issue
+      summary: Elimina UN usuario que esta vigilando uan de las issues
       operationId: delete_watcher
       parameters:
       - name: idIssue
@@ -726,15 +727,15 @@ paths:
           type: integer
           format: int64
       requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: 
-                  idUser:
-                    type: integer
-                    description: ID del usuario que pasara a ser vigilante de la issue
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                idUser:
+                  type: integer
+                  description: ID del usuario que pasara a ser vigilante de la issue
       responses:
         '200':
             description: Se ha eliminado el usuario asignado a la issue correctamente
@@ -774,6 +775,63 @@ paths:
                 properties:
                   message:
                     type: string
+      security:
+      - ApiKeyAuth: []
+      
+  /issues/{idIssue}/watchers/deleteAll/:
+    delete:
+      tags:
+      - Watchers
+      summary: Elimina todos los vigilantes 
+      operationId: deleteall_watcher
+      parameters:
+      - name: idIssue
+        in: path
+        description: ID de la Issue a la qual se le debe eliminar el usuario asignado
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+            description: Se ha eliminado el usuario asignado a la issue correctamente
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                    items: 
+                      $ref: '#/components/schemas/Issue'
+        '400':
+            description: La issue no tiene usuarios que eliminar 
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        '401':
+            description: El token no es válido
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        '404':
+          description: La issue no existe 
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        
       security:
       - ApiKeyAuth: []
 components:

@@ -354,10 +354,12 @@ class IssueViewSet(ModelViewSet):
             if not User.objects.filter(id=idUser).exists():
                 return Response({'message': 'El usuario vigilante no existe'}, status=status.HTTP_400_BAD_REQUEST)
             user = User.objects.get(id=idUser)
+            if issue.vigilant.filter(id=user.id).exists():
+                return Response({'message': 'El usuario ya es vigilante de la issue'}, status=status.HTTP_409_CONFLICT)
             issue.addWatcher(user)
             return Response({'message': 'Se ha añadido al vigilante correctamente a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
         
-    @action(methods=['delete'], detail=True, url_path='watchers/delete')
+    @action(methods=['put'], detail=True, url_path='watchers/delete')
     def deleteWatchers(self, request, pk=None):
         try:
             issue = self.get_object()
@@ -380,3 +382,18 @@ class IssueViewSet(ModelViewSet):
         issue.save()
         return Response({'message': 'Se ha eliminado al vigilante correctamente de la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
 
+    @action(methods=['delete'], detail=True, url_path='watchers/deleteAll')
+    def deleteAllWatchers(self, request, pk=None):
+        try:
+            issue = self.get_object()
+        except Http404:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        if issue.deleted == 1:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        #si la issue no tiene vigilantes
+        if not issue.vigilant.all():
+            return Response({'message': 'La issue no tiene vigilantes que eliminar'}, status=status.HTTP_400_BAD_REQUEST)
+        #se borran todos los vigilantes de la issue
+        issue.vigilant.clear()
+        issue.save()
+        return Response({'message': 'Se han eliminado todos los vigilantes correctamente de la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
