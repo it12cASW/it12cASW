@@ -590,6 +590,7 @@ paths:
                     type: string
       security:
       - ApiKeyAuth: []
+      
   /issues/{idIssue}/watchers/:
     get:
       tags:
@@ -713,7 +714,7 @@ paths:
   /issues/{idIssue}/watchers/delete/:
     delete:
       tags:
-      - Asignados
+      - Watchers
       summary: Elimina el usuario que esta vigilando a la issue
       operationId: delete_watcher
       parameters:
@@ -724,6 +725,16 @@ paths:
         schema:
           type: integer
           format: int64
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  idUser:
+                    type: integer
+                    description: ID del usuario que pasara a ser vigilante de la issue
       responses:
         '200':
             description: Se ha eliminado el usuario asignado a la issue correctamente
@@ -736,6 +747,15 @@ paths:
                       type: string
                     items: 
                       $ref: '#/components/schemas/Issue'
+        '400':
+            description: Los datos introducidos no son validos, el usuario introducido no es vigilante, o no existe
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
         '401':
             description: El token no es válido
             content: 

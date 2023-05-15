@@ -356,3 +356,27 @@ class IssueViewSet(ModelViewSet):
             user = User.objects.get(id=idUser)
             issue.addWatcher(user)
             return Response({'message': 'Se ha añadido al vigilante correctamente a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
+        
+    @action(methods=['delete'], detail=True, url_path='watchers/delete')
+    def deleteWatchers(self, request, pk=None):
+        try:
+            issue = self.get_object()
+        except Http404:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        if issue.deleted == 1:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        idUser = request.data['idUser']
+        if not User.objects.filter(id=idUser).exists():
+            return Response({'message': 'El usuario vigilante no existe'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not User.objects.filter(id=idUser).exists():
+            return Response({'message': 'El usuario a asignar no existe'}, status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.get(id=idUser)
+        #verificams que el usuario sea vigilante
+        if not issue.vigilant.filter(id=user.id).exists():
+            return Response({'message': 'El usuario no es vigilante de la issue'}, status=status.HTTP_400_BAD_REQUEST)
+        #se borra el vigilante de la issue
+        issue.vigilant.remove(user)
+        issue.save()
+        return Response({'message': 'Se ha eliminado al vigilante correctamente de la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
+
