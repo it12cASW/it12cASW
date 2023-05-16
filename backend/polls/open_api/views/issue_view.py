@@ -397,3 +397,14 @@ class IssueViewSet(ModelViewSet):
         issue.vigilant.clear()
         issue.save()
         return Response({'message': 'Se han eliminado todos los vigilantes correctamente de la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
+
+    @action(methods=['post'], detail=False, url_path='bulk-insert')
+    def bulkInsert(self, request, pk=None):
+        asuntos = request.data['asuntos'] if 'asuntos' in request.data else []
+
+        for asunto in asuntos:
+            issue = Issue(asunto=asunto, creador=Token.objects.get(key=request.auth).user)
+
+        return Response({'message': 'Issues creades correctamente'} ,status=status.HTTP_201_CREATED)
+
+

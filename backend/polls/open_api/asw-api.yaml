@@ -257,6 +257,46 @@ paths:
                     type: string
       security:
       - ApiKeyAuth: []
+          
+  /issues/bulk-insert/:
+    post:
+      tags:
+        - Issues
+      summary: Crear issues en bulk (solo asunto)
+      operationId: bulk-insert-issues
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                asuntos:
+                  type: array
+                  items:
+                    type: string
+              example:
+                asuntos: ["Issue 1", "Issue 2", "Issue 3"]
+      responses:
+        '201':
+          description: Issues created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Issues created successfully
+        '400':
+          description: Bad request
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+      security:
+      - ApiKeyAuth: []
   
   /issues/{idIssue}/associated/:
     get:
