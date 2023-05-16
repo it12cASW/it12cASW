@@ -10,6 +10,7 @@ from django.contrib.auth import logout
 from polls.views import issue_viewset
 from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Imagen_Perfil, Watcher
 from django.views.decorators.csrf import csrf_protect
+from django.core.files.storage import default_storage
 
 def aux(request):
     return render(request, 'login.html')
@@ -127,9 +128,19 @@ def actualizarPerfil(request):
     # Obtengo el usuario sobre el que se realizaran las actulaizaciones
     usuario = User.objects.get(id=request.user.id)
     imagen = request.FILES.get('imagen')
+    print("VOY A ACTUALIZAR EL PERFIL")
+    # ! IMAGEN
+    if imagen:
+        file_name = default_storage.save(imagen.name, imagen)
+        print("se ha guardado la imagen")
+        print("file_name: ", file_name)
+
+
     # crea una instance de imagenPerfil
     if imagen:
         if Imagen_Perfil.objects.filter(usuario=usuario).exists():
+
+            
             imagenPerfil = Imagen_Perfil.objects.get(usuario=usuario)
             imagenPerfil.imagen = imagen
             imagenPerfil.save()

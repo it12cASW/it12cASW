@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     # API rest
     'rest_framework',
     'rest_framework.authtoken', # token authentication
+
+    # AMAZON
+    'storages',
 ]
 
 # Primera opción para el LOCAL
@@ -180,19 +183,14 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-#Amazon Web Services bucket
-#instalar packages:
-    #pip install boto3
-    #pip install django-storages
-#Las access_key son temporales
-AWS_ACCES_KEY_ID = 'ASIA42HGDBSN6EKMZ2U6'
-AWS_SECRET_ACCESS_KEY = 'iBmGr56IZ5uXfXfOnmF2NooQqrwEn0a7npZgdv8x'
-AWS_STORAGE_BUCKET_NAME = 'aswproject'
-AWS_S3_SIGNATURE_NAME = 's3v4'
-AWS_S3_REGION_NAME = 'eu-west-1'
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-AWS_S3_VERITY = True
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-#AWS_SESSION_TOKEN = 'FwoGZXIvYXdzEOX//////////wEaDJoMhyrZqxnrgVWIeCLSAYullgAvLfiuIyMT4alUlw5z0x57zBkzfAQWxUH1/kEDO//ZQxod36VoJBJC1YC0dj/eI2L1IJG5Lib1E6Jb6F34ja0qh9EBH/KpNhAPyUngVA7m6lCqjWpXzezmIFhTdckkw1wdey/FqxjaOaddw2JtLciJ1kpt2+A0fNt+GKwUAhj7bGJQ4HR2BVx+BSZAeXutFnKDifWdizdVFihijpSQJTpeAALuVCDIjdN1RFIfOsp53pWdecNE5oKHa6AEAJ5tcmXheLA28AD4zj2EgE7aUCiurtqhBjItO5HeXxGZ5Yb3LsY6KrEzyIBuw9/FLRMtTSCjnnh/TdWQ1W6evspAOxUyO88j'
+
+# CREDENCIALES AMAZON
+AWS_ACCESS_KEY_ID="ASIAUQOHFI6XGO7XXIOL"
+AWS_SECRET_ACCESS_KEY="uvDuRUrSjczVm1y50g+LrtL3FH52YhUDQ+yli+DK+"
+AWS_STORAGE_BUCKET_NAME = "bucket-asw-entrega2" 
+AWS_S3_REGION_NAME="us-east-1"
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_SESSION_TOKEN="FwoGZXIvYXdzEBsaDKlZV7shUESFtk4tOiLbASDbov7raZA13TbqU1b14S6moedfY9wwwXU8gF7SV99ExlS9dbNfnKbGMxkaYyqmFl9favTuAuPhy05JRGRehonUEoqPEfF5HGJZQHqq47N3GpXRRTgjICD0MCYj0E+iS7+MBkBNTw/423Aq+nmjNkPZDh69cQ7WC4/EYIXG+D3oKnQ6TKB3ENOMzJ9Q1/MZIIn8cXGIThCO6RAzmzX9Nm8xGLt8oJHL+26mhhzDfA1vf3eLGVDvtDmFdjclTollV791cOrOT7bL+zoyjWaYRQloPjaWoSko2Lnd+Sii846jBjItC0lRZrNYd6WVfFmtiYP7GiQjw0rIMB9ksSc7AQar5pV/mrPGQzxhQA/rtEUA"
+
+
 CSRF_TRUSTED_ORIGINS = ['https://*.fly.dev',]

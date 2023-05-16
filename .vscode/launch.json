@@ -6,7 +6,7 @@
             "type": "python",
             "request": "launch",
             "stopOnEntry": false,
-            "pythonPath": "/Library/Frameworks/Python.framework/Versions/3.11/bin/python3",
+            "python": "/Library/Frameworks/Python.framework/Versions/3.11/bin/python3",
             "program": "/Users/miguelnunez/Documents/GitHub/ASW_22_23_front/backend/backend/manage.py",
             "args": [
                 "runserver",
