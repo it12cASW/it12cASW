@@ -834,6 +834,52 @@ paths:
         
       security:
       - ApiKeyAuth: []
+  /issues/{idIssue}/deadline/:
+    get:
+      tags:
+      - Deadlines
+      summary: Obten el deadline y su motivo de la issue
+      operationId: get_deadline
+      parameters:
+      - name: idIssue
+        in: path
+        description: ID de la Issue de la que se quiere realizar la consulta
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+            description: Se ha obtenido el deadline y su motivo de la issue correctamente
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                    items: 
+                      $ref: '#/components/schemas/Deadline'
+        '401':
+            description: El token no es válido
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        '404':
+          description: No se ha podido encontrar la Issue o la issue no tiene deadline
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+      - ApiKeyAuth: []
 components:
   schemas:
     User:
@@ -879,6 +925,16 @@ components:
         username:
           type: string
         email: 
+          type: string
+    Deadline:
+      type: object
+      properties:
+        issue_id:
+          type: integer
+        deadline:
+          type: string
+          format: date-time
+        motivo:
           type: string
     Issue:
       type: object

@@ -1,5 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
-from polls.models import Issue, Actividad_Issue
+from polls.models import Issue, Actividad_Issue, Deadline
 from polls.consts import status, prioridades, status_order
 from django.contrib.auth.models import User
 from django.db.models import Q, Max, Case, When, Value, CharField
@@ -7,6 +7,7 @@ from django.db import models
 from django.http import Http404
 from polls.open_api.serializers.issue_serializer import IssueSerializer
 from polls.open_api.serializers.user_serializer import UserSerializer
+from polls.open_api.serializers.deadline_serializer import DeadlineSerializer
 from rest_framework.decorators import api_view, action
 from rest_framework import request
 from rest_framework.authtoken.models import Token
@@ -139,6 +140,7 @@ class IssueViewSet(ModelViewSet):
         deadline = request.data['deadline']
         if deadline:
             issue.deadline = deadline
+            Deadline(issue=issue, deadline=deadline, motivo=None).save()
         
         # PRIORITY
         prioridad = request.data['prioridad']
@@ -216,8 +218,14 @@ class IssueViewSet(ModelViewSet):
         # Deadline
         deadline = request.data['deadline']
         if deadline:
-            issue.deadline = deadline
-
+            if issue.deadline:
+                issue.deadline = deadline
+                deadlineObj = Deadline.objects.get(issue=issue)
+                deadlineObj.deadline = deadline
+                deadlineObj.save()
+            else:
+                issue.deadline = deadline
+                Deadline(issue=issue, deadline=deadline, motivo=None).save()
         # Prioridad
         prioridad = request.data['prioridad']
         if prioridad:
@@ -348,7 +356,7 @@ class IssueViewSet(ModelViewSet):
             return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
         if request.method == 'GET':
             users = issue.vigilant.all()
-            return Response({'message': 'El vigilante se ha añadido a la issue correctamente','vigilant': UserSerializer(users, many=True).data}, status=status.HTTP_200_OK)
+            return Response({'message': 'Se ha obtenido a los vigilantes correctamente','vigilant': UserSerializer(users, many=True).data}, status=status.HTTP_200_OK)
         elif request.method == 'PUT':
             idUser = request.data['idUser']
             if not User.objects.filter(id=idUser).exists():
@@ -397,3 +405,19 @@ class IssueViewSet(ModelViewSet):
         issue.vigilant.clear()
         issue.save()
         return Response({'message': 'Se han eliminado todos los vigilantes correctamente de la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
+    
+    @action(methods=['get'], detail=True, url_path='deadline')
+    def Deadline(self, request, pk=None):
+        try:
+            issue = self.get_object()
+        except Http404:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        if issue.deleted == 1:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        if request.method == 'GET':
+            if not issue.deadline:
+                return Response({'message': 'La issue no tiene deadline'}, status=status.HTTP_400_BAD_REQUEST)
+            if not Deadline.objects.filter(issue=issue).exists():
+                return Response({'message': 'La issue no tiene deadline'}, status=status.HTTP_400_BAD_REQUEST)
+            deadline = Deadline.objects.get(issue=issue)
+            return Response({'deadline': DeadlineSerializer(deadline).data}, status=status.HTTP_200_OK)
