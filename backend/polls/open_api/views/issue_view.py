@@ -431,5 +431,22 @@ class IssueViewSet(ModelViewSet):
             issue.setDeadline(deadline, motivo)
             deadlineObj = Deadline.objects.get(issue=issue)
             return Response({'message': 'Se ha añadido la deadline a la issue correctamente', 'issue': IssueSerializer(issue).data, 'deadline': DeadlineSerializer(deadlineObj).data}, status=status.HTTP_201_CREATED)
-                
+
+    @action(methods=['delete'], detail=True, url_path='deadline/delete')
+    def deleteDeadline(self, request, pk=None):
+        try:
+            issue = self.get_object()
+        except Http404:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        if issue.deleted == 1:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        if not issue.deadline:
+            return Response({'message': 'La issue no tiene deadline'}, status=status.HTTP_400_BAD_REQUEST)
+        if not Deadline.objects.filter(issue=issue).exists():
+            return Response({'message': 'La issue no tiene deadline'}, status=status.HTTP_400_BAD_REQUEST)
+        deadline = Deadline.objects.get(issue=issue)
+        issue.deadline = None
+        issue.save()
+        deadline.delete()
+        return Response({'message': 'Se ha eliminado la deadline de la issue correctamente', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)            
 

@@ -950,6 +950,61 @@ paths:
                     type: string
       security:
       - ApiKeyAuth: []
+  /issues/{idIssue}/deadline/delete:
+    delete:
+        tags:
+        - Deadlines
+        summary: Elimina el deadline de la issue
+        operationId: delete_deadline
+        parameters:
+        - name: idIssue
+          in: path
+          description: ID de la issue a la que se le quiere eliminar el deadline
+          required: true
+          schema:
+            type: integer
+            format: int64
+        responses:
+          '200':
+              description: La deadline ha sido eliminada de la issue correctamente
+              content: 
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                      items: 
+                        $ref: '#/components/schemas/Issue'
+          '400':
+              description: Los datos introducidos no son validos o la issue no tiene deadline
+              content: 
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+          '401':
+              description: El token no es válido
+              content: 
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+          '404':
+            description: La issue no existe 
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        security:
+        - ApiKeyAuth: []
 components:
   schemas:
     User:
