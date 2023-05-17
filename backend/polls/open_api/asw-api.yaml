@@ -897,43 +897,6 @@ paths:
 
       security:
       - ApiKeyAuth: []
-<<<<<<< HEAD
-
-  /comentarios/:
-    get:
-      tags:
-      - Comments
-      summary: Get comentarios
-      description: Retrieve a list of comentarios or filter by issue_id.
-      parameters:
-        - name: issue_id
-          in: query
-          description: ID of the issue to filter by
-          required: false
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Comentario'
-        '400':
-          description: Bad request
-        '500':
-          description: Internal server error
-      security:
-      - ApiKeyAuth: []
-
-    post:
-      tags:
-      - Comments
-      summary: Create comentario
-      description: Create a new comentario.
-=======
   /issues/{idIssue}/deadline/:
     get:
       tags:
@@ -951,18 +914,18 @@ paths:
       responses:
         '200':
             description: Se ha obtenido el deadline y su motivo de la issue correctamente
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
                   properties:
                     message:
                       type: string
-                    items: 
+                    items:
                       $ref: '#/components/schemas/Deadline'
         '401':
             description: El token no es válido
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
@@ -971,7 +934,7 @@ paths:
                       type: string
         '404':
           description: No se ha podido encontrar la Issue o la issue no tiene deadline
-          content: 
+          content:
             application/json:
               schema:
                 type: object
@@ -998,12 +961,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ComentarioCreate'
-      responses:
-        '201':
-          description: Comentario created successfully
               type: object
-              properties: 
+              properties:
                 deadline:
                   type: string
                   format: date-time
@@ -1027,7 +986,7 @@ paths:
                       $ref: '#/components/schemas/Issue'
         '401':
             description: El token no es válido
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
@@ -1036,7 +995,7 @@ paths:
                       type: string
         '404':
           description: No se ha podido encontrar la Issue o la issue no tiene deadline
-          content: 
+          content:
             application/json:
               schema:
                 type: object
@@ -1052,58 +1011,6 @@ paths:
                 properties:
                   message:
                     type: string
-              example:
-                message: Comentario creado correctamente
-        '400':
-          description: Bad request
-        '500':
-          description: Internal server error
-      security:
-      - ApiKeyAuth: []
-
-
-  /comentarios/{id}/:
-    delete:
-      tags:
-        - Comments
-      summary: Borrar comentario
-      description: Borrar a comentario by ID.
-      parameters:
-        - name: id
-          in: path
-          description: ID de el comentario a borrar
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Comentario deleted successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-              example:
-                message: Comentario borrado correctamente
-        '400':
-          description: Bad Request
-          content:
-            aplication/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-              example:
-                message: El comentario ya está borrado
-        '401':
-          description: Unauthorized request
-        '404':
-          description: Comentario not found
-        '500':
-          description: Internal server error
       security:
       - ApiKeyAuth: []
   /issues/{idIssue}/deadline/delete/:
@@ -1123,18 +1030,18 @@ paths:
         responses:
           '200':
               description: La deadline ha sido eliminada de la issue correctamente
-              content: 
+              content:
                 application/json:
                   schema:
                     type: object
                     properties:
                       message:
                         type: string
-                      items: 
+                      items:
                         $ref: '#/components/schemas/Issue'
           '400':
               description: Los datos introducidos no son validos o la issue no tiene deadline
-              content: 
+              content:
                 application/json:
                   schema:
                     type: object
@@ -1143,7 +1050,7 @@ paths:
                         type: string
           '401':
               description: El token no es válido
-              content: 
+              content:
                 application/json:
                   schema:
                     type: object
@@ -1151,8 +1058,8 @@ paths:
                       message:
                         type: string
           '404':
-            description: La issue no existe 
-            content: 
+            description: La issue no existe
+            content:
               application/json:
                 schema:
                   type: object
@@ -1161,7 +1068,6 @@ paths:
                       type: string
         security:
         - ApiKeyAuth: []
->>>>>>> 7606eec4dfcb204afebff4e965e4c58d8984c424
 components:
   schemas:
     User:
@@ -1207,28 +1113,6 @@ components:
         username:
           type: string
         email:
-          type: string
-    Comentario:
-      type: object
-      properties:
-        id:
-          type: integer
-        issue_id:
-          type: integer
-        user_id:
-          type: integer
-        text:
-          type: string
-
-    ComentarioCreate:
-      type: object
-      required:
-        - issue_id
-        - text
-      properties:
-        issue_id:
-          type: integer
-        text:
           type: string
     Deadline:
       type: object
