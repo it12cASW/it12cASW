@@ -406,7 +406,7 @@ class IssueViewSet(ModelViewSet):
         issue.save()
         return Response({'message': 'Se han eliminado todos los vigilantes correctamente de la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
     
-    @action(methods=['get'], detail=True, url_path='deadline')
+    @action(methods=['get', 'post'], detail=True, url_path='deadline')
     def Deadline(self, request, pk=None):
         try:
             issue = self.get_object()
@@ -420,4 +420,16 @@ class IssueViewSet(ModelViewSet):
             if not Deadline.objects.filter(issue=issue).exists():
                 return Response({'message': 'La issue no tiene deadline'}, status=status.HTTP_400_BAD_REQUEST)
             deadline = Deadline.objects.get(issue=issue)
-            return Response({'deadline': DeadlineSerializer(deadline).data}, status=status.HTTP_200_OK)
+            return Response({'message': 'Se ha obtenido la deadline de la issue correctamente', 'deadline': DeadlineSerializer(deadline).data}, status=status.HTTP_200_OK)
+        if request.method == 'POST':
+            if issue.deadline:
+                return Response({'message': 'La issue ya tiene deadline'}, status=status.HTTP_409_CONFLICT)
+            deadline = request.data['deadline']
+            if not deadline:
+                return Response({'message': 'Introduce la fecha limite'}, status=status.HTTP_400_BAD_REQUEST)
+            motivo = request.data['motivo']
+            issue.setDeadline(deadline, motivo)
+            deadlineObj = Deadline.objects.get(issue=issue)
+            return Response({'message': 'Se ha añadido la deadline a la issue correctamente', 'issue': IssueSerializer(issue).data, 'deadline': DeadlineSerializer(deadlineObj).data}, status=status.HTTP_201_CREATED)
+                
+
