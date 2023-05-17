@@ -897,6 +897,7 @@ paths:
 
       security:
       - ApiKeyAuth: []
+<<<<<<< HEAD
 
   /comentarios/:
     get:
@@ -932,6 +933,66 @@ paths:
       - Comments
       summary: Create comentario
       description: Create a new comentario.
+=======
+  /issues/{idIssue}/deadline/:
+    get:
+      tags:
+      - Deadlines
+      summary: Obten el deadline y su motivo de la issue
+      operationId: get_deadline
+      parameters:
+      - name: idIssue
+        in: path
+        description: ID de la Issue de la que se quiere realizar la consulta
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+            description: Se ha obtenido el deadline y su motivo de la issue correctamente
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                    items: 
+                      $ref: '#/components/schemas/Deadline'
+        '401':
+            description: El token no es válido
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        '404':
+          description: No se ha podido encontrar la Issue o la issue no tiene deadline
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+      - ApiKeyAuth: []
+    post:
+      tags:
+      - Deadlines
+      summary: Añade un deadline a una issue
+      operationId: add_deadline
+      parameters:
+      - name: idIssue
+        in: path
+        description: ID de la Issue de la que se quiere realizar la consulta
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         required: true
         content:
@@ -941,6 +1002,49 @@ paths:
       responses:
         '201':
           description: Comentario created successfully
+              type: object
+              properties: 
+                deadline:
+                  type: string
+                  format: date-time
+                  description: Fecha limite de la issue
+                motivo:
+                  type: string
+                  description: Motivo por el que se ha puesto el deadline
+      responses:
+        '201':
+            description: Se ha creado la deadline y se ha añadido a la issue correctamente
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                    deadline:
+                      $ref: '#/components/schemas/Deadline'
+                    issue:
+                      $ref: '#/components/schemas/Issue'
+        '401':
+            description: El token no es válido
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        '404':
+          description: No se ha podido encontrar la Issue o la issue no tiene deadline
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '409':
+          description: La issue ya tiene un deadline
           content:
             application/json:
               schema:
@@ -1002,10 +1106,62 @@ paths:
           description: Internal server error
       security:
       - ApiKeyAuth: []
-
-
-
-
+  /issues/{idIssue}/deadline/delete/:
+    delete:
+        tags:
+        - Deadlines
+        summary: Elimina el deadline de la issue
+        operationId: delete_deadline
+        parameters:
+        - name: idIssue
+          in: path
+          description: ID de la issue a la que se le quiere eliminar el deadline
+          required: true
+          schema:
+            type: integer
+            format: int64
+        responses:
+          '200':
+              description: La deadline ha sido eliminada de la issue correctamente
+              content: 
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                      items: 
+                        $ref: '#/components/schemas/Issue'
+          '400':
+              description: Los datos introducidos no son validos o la issue no tiene deadline
+              content: 
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+          '401':
+              description: El token no es válido
+              content: 
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+          '404':
+            description: La issue no existe 
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        security:
+        - ApiKeyAuth: []
+>>>>>>> 7606eec4dfcb204afebff4e965e4c58d8984c424
 components:
   schemas:
     User:
@@ -1073,6 +1229,16 @@ components:
         issue_id:
           type: integer
         text:
+          type: string
+    Deadline:
+      type: object
+      properties:
+        issue_id:
+          type: integer
+        deadline:
+          type: string
+          format: date-time
+        motivo:
           type: string
     Issue:
       type: object
