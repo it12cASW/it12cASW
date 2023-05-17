@@ -137,11 +137,12 @@ class IssueViewSet(ModelViewSet):
             issue.reason_blocked = reason_blocked
 
         # DEADLINE
+        dline = False
         deadline = request.data['deadline']
         if deadline:
+            dline = True
             issue.deadline = deadline
-            Deadline(issue=issue, deadline=deadline, motivo=None).save()
-        
+
         # PRIORITY
         prioridad = request.data['prioridad']
         if prioridad:
@@ -153,7 +154,9 @@ class IssueViewSet(ModelViewSet):
             issue.status = estado
 
         issue.save()
-
+        if dline: 
+            deadlineObj = Deadline(issue=issue, deadline=deadline, motivo='')
+            deadlineObj.save()
         # Añado una actividad
 
         return Response({'message': 'Issue creado correctamente', 'issue': IssueSerializer(issue).data}, status=status.HTTP_201_CREATED)
