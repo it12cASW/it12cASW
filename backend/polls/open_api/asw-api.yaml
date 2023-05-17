@@ -950,7 +950,7 @@ paths:
                     type: string
       security:
       - ApiKeyAuth: []
-  /issues/{idIssue}/deadline/delete:
+  /issues/{idIssue}/deadline/delete/:
     delete:
         tags:
         - Deadlines
