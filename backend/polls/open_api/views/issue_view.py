@@ -109,7 +109,10 @@ class IssueViewSet(ModelViewSet):
             return Response({'message': 'Please provide all the required fields'}, status=status.HTTP_400_BAD_REQUEST)
         
         # Creo la issue
-        creadorObj = User.objects.get(id=id_creador)
+        try:
+            creadorObj = User.objects.get(id=id_creador)
+        except User.DoesNotExist:
+            return Response({'message': 'El creador no existe'}, status=status.HTTP_400_BAD_REQUEST)
         issue = Issue(asunto=asunto, descripcion=descripcion, creador=creadorObj)
 
         # ASOCIADO  

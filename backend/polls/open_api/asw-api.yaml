@@ -200,9 +200,11 @@ paths:
             content:
               application/json:
                 schema:
-                  type: object
-                  items: 
-                    $ref: '#/components/schemas/Issue'
+                  properties:
+                    message:
+                      type: string
+                    items: 
+                      $ref: '#/components/schemas/Issue'
         '400':
           description: El usuario no ha introducido los datos necesarios
         '401':
