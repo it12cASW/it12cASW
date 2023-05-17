@@ -416,7 +416,6 @@ class IssueViewSet(ModelViewSet):
         return Response({'message': 'Issues creades correctamente'} ,status=status.HTTP_201_CREATED)
 
 
-
     
     @action(methods=['get', 'post'], detail=True, url_path='deadline')
     def Deadline(self, request, pk=None):
