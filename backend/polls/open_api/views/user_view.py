@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth.models import User
 from polls.open_api.serializers.user_serializer import UserSerializer
+from polls.open_api.serializers.user_serializer import UserFullSerializer
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework import status
@@ -13,13 +14,35 @@ from rest_framework.decorators import permission_classes, authentication_classes
 
 
 class UserViewSet(ModelViewSet):
-    queryset = User.objects.all()
     serializer_class = UserSerializer
+    queryset = User.objects.all()
 
-    @action(methods=['get'], detail=False, url_path='users')
+    def get_serializer_class(self):
+        if self.request.query_params.get('serializer_type') == 'full':
+            # Use a different serializer if 'serializer_type' query parameter is 'alternate'
+            return UserFullSerializer
+        else:
+            # Use the default serializer
+            return UserSerializer
+
     def get_queryset(self):
-        result = User.objects.all()
-        return result
+
+        queryset = super().get_queryset()
+
+        if self.request.query_params.get('username') is not None:
+            queryset = queryset.filter(username=self.request.query_params.get('username'))
+            if not queryset:
+                return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+            return queryset
+
+        elif self.request.query_params.get('id') is not None:
+            queryset = queryset.filter(id=self.request.query_params.get('id'))
+            if not queryset:
+                return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+            return queryset
+
+        return queryset
 
     @action(methods=['post'], detail=False, url_path='login')
     def login(self, request, format=None):

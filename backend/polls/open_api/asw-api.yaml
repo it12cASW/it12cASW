@@ -15,6 +15,25 @@ paths:
       - Users
       summary: Devuelve todos los usuarios
       operationId: get_users
+      parameters:
+        - name: username
+          in: query
+          description: Username to filter users by
+          required: false
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: ID of the user to filter by
+          required: false
+          schema:
+            type: integer
+        - name: serializer_type
+          in: query
+          description: type of serializer
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -24,6 +43,10 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
   /users/login/:
     post:
       tags:
@@ -106,32 +129,32 @@ paths:
       parameters:
       - in: query
         name: search
-        schema: 
+        schema:
           type: string
         description: Busqueda de issues segun el texto introducido
       - in: query
         name: status
-        schema: 
+        schema:
           type: string
         description: Filtrado de las issues segun el estado de la issue
       - in: query
         name: priority
-        schema: 
+        schema:
           type: string
         description: Filtrado de las issues segun la prioridad de la issue
       - in: query
         name: assigned
-        schema: 
+        schema:
           type: string
         description: Filtrado de las issues segun la persona asignada a la issue
       - in: query
         name: creator
-        schema: 
+        schema:
           type: string
         description: Filtrado de las issues segun el creador de la issue
       - in: query
         name: asociated
-        schema: 
+        schema:
           type: string
         description: Filtrado de las issues segun el usuario asociado a la issue
       - in: query
@@ -174,11 +197,11 @@ paths:
                   type: string
                 descripcion:
                   type: string
-                asociado: 
+                asociado:
                   type: integer
                 asignado:
                   type: integer
-                blocked: 
+                blocked:
                   type: boolean
                 reason_blocked:
                   type: string
@@ -193,7 +216,7 @@ paths:
                 - id_creador
                 - asunto
                 - description
-                  
+
       responses:
         '201':
             description: Se ha creado la issue correctamente
@@ -201,7 +224,7 @@ paths:
               application/json:
                 schema:
                   type: object
-                  items: 
+                  items:
                     $ref: '#/components/schemas/Issue'
         '400':
           description: El usuario no ha introducido los datos necesarios
@@ -211,7 +234,7 @@ paths:
           description: Alguno de los usuarios introducido no existe
       security:
       - ApiKeyAuth: []
-      
+
   /issues/{idIssue}/delete/:
     post:
       tags:
@@ -226,11 +249,11 @@ paths:
         schema:
           type: integer
           format: int64
-      
+
       responses:
         '400':
           description: No se ha podido encontrar la Issue
-          content: 
+          content:
             application/json:
               schema:
                 type: object
@@ -239,7 +262,7 @@ paths:
                     type: string
         '200':
             description: Se ha eliminado la issue correctamente
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
@@ -248,7 +271,7 @@ paths:
                       type: string
         '401':
           description: El token no es válido
-          content: 
+          content:
             application/json:
               schema:
                 type: object
@@ -257,7 +280,7 @@ paths:
                     type: string
       security:
       - ApiKeyAuth: []
-          
+
   /issues/bulk-insert/:
     post:
       tags:
@@ -297,7 +320,7 @@ paths:
           description: Internal server error
       security:
       - ApiKeyAuth: []
-  
+
   /issues/{idIssue}/associated/:
     get:
       tags:
@@ -315,18 +338,18 @@ paths:
       responses:
         '200':
             description: Se ha añadido el usuario como asociado a la issue correctamente
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
                   properties:
                     message:
                       type: string
-                    items: 
+                    items:
                       $ref: '#/components/schemas/UserSimple'
         '401':
             description: El token no es válido
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
@@ -335,7 +358,7 @@ paths:
                       type: string
         '404':
           description: No se ha podido encontrar la Issue
-          content: 
+          content:
             application/json:
               schema:
                 type: object
@@ -363,25 +386,25 @@ paths:
               application/json:
                 schema:
                   type: object
-                  properties: 
+                  properties:
                     idUser:
                       type: integer
                       description: ID del usuario al que se le quiere associar la Issue
       responses:
         '200':
             description: Se ha añadido el usuario como asociado a la issue correctamente
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
                   properties:
                     message:
                       type: string
-                    items: 
+                    items:
                       $ref: '#/components/schemas/Issue'
         '400':
             description: Los datos introducidos no son validos
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
@@ -390,7 +413,7 @@ paths:
                       type: string
         '401':
             description: El token no es válido
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
@@ -399,7 +422,7 @@ paths:
                       type: string
         '404':
           description: No se ha podido encontrar la Issue
-          content: 
+          content:
             application/json:
               schema:
                 type: object
@@ -417,7 +440,7 @@ paths:
                     type: string
       security:
       - ApiKeyAuth: []
-  
+
   /issues/{idIssue}/associated/delete/:
     delete:
       tags:
@@ -435,18 +458,18 @@ paths:
       responses:
         '200':
             description: Se ha eliminado el usuario associado a la issue correctamente
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
                   properties:
                     message:
                       type: string
-                    items: 
+                    items:
                       $ref: '#/components/schemas/Issue'
         '401':
             description: El token no es válido
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
@@ -454,8 +477,8 @@ paths:
                     message:
                       type: string
         '404':
-          description: La issue no existe 
-          content: 
+          description: La issue no existe
+          content:
             application/json:
               schema:
                 type: object
@@ -464,7 +487,7 @@ paths:
                     type: string
       security:
       - ApiKeyAuth: []
-    
+
   /issues/{idIssue}/asigned/:
     get:
       tags:
@@ -482,18 +505,18 @@ paths:
       responses:
         '200':
             description: Se ha obtenido el usuario asociado correctamente
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
                   properties:
                     message:
                       type: string
-                    items: 
+                    items:
                       $ref: '#/components/schemas/UserSimple'
         '401':
             description: El token no es válido
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
@@ -502,7 +525,7 @@ paths:
                       type: string
         '404':
           description: No se ha podido encontrar la Issue
-          content: 
+          content:
             application/json:
               schema:
                 type: object
@@ -530,25 +553,25 @@ paths:
               application/json:
                 schema:
                   type: object
-                  properties: 
+                  properties:
                     idUser:
                       type: integer
                       description: ID del usuario al que se le quiere asignar la Issue
       responses:
         '200':
             description: Se ha añadido el usuario como asignado a la issue correctamente
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
                   properties:
                     message:
                       type: string
-                    items: 
+                    items:
                       $ref: '#/components/schemas/Issue'
         '400':
             description: Los datos introducidos no son validos
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
@@ -557,7 +580,7 @@ paths:
                       type: string
         '401':
             description: El token no es válido
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
@@ -566,7 +589,7 @@ paths:
                       type: string
         '404':
           description: No se ha podido encontrar la Issue
-          content: 
+          content:
             application/json:
               schema:
                 type: object
@@ -584,7 +607,7 @@ paths:
                     type: string
       security:
       - ApiKeyAuth: []
-  
+
   /issues/{idIssue}/asigned/delete/:
     delete:
       tags:
@@ -602,18 +625,18 @@ paths:
       responses:
         '200':
             description: Se ha eliminado el usuario asignado a la issue correctamente
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
                   properties:
                     message:
                       type: string
-                    items: 
+                    items:
                       $ref: '#/components/schemas/Issue'
         '401':
             description: El token no es válido
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
@@ -621,8 +644,8 @@ paths:
                     message:
                       type: string
         '404':
-          description: La issue no existe 
-          content: 
+          description: La issue no existe
+          content:
             application/json:
               schema:
                 type: object
@@ -631,7 +654,7 @@ paths:
                     type: string
       security:
       - ApiKeyAuth: []
-      
+
   /issues/{idIssue}/watchers/:
     get:
       tags:
@@ -649,18 +672,18 @@ paths:
       responses:
         '200':
             description: Se han obtenido los vigilantes de la issue correctamente
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
                   properties:
                     message:
                       type: string
-                    items: 
+                    items:
                       $ref: '#/components/schemas/UserSimple'
         '401':
             description: El token no es válido
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
@@ -669,7 +692,7 @@ paths:
                       type: string
         '404':
           description: No se ha podido encontrar la Issue
-          content: 
+          content:
             application/json:
               schema:
                 type: object
@@ -697,25 +720,25 @@ paths:
               application/json:
                 schema:
                   type: object
-                  properties: 
+                  properties:
                     idUser:
                       type: integer
                       description: ID del usuario que pasara a ser vigilante de la issue
       responses:
         '200':
             description: Se ha añadido el usuario como vigilante de la issue correctamente
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
                   properties:
                     message:
                       type: string
-                    items: 
+                    items:
                       $ref: '#/components/schemas/Issue'
         '400':
             description: Los datos introducidos no son validos
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
@@ -724,7 +747,7 @@ paths:
                       type: string
         '401':
             description: El token no es válido
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
@@ -733,7 +756,7 @@ paths:
                       type: string
         '404':
           description: No se ha podido encontrar la Issue
-          content: 
+          content:
             application/json:
               schema:
                 type: object
@@ -751,7 +774,7 @@ paths:
                     type: string
       security:
       - ApiKeyAuth: []
-  
+
   /issues/{idIssue}/watchers/delete/:
     put:
       tags:
@@ -772,25 +795,25 @@ paths:
           application/json:
             schema:
               type: object
-              properties: 
+              properties:
                 idUser:
                   type: integer
                   description: ID del usuario que pasara a ser vigilante de la issue
       responses:
         '200':
             description: Se ha eliminado el usuario asignado a la issue correctamente
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
                   properties:
                     message:
                       type: string
-                    items: 
+                    items:
                       $ref: '#/components/schemas/Issue'
         '400':
             description: Los datos introducidos no son validos, el usuario introducido no es vigilante, o no existe
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
@@ -799,7 +822,7 @@ paths:
                       type: string
         '401':
             description: El token no es válido
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
@@ -807,8 +830,8 @@ paths:
                     message:
                       type: string
         '404':
-          description: La issue no existe 
-          content: 
+          description: La issue no existe
+          content:
             application/json:
               schema:
                 type: object
@@ -817,12 +840,12 @@ paths:
                     type: string
       security:
       - ApiKeyAuth: []
-      
+
   /issues/{idIssue}/watchers/deleteAll/:
     delete:
       tags:
       - Watchers
-      summary: Elimina todos los vigilantes 
+      summary: Elimina todos los vigilantes
       operationId: deleteall_watcher
       parameters:
       - name: idIssue
@@ -835,18 +858,18 @@ paths:
       responses:
         '200':
             description: Se ha eliminado el usuario asignado a la issue correctamente
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
                   properties:
                     message:
                       type: string
-                    items: 
+                    items:
                       $ref: '#/components/schemas/Issue'
         '400':
-            description: La issue no tiene usuarios que eliminar 
-            content: 
+            description: La issue no tiene usuarios que eliminar
+            content:
               application/json:
                 schema:
                   type: object
@@ -855,7 +878,7 @@ paths:
                       type: string
         '401':
             description: El token no es válido
-            content: 
+            content:
               application/json:
                 schema:
                   type: object
@@ -863,17 +886,126 @@ paths:
                     message:
                       type: string
         '404':
-          description: La issue no existe 
-          content: 
+          description: La issue no existe
+          content:
             application/json:
               schema:
                 type: object
                 properties:
                   message:
                     type: string
-        
+
       security:
       - ApiKeyAuth: []
+
+  /comentarios/:
+    get:
+      tags:
+      - Comments
+      summary: Get comentarios
+      description: Retrieve a list of comentarios or filter by issue_id.
+      parameters:
+        - name: issue_id
+          in: query
+          description: ID of the issue to filter by
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comentario'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+      security:
+      - ApiKeyAuth: []
+
+    post:
+      tags:
+      - Comments
+      summary: Create comentario
+      description: Create a new comentario.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ComentarioCreate'
+      responses:
+        '201':
+          description: Comentario created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Comentario creado correctamente
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+      security:
+      - ApiKeyAuth: []
+
+
+  /comentarios/{id}/:
+    delete:
+      tags:
+        - Comments
+      summary: Borrar comentario
+      description: Borrar a comentario by ID.
+      parameters:
+        - name: id
+          in: path
+          description: ID de el comentario a borrar
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Comentario deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Comentario borrado correctamente
+        '400':
+          description: Bad Request
+          content:
+            aplication/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: El comentario ya está borrado
+        '401':
+          description: Unauthorized request
+        '404':
+          description: Comentario not found
+        '500':
+          description: Internal server error
+      security:
+      - ApiKeyAuth: []
+
+
+
+
 components:
   schemas:
     User:
@@ -918,7 +1050,29 @@ components:
           type: integer
         username:
           type: string
-        email: 
+        email:
+          type: string
+    Comentario:
+      type: object
+      properties:
+        id:
+          type: integer
+        issue_id:
+          type: integer
+        user_id:
+          type: integer
+        text:
+          type: string
+
+    ComentarioCreate:
+      type: object
+      required:
+        - issue_id
+        - text
+      properties:
+        issue_id:
+          type: integer
+        text:
           type: string
     Issue:
       type: object
