@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth.models import User
 from polls.open_api.serializers.user_serializer import UserSerializer
+from polls.open_api.serializers.user_serializer import UserFullSerializer
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework import status
@@ -13,13 +14,35 @@ from rest_framework.decorators import permission_classes, authentication_classes
 
 
 class UserViewSet(ModelViewSet):
-    queryset = User.objects.all()
     serializer_class = UserSerializer
+    queryset = User.objects.all()
 
-    @action(methods=['get'], detail=False, url_path='users')
+    def get_serializer_class(self):
+        if self.request.query_params.get('serializer_type') == 'full':
+            # Use a different serializer if 'serializer_type' query parameter is 'alternate'
+            return UserFullSerializer
+        else:
+            # Use the default serializer
+            return UserSerializer
+
     def get_queryset(self):
-        result = User.objects.all()
-        return result
+
+        queryset = super().get_queryset()
+
+        if self.request.query_params.get('username') is not None:
+            queryset = queryset.filter(username=self.request.query_params.get('username'))
+            if not queryset:
+                return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+            return queryset
+
+        elif self.request.query_params.get('id') is not None:
+            queryset = queryset.filter(id=self.request.query_params.get('id'))
+            if not queryset:
+                return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+            return queryset
+
+        return queryset
 
     @action(methods=['post'], detail=False, url_path='login')
     def login(self, request, format=None):
@@ -62,6 +85,30 @@ class UserViewSet(ModelViewSet):
 
         serializer = UserSerializer(user)
         return Response({'message': 'User registered successfully', 'token':token.key}, status=status.HTTP_201_CREATED)
+
+    @action(methods=['put'], detail=False, url_path='edit')
+    def editUser(self, request, format=None):
+        data = request.data
+        if(not data):
+            return Response({'message': 'Please provide all the required fields'}, status=status.HTTP_400_BAD_REQUEST)
+
+        username = data['username']
+        password = data['password']
+        email = data['email']
+        token = request.query_params['ApiKeyAuth']
+        if (not token):
+            return Response({'message': 'Please provide the token'}, status=status.HTTP_400_BAD_REQUEST)
+        user = Token.objects.get(key=token).user
+        if(not user):
+            return Response({'message': 'User does not exists'}, status=status.HTTP_404_NOT_FOUND)
+
+        user.username = username
+        user.password = password
+        user.email = email
+        user.save()
+
+        serializer = UserSerializer(user)
+        return Response({'message': 'User edited successfully', 'user': serializer.data }, status=status.HTTP_200_OK)
 
     
     

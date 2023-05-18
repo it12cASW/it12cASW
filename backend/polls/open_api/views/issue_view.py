@@ -233,6 +233,14 @@ class IssueViewSet(ModelViewSet):
             else:
                 issue.deadline = deadline
                 Deadline(issue=issue, deadline=deadline, motivo=None).save()
+            if issue.deadline:
+                issue.deadline = deadline
+                deadlineObj = Deadline.objects.get(issue=issue)
+                deadlineObj.deadline = deadline
+                deadlineObj.save()
+            else:
+                issue.deadline = deadline
+                Deadline(issue=issue, deadline=deadline, motivo=None).save()
         # Prioridad
         prioridad = request.data['prioridad']
         if prioridad:
@@ -421,7 +429,6 @@ class IssueViewSet(ModelViewSet):
             issue = Issue(asunto=asunto, creador=Token.objects.get(key=request.auth).user)
 
         return Response({'message': 'Issues creades correctamente'} ,status=status.HTTP_201_CREATED)
-
 
 
     
