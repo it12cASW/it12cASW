@@ -15,9 +15,7 @@ class ComentarioViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
     authentication_classes = (TokenAuthentication,)
     
-    
     def get_queryset(self):
-
         queryset = self.queryset
         queryset = queryset.filter(deleted=False)
         if self.request.query_params.get('issue_id') is not None:

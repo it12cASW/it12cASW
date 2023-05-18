@@ -267,9 +267,11 @@ paths:
             content:
               application/json:
                 schema:
-                  type: object
-                  items:
-                    $ref: '#/components/schemas/Issue'
+                  properties:
+                    message:
+                      type: string
+                    items: 
+                      $ref: '#/components/schemas/Issue'
         '400':
           description: El usuario no ha introducido los datos necesarios
         '401':
@@ -958,18 +960,18 @@ paths:
       responses:
         '200':
             description: Se ha obtenido el deadline y su motivo de la issue correctamente
-            content:
+            content: 
               application/json:
                 schema:
                   type: object
                   properties:
                     message:
                       type: string
-                    items:
+                    items: 
                       $ref: '#/components/schemas/Deadline'
         '401':
             description: El token no es válido
-            content:
+            content: 
               application/json:
                 schema:
                   type: object
@@ -978,7 +980,7 @@ paths:
                       type: string
         '404':
           description: No se ha podido encontrar la Issue o la issue no tiene deadline
-          content:
+          content: 
             application/json:
               schema:
                 type: object
@@ -1006,7 +1008,7 @@ paths:
           application/json:
             schema:
               type: object
-              properties:
+              properties: 
                 deadline:
                   type: string
                   format: date-time
@@ -1030,7 +1032,7 @@ paths:
                       $ref: '#/components/schemas/Issue'
         '401':
             description: El token no es válido
-            content:
+            content: 
               application/json:
                 schema:
                   type: object
@@ -1039,7 +1041,7 @@ paths:
                       type: string
         '404':
           description: No se ha podido encontrar la Issue o la issue no tiene deadline
-          content:
+          content: 
             application/json:
               schema:
                 type: object
@@ -1074,18 +1076,18 @@ paths:
         responses:
           '200':
               description: La deadline ha sido eliminada de la issue correctamente
-              content:
+              content: 
                 application/json:
                   schema:
                     type: object
                     properties:
                       message:
                         type: string
-                      items:
+                      items: 
                         $ref: '#/components/schemas/Issue'
           '400':
               description: Los datos introducidos no son validos o la issue no tiene deadline
-              content:
+              content: 
                 application/json:
                   schema:
                     type: object
@@ -1094,7 +1096,7 @@ paths:
                         type: string
           '401':
               description: El token no es válido
-              content:
+              content: 
                 application/json:
                   schema:
                     type: object
@@ -1102,8 +1104,8 @@ paths:
                       message:
                         type: string
           '404':
-            description: La issue no existe
-            content:
+            description: La issue no existe 
+            content: 
               application/json:
                 schema:
                   type: object
@@ -1112,6 +1114,179 @@ paths:
                       type: string
         security:
         - ApiKeyAuth: []
+  /issues/{idIssue}/comments/:
+    get:
+      tags:
+      - Comments
+      summary: Obten los comentarios de la issue
+      operationId: get_comments
+      parameters:
+      - name: idIssue
+        in: path
+        description: ID de la Issue de la que se quiere realizar la consulta
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+            description: Se han obtenido los comentarios de la issue correctamente
+            content: 
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      id_issue:
+                        type: integer
+                      id_user:
+                        type: integer
+                      comment:
+                        type: string
+                      date:
+                        type: string
+                        format: date-time
+                      user:
+                        $ref: '#/components/schemas/UserSimple'
+        '401':
+            description: El token no es válido
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string  
+      security:
+      - ApiKeyAuth: []
+    post:
+      tags:
+      - Comments
+      summary: Obten los comentarios de la issue
+      operationId: make_comments
+      parameters:
+      - name: idIssue
+        in: path
+        description: ID de la Issue de la que se quiere realizar la consulta
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                comment:
+                  type: string
+                  description: Comentario que se quiere añadir a la issue
+      responses:
+        '200':
+            description: Se han obtenido los comentarios de la issue correctamente
+            content: 
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      id_issue:
+                        type: integer
+                      id_user:
+                        type: integer
+                      comment:
+                        type: string
+                      date:
+                        type: string
+                        format: date-time
+                      user:
+                        $ref: '#/components/schemas/UserSimple'
+        '401':
+            description: El token no es válido
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string  
+      security:
+      - ApiKeyAuth: []
+
+  /issues/{idIssue}/comments/delete/:
+    post:
+      tags:
+      - Comments
+      summary: Elimina un comentario o todos los comentarios de la issue
+      operationId: delete_comments
+      parameters:
+      - name: idIssue
+        in: path
+        description: ID de la issue a la que se le quiere eliminar el comentario
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                idComment:
+                  type: integer
+                  description: ID del comentario que se quiere eliminar, si no se pasa, se eliminan todos los comentarios
+      responses:
+        '200':
+            description: Se han eliminado los comentarios de la issue correctamente
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                    issue: 
+                      $ref: '#/components/schemas/Issue'
+                    comment:
+                      $ref: '#/components/schemas/Comment'
+        '400':
+            description: Los datos introducidos no son validos o la issue no tiene comentarios
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        '401':
+            description: El token no es válido
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        '404':
+          description: La issue no existe 
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+      - ApiKeyAuth: []
 components:
   schemas:
     User:
@@ -1158,6 +1333,20 @@ components:
           type: string
         email:
           type: string
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+        issue:
+          $ref: '#/components/schemas/Issue'
+        user:
+          $ref: '#/components/schemas/UserSimple'
+        comment:
+          type: string
+        date:
+          type: string
+          format: date-time
     Deadline:
       type: object
       properties:
