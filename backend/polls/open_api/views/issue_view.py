@@ -1,5 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
-from polls.models import Issue, Actividad_Issue, Deadline
+from polls.models import Issue, Actividad_Issue, Deadline, Comentario
 from polls.consts import status, prioridades, status_order
 from django.contrib.auth.models import User
 from django.db.models import Q, Max, Case, When, Value, CharField
@@ -8,6 +8,7 @@ from django.http import Http404
 from polls.open_api.serializers.issue_serializer import IssueSerializer
 from polls.open_api.serializers.user_serializer import UserSerializer
 from polls.open_api.serializers.deadline_serializer import DeadlineSerializer
+from polls.open_api.serializers.comment_serializer import ComentarioSerializer
 from rest_framework.decorators import api_view, action
 from rest_framework import request
 from rest_framework.authtoken.models import Token
@@ -468,3 +469,49 @@ class IssueViewSet(ModelViewSet):
         deadline.delete()
         return Response({'message': 'Se ha eliminado la deadline de la issue correctamente', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)            
 
+    @action(methods=['get', 'post'], detail=True, url_path='comments')
+    def Comments(self, request, pk=None):
+        try:
+            issue = self.get_object()
+        except Http404:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+            
+        if issue.deleted == 1:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        if request.method == 'GET':
+            comments = Comentario.objects.filter(issue=issue)
+            comment_serializer = ComentarioSerializer(comments, many=True)  # Serializar una lista de comentarios
+            return Response({'message': 'Se han obtenido los comentarios de la issue correctamente', 'comments': comment_serializer.data}, status=status.HTTP_200_OK)
+        if request.method == 'POST':
+            comment = request.data['comment']
+            if not comment:
+                return Response({'message': 'Introduce el comentario'}, status=status.HTTP_400_BAD_REQUEST)
+            comentario = Comentario(issue=issue, autor=Token.objects.get(key=request.auth).user, contenido=comment, fecha=datetime.now(), deleted=False)
+            comentario.save()
+            comment_serializer = ComentarioSerializer(comentario)  # Serializar un solo comentario
+            return Response({'message': 'Se ha añadido el comentario a la issue correctamente', 'comment': comment_serializer.data}, status=status.HTTP_201_CREATED)
+
+    
+    @action(methods=['post'], detail=True, url_path='comments/delete')
+    def deleteComments(self, request, pk=None):
+        try: 
+            issue = self.get_object()
+        except Http404:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        if issue.delete == 1:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        idComment = request.data['idComment']
+        if not idComment:
+            #borrar todos los comentarios
+            comments = Comentario.objects.filter(issue=issue)
+            for comment in comments:
+                comment.delete()
+            return Response({'message': 'Se han eliminado todos los comentarios de la issue correctamente' }, status=status.HTTP_200_OK)
+        if not Comentario.objects.filter(id=idComment).exists():
+            return Response({'message': 'El comentario no existe'}, status=status.HTTP_400_BAD_REQUEST)
+        comment = Comentario.objects.get(id=idComment)
+        comment.delete()
+        #enviar la issue, con los comentarios actuales
+        comments = Comentario.objects.filter(issue=issue)
+        return Response({'message': 'Se ha eliminado el comentario de la issue correctamente', 'issue': IssueSerializer(issue).data, 'comments': ComentarioSerializer(comments, many=True).data}, status=status.HTTP_200_OK)
+        
