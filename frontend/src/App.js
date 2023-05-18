@@ -9,9 +9,7 @@ import Panel from './views/Panel/Panel';
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/panel" element={<Panel />} />
+      <Route path="/" element={<Panel />} />    
     </Routes>
   );
 }
