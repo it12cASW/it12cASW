@@ -47,6 +47,52 @@ paths:
           description: User not found
         '500':
           description: Internal server error
+  /users/edit/:
+    put:
+      tags:
+      - Users
+      summary: Iniciar sesión de usuario
+      operationId: update_usuario
+      parameters:
+        - name: ApiKeyAuth
+          required: true
+          in: query
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                email:
+                  type: string
+              required:
+                - username
+                - password
+                - email
+      responses:
+        '200':
+          description: User edited successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserSimple'
+
+        '400':
+          description: Please provide the token
+        '404':
+          description: User does not exists
+      security:
+        - ApiKeyAuth: []
+
   /users/login/:
     post:
       tags:
