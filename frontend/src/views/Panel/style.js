@@ -15,8 +15,6 @@ export const styles = {
         height: "50px",
         width: "100%",
         verticalAlign: "middle",
-        paddingLeft: "20px",
-        paddingRight: "20px",
         alignItems: "center",
     },
     lateralBar: {

@@ -6,18 +6,31 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { AiOutlineAppstoreAdd } from "react-icons/ai";
 import { GrAdd } from "react-icons/gr";
 import { FaCircle } from "react-icons/fa";
+import { getUsuariosCtrl } from "../../Controllers/usuariosCtrl";
+import { getIssuesCtrl } from "../../Controllers/issueCtrl";
 
 const Panel = () => {
   const [isLoading, setIsLoading] = React.useState(true);
 
   const [issues, setIssues] = React.useState([]);
+  const [usuarios, setUsuarios] = React.useState([]);
+
+    async function getUsuariosAPI() {
+
+        return await getUsuariosCtrl();
+    }
+
+    async function getIssuesAPI() {
+         return await getIssuesCtrl();
+    }
 
   // Cuando cargue la pgina
   React.useEffect(() => {
-    // Hacer una peticion a la API
-    //crea un array issues que contenga 2 issues
+
+    var auxUsuarios = getUsuariosAPI();
+    var auxIssues = getIssuesAPI();
     console.log("Ejecuto funcion de carga");
-    var aux = [
+    var auxIssues = [
       {
         id: 1,
         type: "bug",
@@ -41,9 +54,15 @@ const Panel = () => {
         assignee: "Assignee 2",
       },
     ];
-    setIssues(aux);
-
-    console.log("pongo carga a false: " + issues.length)
+    var auxUsuarios = [
+        {
+            id: 1,
+            name: "Usuario 1",
+            token: "Token 1",
+        }
+    ];
+    if (auxUsuarios != null) setUsuarios(auxUsuarios);
+    if (auxIssues != null) setIssues(auxIssues);
     setIsLoading(false);
 
   }, []);
@@ -185,14 +204,21 @@ const Panel = () => {
                     style={{ width: "20px", height: "20px" }}
                   />
                 </div>
+                <div>
+                    <select style={{width: "100px", height: "30px"}}>
+                        {/* Recorre la variable 'usuarios' y crea una opción para cada uno */}
+                        {usuarios.map((usuario) => (
+                            <option value={usuario.token}>{usuario.name}</option>
+                        ))}
+                    </select>
+                </div>
               </div>
               <div
                 style={{
                   display: "flex",
                   flexDirection: "row",
                   width: "30%",
-                  justifyContent: "end",
-                }}
+                  justifyContent: "end",}}
               >
                 {/* New issue */}
                 <div style={{ position: "relative" }}>
