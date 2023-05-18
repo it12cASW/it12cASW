@@ -12,6 +12,9 @@ from polls.models import Issue, Actividad_Issue, Equipo, Miembro_Equipo, Imagen_
 from django.views.decorators.csrf import csrf_protect
 from django.core.files.storage import default_storage
 
+from django.conf import settings
+
+
 def aux(request):
     return render(request, 'login.html')
 
@@ -115,7 +118,10 @@ def pantallaEditarPerfil(request):
 
     # si existe imagen perfil
     if Imagen_Perfil.objects.filter(usuario=usuario).exists():
-        imagenPerfil = Imagen_Perfil.objects.get(usuario=usuario)
+        #imagenPerfil = Imagen_Perfil.objects.get(usuario=usuario)
+        s3_url = "https://s3.amazonaws.com/{0}/".format(settings.AWS_STORAGE_BUCKET_NAME)
+        image_key = Imagen_Perfil.objects.get(usuario=usuario)
+        imagenPerfil = s3_url + image_key
     else:
         imagenPerfil = None
 
