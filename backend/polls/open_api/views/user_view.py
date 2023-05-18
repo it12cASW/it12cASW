@@ -86,5 +86,29 @@ class UserViewSet(ModelViewSet):
         serializer = UserSerializer(user)
         return Response({'message': 'User registered successfully', 'token':token.key}, status=status.HTTP_201_CREATED)
 
+    @action(methods=['put'], detail=False, url_path='edit')
+    def editUser(self, request, format=None):
+        data = request.data
+        if(not data):
+            return Response({'message': 'Please provide all the required fields'}, status=status.HTTP_400_BAD_REQUEST)
+
+        username = data['username']
+        password = data['password']
+        email = data['email']
+        token = request.query_params['ApiKeyAuth']
+        if (not token):
+            return Response({'message': 'Please provide the token'}, status=status.HTTP_400_BAD_REQUEST)
+        user = Token.objects.get(key=token).user
+        if(not user):
+            return Response({'message': 'User does not exists'}, status=status.HTTP_404_NOT_FOUND)
+
+        user.username = username
+        user.password = password
+        user.email = email
+        user.save()
+
+        serializer = UserSerializer(user)
+        return Response({'message': 'User edited successfully', 'user': serializer.data }, status=status.HTTP_200_OK)
+
     
     
