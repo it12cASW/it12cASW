@@ -47,6 +47,7 @@ paths:
           description: User not found
         '500':
           description: Internal server error
+
   /users/edit/:
     put:
       tags:
@@ -90,9 +91,6 @@ paths:
           description: Please provide the token
         '404':
           description: User does not exists
-      security:
-        - ApiKeyAuth: []
-
   /users/login/:
     post:
       tags:
