@@ -171,22 +171,20 @@ class IssueViewSet(ModelViewSet):
     #     "id_issue": 33
     # }
 
-    @action(methods=['put'], detail=False, url_path='edit')
-    def editIssue(self, request, format=None):
+    @action(methods=['put'], detail=True, url_path='edit')
+    def editIssue(self, request, pk=None):
         # Compruebo que estan todos los campos y que la issue existe
-        id_issue = request.data['id_issue']
-        if not id_issue:
-            return Response({'message': 'Introduce la id de la issue'}, status=status.HTTP_400_BAD_REQUEST)
-        elif not Issue.objects.filter(id=id_issue).exists() or Issue.objects.get(id=id_issue).deleted == 1:
-            return Response({'message': 'La issue no existe'}, status=status.HTTP_400_BAD_REQUEST)
-        
+        try:
+            issue = self.get_object()
+        except Http404:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        if issue.deleted == 1:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
         editor_id = request.data['id_user']
         if not editor_id:
             return Response({'message': 'Introduce el id del usuario que edita'}, status=status.HTTP_400_BAD_REQUEST)
         elif not User.objects.filter(id=editor_id).exists():
             return Response({'message': 'El usuario no existe'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        issue = Issue.objects.get(id=id_issue)
 
         # Asunto
         asunto = request.data['asunto']
@@ -299,8 +297,9 @@ class IssueViewSet(ModelViewSet):
 
             return Response({'message': 'Se ha asociado correctamente el usuario a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
         elif request.method == 'GET':
-            user = User.objects.get(id=issue.associat.id)
-
+            if not issue.associat:
+                return Response({'message': 'La issue no tiene un usuario asociado'}, status=status.HTTP_400_BAD_REQUEST)
+            user = issue.associat
             return Response({'associated': UserSerializer(user).data}, status=status.HTTP_200_OK)
         
     @action(methods=['delete'], detail=True, url_path='associated/delete')
@@ -341,7 +340,9 @@ class IssueViewSet(ModelViewSet):
 
             return Response({'message': 'Se ha asignado correctamente el usuario a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
         elif request.method == 'GET':
-            user = User.objects.get(id=issue.asignada.id)
+            if not issue.asignada:
+                return Response({'message': 'La issue no tiene un usuario asignado'}, status=status.HTTP_400_BAD_REQUEST)
+            user = issue.asignada
 
             return Response({'asigned': UserSerializer(user).data}, status=status.HTTP_200_OK)
         
@@ -424,10 +425,10 @@ class IssueViewSet(ModelViewSet):
     @action(methods=['post'], detail=False, url_path='bulk-insert')
     def bulkInsert(self, request, pk=None):
         asuntos = request.data['asuntos'] if 'asuntos' in request.data else []
-
+        
         for asunto in asuntos:
             issue = Issue(asunto=asunto, creador=Token.objects.get(key=request.auth).user)
-
+            issue.save()
         return Response({'message': 'Issues creades correctamente'} ,status=status.HTTP_201_CREATED)
 
 
@@ -520,5 +521,5 @@ class IssueViewSet(ModelViewSet):
         comment.delete()
         #enviar la issue, con los comentarios actuales
         comments = Comentario.objects.filter(issue=issue)
-        return Response({'message': 'Se ha eliminado el comentario de la issue correctamente', 'issue': IssueSerializer(issue).data, 'comments': ComentarioSerializer(comments, many=True).data}, status=status.HTTP_200_OK)
+        return Response({'message': 'Se ha eliminado el comentario de la issue correctamente', 'comments': ComentarioSerializer(comments, many=True).data}, status=status.HTTP_200_OK)
         

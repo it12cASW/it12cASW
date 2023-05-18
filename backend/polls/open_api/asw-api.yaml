@@ -280,7 +280,70 @@ paths:
           description: Alguno de los usuarios introducido no existe
       security:
       - ApiKeyAuth: []
+  /issues/{idIssue}/edit/:
+    put:
+      tags:
+      - Issues
+      summary: Edita una issue
+      operationId: edit_issues
+      parameters:
+      - name: idIssue
+        in: path
+        description: ID de la Issue a eliminar
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id_user:
+                  type: integer
+                asunto:
+                  type: string
+                descripcion:
+                  type: string
+                asociado:
+                  type: integer
+                asignado:
+                  type: integer
+                blocked:
+                  type: boolean
+                reason_blocked:
+                  type: string
+                deadline:
+                  type: string
+                  format: date-time
+                prioridad:
+                  type: string
+                status:
+                  type: string
+              required:
+                - id_user
 
+      responses:
+        '201':
+            description: Se ha creado la issue correctamente
+            content:
+              application/json:
+                schema:
+                  properties:
+                    message:
+                      type: string
+                    items: 
+                      $ref: '#/components/schemas/Issue'
+        '400':
+          description: El usuario no ha introducido los datos necesarios
+        '401':
+          description: Falta el token de autentificación
+        '409':
+          description: Alguno de los usuarios introducido no existe
+      security:
+      - ApiKeyAuth: []
   /issues/{idIssue}/delete/:
     post:
       tags:
