@@ -102,19 +102,11 @@ class IssueViewSet(ModelViewSet):
     @action(methods=['post'], detail=False, url_path='create')
     def createIssue(self, request, format=None):
         # Compruebo que estan todos los campos
-        id_creador = request.data['id_creador']
+        creador = Token.objects.get(key=request.auth).user
         asunto = request.data['asunto']
         descripcion = request.data['descripcion']
-
-        if not id_creador or not asunto or not descripcion:
-            return Response({'message': 'Please provide all the required fields'}, status=status.HTTP_400_BAD_REQUEST)
-        
         # Creo la issue
-        try:
-            creadorObj = User.objects.get(id=id_creador)
-        except User.DoesNotExist:
-            return Response({'message': 'El creador no existe'}, status=status.HTTP_400_BAD_REQUEST)
-        issue = Issue(asunto=asunto, descripcion=descripcion, creador=creadorObj)
+        issue = Issue(asunto=asunto, descripcion=descripcion, creador=creador)
 
         # ASOCIADO  
         asociado = request.data['asociado']
@@ -171,22 +163,16 @@ class IssueViewSet(ModelViewSet):
 
         return Response({'message': 'Issue creado correctamente', 'issue': IssueSerializer(issue).data}, status=status.HTTP_201_CREATED)
 
-    @action(methods=['put'], detail=False, url_path='edit')
-    def editIssue(self, request, format=None):
+    @action(methods=['put'], detail=True, url_path='edit')
+    def editIssue(self, request, format=None, pk=None):
         # Compruebo que estan todos los campos y que la issue existe
-        id_issue = request.data['id_issue']
-        if not id_issue:
-            return Response({'message': 'Introduce la id de la issue'}, status=status.HTTP_400_BAD_REQUEST)
-        elif not Issue.objects.filter(id=id_issue).exists() or Issue.objects.get(id=id_issue).deleted == 1:
-            return Response({'message': 'La issue no existe'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        editor_id = request.data['id_user']
-        if not editor_id:
-            return Response({'message': 'Introduce el id del usuario que edita'}, status=status.HTTP_400_BAD_REQUEST)
-        elif not User.objects.filter(id=editor_id).exists():
-            return Response({'message': 'El usuario no existe'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        issue = Issue.objects.get(id=id_issue)
+        try:
+            issue = self.get_object()
+        except Http404:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        if issue.deleted == 1:
+            return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+        editor = Token.objects.get(key=request.auth).user
 
         # Asunto
         asunto = request.data['asunto']
@@ -223,16 +209,11 @@ class IssueViewSet(ModelViewSet):
             issue.reason_blocked = reason_blocked
 
         # Deadline
+        dline = False
         deadline = request.data['deadline']
         if deadline:
-            if issue.deadline:
-                issue.deadline = deadline
-                deadlineObj = Deadline.objects.get(issue=issue)
-                deadlineObj.deadline = deadline
-                deadlineObj.save()
-            else:
-                issue.deadline = deadline
-                Deadline(issue=issue, deadline=deadline, motivo=None).save()
+            dline = True
+            issue.deadline = deadline
         # Prioridad
         prioridad = request.data['prioridad']
         if prioridad:
@@ -245,9 +226,12 @@ class IssueViewSet(ModelViewSet):
 
         issue.save()
 
-        # Añado una actividad fecha, tipo, creador_ir, issue_id, usuario_id
-        editorObj = User.objects.get(id=editor_id)
-        actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.now(), tipo="editar", usuario=editorObj)
+        if dline: 
+            deadlineObj = Deadline(issue=issue, deadline=deadline, motivo='')
+            deadlineObj.save()
+        # El editor del issue es el usuario al que pertenece el token
+
+        actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.now(), tipo="editar", usuario=editor)
         actividad.save()
 
         return Response({'message': 'Issue editada correctamente', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
@@ -295,9 +279,11 @@ class IssueViewSet(ModelViewSet):
 
             return Response({'message': 'Se ha asociado correctamente el usuario a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
         elif request.method == 'GET':
-            user = User.objects.get(id=issue.associat.id)
-
+            if not issue.associat:
+                return Response({'message': 'La issue no tiene un usuario asociado'}, status=status.HTTP_400_BAD_REQUEST)
+            user = issue.associat
             return Response({'associated': UserSerializer(user).data}, status=status.HTTP_200_OK)
+        
         
     @action(methods=['delete'], detail=True, url_path='associated/delete')
     def deleteAssociated(self, request, pk=None):
@@ -346,9 +332,11 @@ class IssueViewSet(ModelViewSet):
 
             return Response({'message': 'Se ha asignado correctamente el usuario a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
         elif request.method == 'GET':
-            user = User.objects.get(id=issue.asignada.id)
-
-            return Response({'asigned': UserSerializer(user).data}, status=status.HTTP_200_OK)
+            if not issue.asignada:
+                return Response({'message': 'La issue no tiene un usuario asignado'}, status=status.HTTP_400_BAD_REQUEST)
+            user = issue.asignada
+            return Response({'asignada': UserSerializer(user).data}, status=status.HTTP_200_OK)
+        
         
     @action(methods=['delete'], detail=True, url_path='asigned/delete')
     def deleteAsigned(self, request, pk=None):

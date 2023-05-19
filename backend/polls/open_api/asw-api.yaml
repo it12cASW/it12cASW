@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: User API
   version: 1.0.0
-  description: API para la gestión, uso de https://editor.swagger.io/ para hacer las pruebas de la API
+  description: API para la gestión, uso de https://editor.swagger.io/ para hacer las pruebas de la API, al introducir el token en authorize se debe poner Token <valor_del_token>
 servers:
   - url: http://127.0.0.1:8000/api
     description: Servidor de desarrollo
@@ -235,8 +235,6 @@ paths:
             schema:
               type: object
               properties:
-                id_creador:
-                  type: integer
                 asunto:
                   type: string
                 descripcion:
@@ -257,7 +255,6 @@ paths:
                 status:
                   type: string
               required:
-                - id_creador
                 - asunto
                 - description
 
@@ -280,7 +277,68 @@ paths:
           description: Alguno de los usuarios introducido no existe
       security:
       - ApiKeyAuth: []
+  /issues/{idIssue}/edit/:
+    put:
+      tags:
+      - Issues
+      summary: Edita una issue
+      operationId: edit_issues
+      parameters:
+      - name: idIssue
+        in: path
+        description: ID de la Issue a eliminar
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                asunto:
+                  type: string
+                descripcion:
+                  type: string
+                asociado:
+                  type: integer
+                asignado:
+                  type: integer
+                blocked:
+                  type: boolean
+                reason_blocked:
+                  type: string
+                deadline:
+                  type: string
+                  format: date-time
+                prioridad:
+                  type: string
+                status:
+                  type: string
+              required:
+                - id_user
 
+      responses:
+        '201':
+            description: Se ha creado la issue correctamente
+            content:
+              application/json:
+                schema:
+                  properties:
+                    message:
+                      type: string
+                    items: 
+                      $ref: '#/components/schemas/Issue'
+        '400':
+          description: El usuario no ha introducido los datos necesarios
+        '401':
+          description: Falta el token de autentificación
+        '409':
+          description: Alguno de los usuarios introducido no existe
+      security:
+      - ApiKeyAuth: []
   /issues/{idIssue}/delete/:
     post:
       tags:
@@ -1415,8 +1473,24 @@ components:
           type: string
         status:
           type: string
-        
-
+        actividades:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              fecha:
+                type: string
+                format: date-time
+              tipo:
+                type: string
+              issue: 
+                type: integer
+              creador:
+                type: integer
+              usuario: 
+                type: integer
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

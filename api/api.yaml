@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: User API
   version: 1.0.0
-  description: API para la gestión, uso de https://editor.swagger.io/ para hacer las pruebas de la API
+  description: API para la gestión, uso de https://editor.swagger.io/ para hacer las pruebas de la API, al introducir el token en authorize se debe poner Token <valor_del_token>
 servers:
   - url: http://127.0.0.1:8000/api
     description: Servidor de desarrollo
@@ -235,8 +235,6 @@ paths:
             schema:
               type: object
               properties:
-                id_creador:
-                  type: integer
                 asunto:
                   type: string
                 descripcion:
@@ -257,7 +255,6 @@ paths:
                 status:
                   type: string
               required:
-                - id_creador
                 - asunto
                 - description
 
@@ -301,8 +298,6 @@ paths:
             schema:
               type: object
               properties:
-                id_user:
-                  type: integer
                 asunto:
                   type: string
                 descripcion:
@@ -1478,8 +1473,24 @@ components:
           type: string
         status:
           type: string
-        
-
+        actividades:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              fecha:
+                type: string
+                format: date-time
+              tipo:
+                type: string
+              issue: 
+                type: integer
+              creador:
+                type: integer
+              usuario: 
+                type: integer
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

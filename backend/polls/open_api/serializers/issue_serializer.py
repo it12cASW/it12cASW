@@ -17,7 +17,7 @@ class IssueSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Issue
-        fields = '__all__'
+        fields = ['id', 'asunto', 'descripcion','creador', 'associat', 'asignada','vigilant', 'blocked', 'reason_blocked', 'deadline', 'prioridad', 'status', 'actividades']
 
 
 
