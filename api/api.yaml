@@ -317,8 +317,6 @@ paths:
                   type: string
                 status:
                   type: string
-              required:
-                - id_user
 
       responses:
         '201':
