@@ -13,8 +13,8 @@ function App() {
   const [idUsuario, setIdUsuario] = React.useState(null);
 
   function handleUsuario(id) {
-    console.log("ID: " + id);
-    setIdUsuario(id);
+    console.log("ID: " + id.target.value);
+    setIdUsuario(id.target.value);
   }
 
 

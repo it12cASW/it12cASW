@@ -220,7 +220,7 @@ export default function Main ({ idUsuario, handleUsuario }){
                 </div>
                 <div>
                     <select style={{width: "100px", height: "30px"}} onChange={ handleUsuario } >
-                        <option value="0">Usuario</option>
+                        <option value="0" key="0">Usuario</option>
                         {/* Recorre la variable 'usuarios' y crea una opción para cada uno */}
                         {usuarios.map((usuario) => 
                             <option value={usuario.id} key={usuario.id}>{usuario.name}</option>
