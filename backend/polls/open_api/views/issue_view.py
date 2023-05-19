@@ -521,6 +521,11 @@ class IssueViewSet(ModelViewSet):
                 return Response({'message': 'Introduce el comentario'}, status=status.HTTP_400_BAD_REQUEST)
             comentario = Comentario(issue=issue, autor=Token.objects.get(key=request.auth).user, contenido=comment, fecha=datetime.now(), deleted=False)
             comentario.save()
+            
+            actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,
+                                    creador=issue.creador, tipo='Nuevo Comentario', fecha=datetime.now())
+            actividad.save()
+            
             comment_serializer = ComentarioSerializer(comentario)  # Serializar un solo comentario
             return Response({'message': 'Se ha añadido el comentario a la issue correctamente', 'comment': comment_serializer.data}, status=status.HTTP_201_CREATED)
 
@@ -539,11 +544,17 @@ class IssueViewSet(ModelViewSet):
             comments = Comentario.objects.filter(issue=issue)
             for comment in comments:
                 comment.delete()
+            actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,
+                                    creador=issue.creador, tipo='Todos los comentarios Borrados', fecha=datetime.now())
+            actividad.save()
             return Response({'message': 'Se han eliminado todos los comentarios de la issue correctamente' }, status=status.HTTP_200_OK)
         if not Comentario.objects.filter(id=idComment).exists():
             return Response({'message': 'El comentario no existe'}, status=status.HTTP_400_BAD_REQUEST)
         comment = Comentario.objects.get(id=idComment)
         comment.delete()
+        actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,
+                                    creador=issue.creador, tipo='Comentario Borrado', fecha=datetime.now())
+        actividad.save()
         #enviar la issue, con los comentarios actuales
         comments = Comentario.objects.filter(issue=issue)
         return Response({'message': 'Se ha eliminado el comentario de la issue correctamente', 'issue': IssueSerializer(issue).data, 'comments': ComentarioSerializer(comments, many=True).data}, status=status.HTTP_200_OK)
