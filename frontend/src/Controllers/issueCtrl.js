@@ -12,8 +12,8 @@ export async function getIssuesCtrl() {
     return null;
 }
 
-
 export async function crearIssueCtrl(data) {
 
     return true;
+
 }

@@ -164,7 +164,8 @@ class IssueViewSet(ModelViewSet):
         return Response({'message': 'Issue creado correctamente', 'issue': IssueSerializer(issue).data}, status=status.HTTP_201_CREATED)
 
     @action(methods=['put'], detail=True, url_path='edit')
-    def editIssue(self, request, format=None, pk=None):
+    def editIssue(self, request, pk=None):
+
         # Compruebo que estan todos los campos y que la issue existe
         try:
             issue = self.get_object()
@@ -172,6 +173,7 @@ class IssueViewSet(ModelViewSet):
             return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
         if issue.deleted == 1:
             return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
+
         editor = Token.objects.get(key=request.auth).user
 
         # Asunto
@@ -335,8 +337,8 @@ class IssueViewSet(ModelViewSet):
             if not issue.asignada:
                 return Response({'message': 'La issue no tiene un usuario asignado'}, status=status.HTTP_400_BAD_REQUEST)
             user = issue.asignada
+
             return Response({'asignada': UserSerializer(user).data}, status=status.HTTP_200_OK)
-        
         
     @action(methods=['delete'], detail=True, url_path='asigned/delete')
     def deleteAsigned(self, request, pk=None):
@@ -435,7 +437,7 @@ class IssueViewSet(ModelViewSet):
     @action(methods=['post'], detail=False, url_path='bulk-insert')
     def bulkInsert(self, request, pk=None):
         asuntos = request.data['asuntos'] if 'asuntos' in request.data else []
-
+        
         for asunto in asuntos:
             issue = Issue(asunto=asunto, creador=Token.objects.get(key=request.auth).user)
             issue.save()
@@ -443,9 +445,7 @@ class IssueViewSet(ModelViewSet):
             actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,
                                         creador=issue.creador, tipo='Creación', fecha=datetime.now())
             actividad.save()
-
         return Response({'message': 'Issues creades correctamente'} ,status=status.HTTP_201_CREATED)
-
 
     
     @action(methods=['get', 'post'], detail=True, url_path='deadline')
@@ -557,5 +557,5 @@ class IssueViewSet(ModelViewSet):
         actividad.save()
         #enviar la issue, con los comentarios actuales
         comments = Comentario.objects.filter(issue=issue)
-        return Response({'message': 'Se ha eliminado el comentario de la issue correctamente', 'issue': IssueSerializer(issue).data, 'comments': ComentarioSerializer(comments, many=True).data}, status=status.HTTP_200_OK)
+        return Response({'message': 'Se ha eliminado el comentario de la issue correctamente', 'comments': ComentarioSerializer(comments, many=True).data}, status=status.HTTP_200_OK)
         
