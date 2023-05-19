@@ -102,19 +102,11 @@ class IssueViewSet(ModelViewSet):
     @action(methods=['post'], detail=False, url_path='create')
     def createIssue(self, request, format=None):
         # Compruebo que estan todos los campos
-        id_creador = request.data['id_creador']
+        creador = Token.objects.get(key=request.auth).user
         asunto = request.data['asunto']
         descripcion = request.data['descripcion']
-
-        if not id_creador or not asunto or not descripcion:
-            return Response({'message': 'Please provide all the required fields'}, status=status.HTTP_400_BAD_REQUEST)
-        
         # Creo la issue
-        try:
-            creadorObj = User.objects.get(id=id_creador)
-        except User.DoesNotExist:
-            return Response({'message': 'El creador no existe'}, status=status.HTTP_400_BAD_REQUEST)
-        issue = Issue(asunto=asunto, descripcion=descripcion, creador=creadorObj)
+        issue = Issue(asunto=asunto, descripcion=descripcion, creador=creador)
 
         # ASOCIADO  
         asociado = request.data['asociado']
@@ -161,18 +153,19 @@ class IssueViewSet(ModelViewSet):
         if dline: 
             deadlineObj = Deadline(issue=issue, deadline=deadline, motivo='')
             deadlineObj.save()
+
+        issue.save()
+
         # Añado una actividad
+        actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,  creador=issue.creador, tipo='Creación', fecha=datetime.now())
+        actividad.save()
+
 
         return Response({'message': 'Issue creado correctamente', 'issue': IssueSerializer(issue).data}, status=status.HTTP_201_CREATED)
 
-    # http://127.0.0.1:8000/api/issues/delete/
-
-    # {
-    #     "id_issue": 33
-    # }
-
     @action(methods=['put'], detail=True, url_path='edit')
     def editIssue(self, request, pk=None):
+
         # Compruebo que estan todos los campos y que la issue existe
         try:
             issue = self.get_object()
@@ -180,11 +173,8 @@ class IssueViewSet(ModelViewSet):
             return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
         if issue.deleted == 1:
             return Response({'message': 'La issue no existe'}, status=status.HTTP_404_NOT_FOUND)
-        editor_id = request.data['id_user']
-        if not editor_id:
-            return Response({'message': 'Introduce el id del usuario que edita'}, status=status.HTTP_400_BAD_REQUEST)
-        elif not User.objects.filter(id=editor_id).exists():
-            return Response({'message': 'El usuario no existe'}, status=status.HTTP_400_BAD_REQUEST)
+
+        editor = Token.objects.get(key=request.auth).user
 
         # Asunto
         asunto = request.data['asunto']
@@ -221,24 +211,11 @@ class IssueViewSet(ModelViewSet):
             issue.reason_blocked = reason_blocked
 
         # Deadline
+        dline = False
         deadline = request.data['deadline']
         if deadline:
-            if issue.deadline:
-                issue.deadline = deadline
-                deadlineObj = Deadline.objects.get(issue=issue)
-                deadlineObj.deadline = deadline
-                deadlineObj.save()
-            else:
-                issue.deadline = deadline
-                Deadline(issue=issue, deadline=deadline, motivo=None).save()
-            if issue.deadline:
-                issue.deadline = deadline
-                deadlineObj = Deadline.objects.get(issue=issue)
-                deadlineObj.deadline = deadline
-                deadlineObj.save()
-            else:
-                issue.deadline = deadline
-                Deadline(issue=issue, deadline=deadline, motivo=None).save()
+            dline = True
+            issue.deadline = deadline
         # Prioridad
         prioridad = request.data['prioridad']
         if prioridad:
@@ -251,9 +228,12 @@ class IssueViewSet(ModelViewSet):
 
         issue.save()
 
-        # Añado una actividad fecha, tipo, creador_ir, issue_id, usuario_id
-        editorObj = User.objects.get(id=editor_id)
-        actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.now(), tipo="editar", usuario=editorObj)
+        if dline: 
+            deadlineObj = Deadline(issue=issue, deadline=deadline, motivo='')
+            deadlineObj.save()
+        # El editor del issue es el usuario al que pertenece el token
+
+        actividad = Actividad_Issue(issue=issue, creador=issue.creador, fecha=datetime.now(), tipo="editar", usuario=editor)
         actividad.save()
 
         return Response({'message': 'Issue editada correctamente', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
@@ -295,12 +275,17 @@ class IssueViewSet(ModelViewSet):
             issue.associat = user
             issue.save()
 
+            actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,
+                                        creador=issue.creador, tipo='Add Associated', fecha=datetime.now())
+            actividad.save()
+
             return Response({'message': 'Se ha asociado correctamente el usuario a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
         elif request.method == 'GET':
             if not issue.associat:
                 return Response({'message': 'La issue no tiene un usuario asociado'}, status=status.HTTP_400_BAD_REQUEST)
             user = issue.associat
             return Response({'associated': UserSerializer(user).data}, status=status.HTTP_200_OK)
+        
         
     @action(methods=['delete'], detail=True, url_path='associated/delete')
     def deleteAssociated(self, request, pk=None):
@@ -314,6 +299,11 @@ class IssueViewSet(ModelViewSet):
             return Response({'message': 'La issue no tiene un usuario asociado'}, status=status.HTTP_400_BAD_REQUEST)
         
         issue.associat = None
+
+        actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,
+                                    creador=issue.creador, tipo='Delete Associated', fecha=datetime.now())
+        actividad.save()
+
         issue.save()
 
         return Response({'message': 'Se ha eliminado correctamente el usuario asociado a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
@@ -338,13 +328,17 @@ class IssueViewSet(ModelViewSet):
             issue.asignada = user
             issue.save()
 
+            actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,
+                                        creador=issue.creador, tipo='Add Assigned', fecha=datetime.now())
+            actividad.save()
+
             return Response({'message': 'Se ha asignado correctamente el usuario a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
         elif request.method == 'GET':
             if not issue.asignada:
                 return Response({'message': 'La issue no tiene un usuario asignado'}, status=status.HTTP_400_BAD_REQUEST)
             user = issue.asignada
 
-            return Response({'asigned': UserSerializer(user).data}, status=status.HTTP_200_OK)
+            return Response({'asignada': UserSerializer(user).data}, status=status.HTTP_200_OK)
         
     @action(methods=['delete'], detail=True, url_path='asigned/delete')
     def deleteAsigned(self, request, pk=None):
@@ -359,6 +353,10 @@ class IssueViewSet(ModelViewSet):
         
         issue.asignada = None
         issue.save()
+
+        actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,
+                                    creador=issue.creador, tipo='Delete Assigned', fecha=datetime.now())
+        actividad.save()
 
         return Response({'message': 'Se ha eliminado correctamente el usuario asignado a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
 
@@ -381,6 +379,11 @@ class IssueViewSet(ModelViewSet):
             if issue.vigilant.filter(id=user.id).exists():
                 return Response({'message': 'El usuario ya es vigilante de la issue'}, status=status.HTTP_409_CONFLICT)
             issue.addWatcher(user)
+
+            actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,
+                                        creador=issue.creador, tipo='Add Watcher', fecha=datetime.now())
+            actividad.save()
+
             return Response({'message': 'Se ha añadido al vigilante correctamente a la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
         
     @action(methods=['put'], detail=True, url_path='watchers/delete')
@@ -404,6 +407,10 @@ class IssueViewSet(ModelViewSet):
         #se borra el vigilante de la issue
         issue.vigilant.remove(user)
         issue.save()
+
+        actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,
+                                    creador=issue.creador, tipo='Delete Watcher', fecha=datetime.now())
+        actividad.save()
         return Response({'message': 'Se ha eliminado al vigilante correctamente de la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
 
     @action(methods=['delete'], detail=True, url_path='watchers/deleteAll')
@@ -420,6 +427,11 @@ class IssueViewSet(ModelViewSet):
         #se borran todos los vigilantes de la issue
         issue.vigilant.clear()
         issue.save()
+
+        actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,
+                                    creador=issue.creador, tipo='Delete All Watchers', fecha=datetime.now())
+        actividad.save()
+
         return Response({'message': 'Se han eliminado todos los vigilantes correctamente de la issue', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)
 
     @action(methods=['post'], detail=False, url_path='bulk-insert')
@@ -429,8 +441,11 @@ class IssueViewSet(ModelViewSet):
         for asunto in asuntos:
             issue = Issue(asunto=asunto, creador=Token.objects.get(key=request.auth).user)
             issue.save()
-        return Response({'message': 'Issues creades correctamente'} ,status=status.HTTP_201_CREATED)
 
+            actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,
+                                        creador=issue.creador, tipo='Creación', fecha=datetime.now())
+            actividad.save()
+        return Response({'message': 'Issues creades correctamente'} ,status=status.HTTP_201_CREATED)
 
     
     @action(methods=['get', 'post'], detail=True, url_path='deadline')
@@ -457,6 +472,11 @@ class IssueViewSet(ModelViewSet):
             motivo = request.data['motivo']
             issue.setDeadline(deadline, motivo)
             deadlineObj = Deadline.objects.get(issue=issue)
+
+            actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,
+                                        creador=issue.creador, tipo='Deadline Added', fecha=datetime.now())
+            actividad.save()
+
             return Response({'message': 'Se ha añadido la deadline a la issue correctamente', 'issue': IssueSerializer(issue).data, 'deadline': DeadlineSerializer(deadlineObj).data}, status=status.HTTP_201_CREATED)
 
     @action(methods=['delete'], detail=True, url_path='deadline/delete')
@@ -475,6 +495,11 @@ class IssueViewSet(ModelViewSet):
         issue.deadline = None
         issue.save()
         deadline.delete()
+
+        actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,
+                                    creador=issue.creador, tipo='Deadline Removed', fecha=datetime.now())
+        actividad.save()
+
         return Response({'message': 'Se ha eliminado la deadline de la issue correctamente', 'issue': IssueSerializer(issue).data}, status=status.HTTP_200_OK)            
 
     @action(methods=['get', 'post'], detail=True, url_path='comments')
@@ -496,6 +521,11 @@ class IssueViewSet(ModelViewSet):
                 return Response({'message': 'Introduce el comentario'}, status=status.HTTP_400_BAD_REQUEST)
             comentario = Comentario(issue=issue, autor=Token.objects.get(key=request.auth).user, contenido=comment, fecha=datetime.now(), deleted=False)
             comentario.save()
+            
+            actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,
+                                    creador=issue.creador, tipo='Nuevo Comentario', fecha=datetime.now())
+            actividad.save()
+            
             comment_serializer = ComentarioSerializer(comentario)  # Serializar un solo comentario
             return Response({'message': 'Se ha añadido el comentario a la issue correctamente', 'comment': comment_serializer.data}, status=status.HTTP_201_CREATED)
 
@@ -514,11 +544,17 @@ class IssueViewSet(ModelViewSet):
             comments = Comentario.objects.filter(issue=issue)
             for comment in comments:
                 comment.delete()
+            actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,
+                                    creador=issue.creador, tipo='Todos los comentarios Borrados', fecha=datetime.now())
+            actividad.save()
             return Response({'message': 'Se han eliminado todos los comentarios de la issue correctamente' }, status=status.HTTP_200_OK)
         if not Comentario.objects.filter(id=idComment).exists():
             return Response({'message': 'El comentario no existe'}, status=status.HTTP_400_BAD_REQUEST)
         comment = Comentario.objects.get(id=idComment)
         comment.delete()
+        actividad = Actividad_Issue(issue=issue, usuario=Token.objects.get(key=request.auth).user,
+                                    creador=issue.creador, tipo='Comentario Borrado', fecha=datetime.now())
+        actividad.save()
         #enviar la issue, con los comentarios actuales
         comments = Comentario.objects.filter(issue=issue)
         return Response({'message': 'Se ha eliminado el comentario de la issue correctamente', 'comments': ComentarioSerializer(comments, many=True).data}, status=status.HTTP_200_OK)
