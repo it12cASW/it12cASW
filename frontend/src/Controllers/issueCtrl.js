@@ -239,3 +239,22 @@ export async function setDeadlineCtrl(id_issue, deadline) {
         return null;
     }
 }
+
+export async function getCommentsCtrl(id_issue) {
+    try {
+        var idUsuario = getIdUsuario();
+        var url = "https://it12casw-backend.fly.dev/api/issues/" + id_issue + "/comments/";
+        var auth = "Token " + getTokenUsuario(idUsuario);
+        const response = await axios.get(url, {
+            headers: {
+                "Authorization": auth,
+            },
+        });
+        console.log("API: Se han obtenido los comentarios")
+        return response.data;
+    }
+    catch(error){
+        console.log("API: Ha habido un error al obtener los comentarios")
+        return null;
+    }
+}

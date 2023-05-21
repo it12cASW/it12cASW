@@ -10,6 +10,8 @@ import { getActivitiesCtrl } from '../../Controllers/activityCtrl';
 
 // Componentes
 import InfoIssue from '../../Components/InfoIssue';
+import Actividades from '../../Components/Actividades';
+import Comments from '../../Components/Comments';
 
 // Estilos
 
@@ -66,13 +68,16 @@ export default function ShowIssue() {
             ) : (
                 <div style={styles.mainContainer}>
                     <div style={ styles.infoContainer }>
-                        <div>
-                            <div>
+                        <div style={{ display:"flex", flexDirection:"row" }}>
+                            <div style={ styles.containerInfoIssue }>
                                 <InfoIssue issue={issue} setIssue={ rechargeInfoIssue }/>
                             </div>
-                            <div>
-
+                            <div sytle={ styles.containerActivities }>
+                                <Actividades issue={issue.id}/>
                             </div>
+                        </div>
+                        <div style={ styles.commentsContainer}>
+                            <Comments issue={issue.id}/>
                         </div>
                     </div>
                 </div>
@@ -87,11 +92,40 @@ const styles = {
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '100%',
+        backgroundColor: '#E6FFFD',
+        alignItems: 'center',
+        alignObject: 'center',
+
     },
     infoContainer: {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        width: '50%',
+        width: '90%',
+        backgroundColor: 'rbga(236, 236, 236, 0.9)',
+        height: "700px",
+        alignItems: 'center',
+        selfAlign: 'center',
     },
+    containerInfoIssue: {
+        width: '70%',
+    },
+    containerActivities: {
+        width: '30%',
+
+    },
+    commentsContainer: {
+        width: '100%',
+        maxHeight: '500px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        backgroundColor: '#F0ECCF',
+        borderRadius: '10px',
+        marginTop: '20px',
+        alignItems: 'center',
+        alignObject: 'center',
+    
+    },
+
 }

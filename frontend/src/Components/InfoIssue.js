@@ -30,7 +30,7 @@ export default function InfoIssue({ issue, setIssue }) {
     const [prioridad, setPrioridad] = React.useState(issue.prioridad);
     const [estado, setEstado] = React.useState(issue.estado);
 
-    const [blocked, setBlocked] = React.useState(false);
+    var [blocked, setBlocked] = React.useState(Boolean);
 
     const asunto_ref = useRef(null)
     const descripcion_ref = useRef(null)
@@ -153,9 +153,8 @@ export default function InfoIssue({ issue, setIssue }) {
         }
 
         getUsuariosAPI();
-        if(issue.blocked) setBlocked(issue.blocked);
-        console.log("Vuelvo a cargar con: " + issue.deadline);
-
+        
+        setBlocked(issue.blocked);
     }, [issue])
 
     return (
@@ -205,10 +204,11 @@ export default function InfoIssue({ issue, setIssue }) {
             </div>
             {/* BLOQUEO */}
             <div style={ styles.targeta }>
-                <div style={{ display:"flex", flexDirection:"row", alignContent:"center", alignContent:"center" }}>
+                <div style={{ display:"flex", flexDirection:"row", alignContent:"center", alignContent:"center", justifyContent:"center", alignItems:"center" }}>
+                    <p>Bloqueo</p>
                     {!blocked && <button onClick={ lock } style={ styles.bloqueado }>Bloquear</button>}
                     {blocked && <button onClick={ unlock } style={ styles.desbloqueado }>Desbloquear</button>}
-                    <p>Bloqueada</p>
+                    
                 </div>
             
                 <input type="text" ref={ reason_bloqued_ref } onChange={setReasonBlocked} style={ styles.input } defaultValue={ issue.reason_blocked } placeholder={ issue.reason_blocked } />
@@ -218,32 +218,35 @@ export default function InfoIssue({ issue, setIssue }) {
                 <p>Deadline: { issue.deadline }</p>
                 <input ref={ deadline_ref } onChange={handleDeadline} type="date" defaultValue={ issue.deadline } />
             </div>
-            {/* PRIORIDAD */}
-            <div style={ styles.targeta }>
-                { issue.prioridad && <p>Prioridad: { issue.prioridad }</p> }
-                {!issue.prioridad && <p>Prioridad: Ninguna</p> }
-                <select ref={ prioridad_ref } onChange={handlePrioridad}>
-                    <option value="low">Low</option>
-                    <option value="normal" defaultValue>Normal</option>
-                    <option value="high">High</option>
-                </select>
+            <div style={{ display:"flex", flexDirection:"row", width:"81%", justifyContent:"space-between"  }}>
+                {/* PRIORIDAD */}
+                <div style={ styles.targetaBajo }>
+                    { issue.prioridad && <p>Prioridad: { issue.prioridad }</p> }
+                    {!issue.prioridad && <p>Prioridad: Ninguna</p> }
+                    <select ref={ prioridad_ref } onChange={handlePrioridad}>
+                        <option value="low">Low</option>
+                        <option value="normal" defaultValue>Normal</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                {/* ESTADO */}
+                <div style={ styles.targetaBajo }>
+                    {issue.status && <p>Estado: { issue.status }</p>}
+                    {!issue.status && <p>Estado: Ninguno</p>}
+                    <select ref={ estado_ref } onChange={ handleEstado } name="estado" id="estado" style={ styles.select }>
+                        <option value="new" defaultValue>New</option>
+                        <option value="progress">In progress</option>
+                        <option value="test">Ready for test</option>
+                        <option value="closed">Closed</option>
+                        <option value="info">Needs Info</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="postponed">Postponed</option>
+                    </select>
+                </div>
             </div>
-            {/* ESTADO */}
-            <div style={ styles.targeta }>
-                {issue.status && <p>Estado: { issue.status }</p>}
-                {!issue.status && <p>Estado: Ninguno</p>}
-                <select ref={ estado_ref } onChange={ handleEstado } name="estado" id="estado" style={ styles.select }>
-                    <option value="new" defaultValue>New</option>
-                    <option value="progress">In progress</option>
-                    <option value="test">Ready for test</option>
-                    <option value="closed">Closed</option>
-                    <option value="info">Needs Info</option>
-                    <option value="rejected">Rejected</option>
-                    <option value="postponed">Postponed</option>
-                </select>
-            </div>
-            <div>
-                <button onClick={ editarIssueAPI }>Editar</button>
+            
+            <div style={ styles.containerButton }>
+                <button style={ styles.button } onClick={ editarIssueAPI }>Guardar cambios</button>
             </div>
         </div>
     )
@@ -260,18 +263,28 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         padding: '5px',
-        backgroundColor: '#DBDBDB',
+        backgroundColor: '#FBC252',
         width: '80%',
         borderRadius: '5px',
-        margin: '5px',
+        marginTop: '5px',
+    },
+    targetaBajo: {
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '5px',
+        backgroundColor: '#FBC252',
+        width: '48%',
+        borderRadius: '5px',
+        marginTop: '5px',
     },
     targetaCreador: {
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: '#DBDBDB',
+        backgroundColor: '#FBC252',
         width: '80%',
         borderRadius: '5px',
         padding: '5px',
+        marginTop: '5px',
     },
     input: {
         padding: '5px',
@@ -290,5 +303,34 @@ const styles = {
         padding: '5px',
         width: '100%',
         height: '10px',
-    }
+    },
+    button: {
+        width: '100%',
+        paddingLeft: '50px',
+        paddingRight: '50px',
+        paddingTop: '10px',
+        paddingBottom: '10px',
+        borderRadius: '10px',
+        border: "none",
+        backgroundColor: '#A3BB98',
+
+    },
+    bloqueado: {
+        borderRadius: '10px',
+        border: "none",
+        backgroundColor: '#A3BB98',
+        marginLeft: '20px',
+        height: '30px',
+    },
+    desbloqueado: {
+        borderRadius: '10px',
+        border: "none",
+        backgroundColor: '#A3BB98',
+        marginLeft: '20px',
+        height: '30px',
+        
+    },
+    containerButton: {
+        marginTop: '10px',
+    },
 }
