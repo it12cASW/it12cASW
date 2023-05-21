@@ -13,8 +13,9 @@ import { getTiposCtrl } from "../../Controllers/tiposCtrl"
 import { getPrioridadesCtrl } from "../../Controllers/prioridadesCtrl"
 import { getSeveridadesCtrl } from "../../Controllers/severidadesCtrl"
 import { getEstadosCtrl } from "../../Controllers/estadosCtrl"
+import { getAllUsers } from "../../vars";
 
-export default function CrearIssue( { idUsuario, handleUsuario } ) {
+export default function CrearIssue( { idUsuario , handleUsuario } ) {
 
     // Parametros de input
     const [usuario, setUsuario] = useState({})
@@ -37,6 +38,14 @@ export default function CrearIssue( { idUsuario, handleUsuario } ) {
     // Parametros de vista
     const [incorrecto, setIncorrecto] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
+
+    function handleTitulo(e) {
+        setTitulo(e.target.value)
+    }
+
+    function handleDescripcion(e) {
+        setDescripcion(e.target.value)
+    }
 
     function handleAsignado(e) {
         setAsignado(e.target.value)
@@ -62,23 +71,25 @@ export default function CrearIssue( { idUsuario, handleUsuario } ) {
         console.log("Enviando formulario")
 
         var data = {
-            "usuario": usuario,
-            "titulo": titulo,
+            "id_creador": usuario,
+            "asunto": titulo,
             "descripcion": descripcion,
+            "asociado": usuario,
+            // "tipo": tipo,
             "asignado": asignado,
-            "estado": estado,
-            "tipo": tipo,
+            "blocked": false,
+            "reason_blocked": "",
+            "deadline": "2023-05-20T12:41:02.390Z",
+            "status": estado,
             "prioridad": prioridad,
-            "severidad": severidad,
-            "archivo": archivo,
         }
 
-        var res = await crearIssueCtrl(data)
+        var res = await crearIssueCtrl(idUsuario, data)
         setIncorrecto(res)
     }
 
     async function asignarVariables() {
-        var usuarios_aux = await getUsuariosCtrl()
+        var usuarios_aux = await getAllUsers()
         // var tipos_aux = await getTiposCtrl()
         // var prioridades_aux = await getPrioridadesCtrl()
         // var severidades_aux = await getSeveridadesCtrl()
@@ -109,16 +120,15 @@ export default function CrearIssue( { idUsuario, handleUsuario } ) {
                     <div style={ styles.blockContainer }>
                         <div style={ styles.leftContainer }>
                             <div>
-                                <input type="text" placeholder="Asunto" style={ styles.inputText } />
+                                <p>Título de la issue</p>
+                                <input type="text" placeholder="Asunto" onChange={ handleTitulo } style={ styles.inputText } />
                             </div>
                             <div>
-                                <button style={ styles.botonTag }>Tags</button>
-
+                                <p>Descripción de la issue</p>
+                                <input type="textarea" placeholder="Descripción" onChange={ handleDescripcion } style={ styles.inputText } />
                             </div>
                             <div>
-                                <input type="textarea" placeholder="Descripción" style={ styles.inputText } />
-                            </div>
-                            <div>
+                                <p>Introduce un archivo adjunto:</p>
                                 <input type="file" placeholder="Titulo" style={ styles.inputFile } />
                             </div>
                         </div>

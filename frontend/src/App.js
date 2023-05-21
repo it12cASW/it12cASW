@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 // Componentes pantallas
@@ -15,9 +15,13 @@ function App() {
   const [idUsuario, setIdUsuario] = React.useState(null);
 
   function handleUsuario(id) {
-    console.log("ID: " + id.target.value);
+
     setIdUsuario(id.target.value);
   }
+
+  useEffect(() => {
+    setIdUsuario(0);
+  }, []);
 
 
   return (

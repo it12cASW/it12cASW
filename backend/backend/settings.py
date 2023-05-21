@@ -156,7 +156,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:9000",
     "http://localhost:3000",
     "https://editor.swagger.io",
-    "https://it12casw-backend.fly.dev"
+    "https://it12casw-backend.fly.dev",
+    
 ]
 
 

@@ -9,6 +9,7 @@ import { getCommentsCtrl } from '../../Controllers/commentCtrl';
 import { getActivitiesCtrl } from '../../Controllers/activityCtrl';
 
 // Componentes
+import InfoIssue from '../../Components/InfoIssue';
 
 // Estilos
 
@@ -28,6 +29,13 @@ export default function ShowIssue() {
     async function getIssueAPI(id) {
         var issue_aux = await getIssueCtrl(id);
         setIssue(issue_aux);
+        setIsLoading(false);
+    }
+
+    function rechargeInfoIssue() {
+        setIsLoading(true);
+        getIssueAPI(id);
+        
     }
 
     async function getCommentsAPI(id) {
@@ -46,12 +54,8 @@ export default function ShowIssue() {
 
         // Obtengo issue y comentarios y actividades
         getIssueAPI(id);
-        getCommentsAPI(id);
-        getActivitiesAPI(id);
-
-        setIsLoading(false);
+    
     }, []);
-
 
     return (
         <div>
@@ -60,10 +64,34 @@ export default function ShowIssue() {
                     <h1>Cargando...</h1>
                 </div>
             ) : (
-                <div>
-                    <h1>Mostrar Issue número: { id }</h1>
+                <div style={styles.mainContainer}>
+                    <div style={ styles.infoContainer }>
+                        <div>
+                            <div>
+                                <InfoIssue issue={issue} setIssue={ rechargeInfoIssue }/>
+                            </div>
+                            <div>
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
     )
+}
+
+const styles = {
+    mainContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    infoContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        width: '50%',
+    },
 }
