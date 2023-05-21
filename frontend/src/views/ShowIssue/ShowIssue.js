@@ -60,15 +60,16 @@ export default function ShowIssue() {
     }, []);
 
     return (
-        <div>
+        <div style={{ display:"flex", justifyContent:"center"}}>
             { isLoading ? (
                 <div>
                     <h1>Cargando...</h1>
                 </div>
             ) : (
                 <div style={styles.mainContainer}>
+                    {/* vertical */}
                     <div style={ styles.infoContainer }>
-                        <div style={{ display:"flex", flexDirection:"row" }}>
+                        <div style={ styles.upperContainer }>
                             <div style={ styles.containerInfoIssue }>
                                 <InfoIssue issue={issue} setIssue={ rechargeInfoIssue }/>
                             </div>
@@ -89,43 +90,48 @@ export default function ShowIssue() {
 const styles = {
     mainContainer: {
         display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-        backgroundColor: '#E6FFFD',
-        alignItems: 'center',
-        alignObject: 'center',
-
+        justifyContent: 'center',
     },
     infoContainer: {
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
+        marginTop: '50px',
+        marginBottom: '50px',
+
         width: '90%',
-        backgroundColor: 'rbga(236, 236, 236, 0.9)',
-        height: "700px",
-        alignItems: 'center',
-        selfAlign: 'center',
+        // borderRadius: '10px',
+        // borderWidth: '1px',
+        // borderColor: 'grey',
+        // border: "solid",
+        padding: '20px',
     },
     containerInfoIssue: {
+        // border: "solid",
+        // borderRadius: '10px',
+        // borderWidth: '1px',
+        padding: '20px',
         width: '70%',
-    },
-    containerActivities: {
-        width: '30%',
 
-    },
-    commentsContainer: {
-        width: '100%',
-        maxHeight: '500px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        backgroundColor: '#F0ECCF',
-        borderRadius: '10px',
-        marginTop: '20px',
-        alignItems: 'center',
-        alignObject: 'center',
-    
+    },
+    upperContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+        height: 'auto',
+    },
+    containerActivities: {
+        marginLeft: '20px',
+        padding: '20px',
+    },
+    commentsContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
     },
 
 }

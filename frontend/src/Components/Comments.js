@@ -30,18 +30,18 @@ export default function Comments({issue}) {
                     {comments.map((comment) => (
                         <div style={ styles.comentario }>
                             <div style={{ display:"flex", flexDirection:"row", justifyContent:"space-around" }}>
-                                <p>{ comment.autor.username }</p>
-                                <p>{ comment.fecha }</p>
+                                <p style={ styles.texto }>{ comment.autor.username }</p>
+                                <p style={ styles.texto }>{ comment.fecha }</p>
                             </div>
-                            <div style={{ display:"flex", alignContent:"center", alignItems:"center", justifyContent:"center", borderWidth:"0.5px", border:"solid", borderRadius:"10px", backgroundColor:"white" }}>
-                                <p>{ comment.contenido }</p>
+                            <div style={{ display:"flex", alignContent:"center", alignItems:"center", justifyContent:"center", borderRadius:"10px", backgroundColor:"white" }}>
+                                <p style={ styles.texto }>{ comment.contenido }</p>
                             </div>
                         </div>
                     ))}
                 </div>
             ) : (
                 <div>
-                    <p>No hay comentarios</p>
+                    <p style={ styles.texto }>No hay comentarios</p>
                 </div>
             )}
         </div>
@@ -51,9 +51,14 @@ export default function Comments({issue}) {
 const styles = {
     comentario: {
         width:"100%",
-        backgroundColor:"#FBC252",
+        backgroundColor:"rgba(236, 236, 236, 0.9)",
         marginTop:"5px",
         borderRadius:"10px",
         padding:"10px"
+    },
+    texto: {
+        fontFamily: 'sans-serif',
+        height: '20px',
+        fontSize: '15px',
     },
 };

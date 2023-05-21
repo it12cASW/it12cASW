@@ -21,6 +21,7 @@ export default function InfoIssue({ issue, setIssue }) {
     
     // Variables
     const [usuarios, setUsuarios] = React.useState(null);
+    const [error, setError] = React.useState(false);
 
     // Editar issue
     const [asunto, setAsunto] = React.useState(issue.asunto);
@@ -55,19 +56,16 @@ export default function InfoIssue({ issue, setIssue }) {
     async function handleAsociado(e) {
         var deleted = await deleteAsociadoCtrl(issue.id);
         var res = await setAsociadoCtrl(issue.id, e.target.value);
-        if(res) {
-            setIssue();
-        }
+        if(!res) setError(true);
+        setIssue();
     }
 
     async function handleAsignado(e) {
 
         var deleted = await deleteAsignadoCtrl(issue.id);
         var res = await setAsignadoCtrl(issue.id, e.target.value);
-
-        if(res) {
-            setIssue();
-        }
+        if(!res) setError(true);
+        setIssue();
     }
 
     function lock() {
@@ -82,7 +80,7 @@ export default function InfoIssue({ issue, setIssue }) {
         
         var deleted = await deleteDeadlineCtrl(issue.id);
         var res = await setDeadlineCtrl(issue.id, e.target.value);
-
+        if(!res) setError(true);
         setIssue();
     }
 
@@ -142,6 +140,7 @@ export default function InfoIssue({ issue, setIssue }) {
         };
 
         var res = await editarIssueCtrl(issue.id ,data);
+        if(!res) setError(true);
         setIssue();
     }
 
@@ -153,29 +152,29 @@ export default function InfoIssue({ issue, setIssue }) {
         }
 
         getUsuariosAPI();
-        
+        console.log("issue.blocked: " + issue.blocked)
         setBlocked(issue.blocked);
     }, [issue])
 
     return (
         <div style={ styles.contenedor }>
-            <div style={ styles.targeta }>
-                <p>Asunto:</p>
-                <input onChange={ handleAsunto } style={ styles.input } type="text" placeholder={issue.asunto} defaultValue={ issue.asunto } ref={ asunto_ref } />
+            <div style={ styles.targetaAsunto }>
+                <p style={ styles.textoAsunto }>Asunto:</p>
+                <input onChange={ handleAsunto } style={ styles.inputAsunto } type="text" placeholder={issue.asunto} defaultValue={ issue.asunto } ref={ asunto_ref } />
             </div>
-            <div style={ styles.targeta }>
-                <p>Descripción:</p>
+            <div style={ styles.targetaDescripcion }>
+                <p style={ styles.descripcionTexto }>Descripción:</p>
                 <input onChange={ handleDescripcion } style={ styles.inputArea } type="textarea" multiple={true} placeholder={issue.descripcion} defaultValue={ issue.descripcion } ref={ descripcion_ref } />
             </div>
             <div style={ styles.targetaCreador }>
-                <p>Creador: {issue.creador.username}</p>
+                <p style={ styles.textoCreador }>Creador:   {issue.creador.username}</p>
             </div>
 
             {/* ASOCIADO --> Por defecto el 'none', sino pongo el que venia */}
-            <div style={ styles.targeta }>
-                {issue.associat && <p>Asociado: { issue.associat.username }</p>}
-                {!issue.associat && <p>Asociado: Ninguno</p>}
-                <select style={styles.select} ref={ asociat_ref } defaultValue={ issue.associat } onChange={handleAsociado}>
+            <div style={ styles.targetaAsociado }>
+                {issue.associat && <p style={ styles.textoAsociado }>Asociado: { issue.associat.username }</p>}
+                {!issue.associat && <p style={ styles.textoAsociado }>Asociado: Ninguno</p>}
+                <select style={styles.selectInput} ref={ asociat_ref } defaultValue={ issue.associat } onChange={handleAsociado}>
                     <option value={null}>Ninguno</option>
                     {usuarios && usuarios.map((usuario) => (
                         <option value={usuario.id} >{usuario.username}</option>
@@ -184,10 +183,10 @@ export default function InfoIssue({ issue, setIssue }) {
             </div>
 
             {/* ASIGNADO --> Por defecto el 'none', sino pongo el que venia */}
-            <div style={ styles.targeta }>
-                {issue.asignada && <p>Asignado: {issue.asignada.username}</p>}
-                {!issue.asignada && <p>Asignado: Ninguno</p>}
-                <select style={ styles.select } ref={ asignado_ref } defaultValue={ issue.asignado } onChange={ handleAsignado } >
+            <div style={ styles.targetaAsociado }>
+                {issue.asignada && <p style={ styles.textoAsociado }>Asignado: {issue.asignada.username}</p>}
+                {!issue.asignada && <p style={ styles.textoAsociado }>Asignado: Ninguno</p>}
+                <select style={ styles.selectInput } ref={ asignado_ref } defaultValue={ issue.asignado } onChange={ handleAsignado } >
                     <option value={null} >Ninguno</option>
                     {usuarios && usuarios.map((usuario) => (
                         <option value={usuario.id}>{usuario.username}</option>
@@ -203,27 +202,26 @@ export default function InfoIssue({ issue, setIssue }) {
                 ))}
             </div>
             {/* BLOQUEO */}
-            <div style={ styles.targeta }>
+            <div style={ styles.targetaBloqueo }>
                 <div style={{ display:"flex", flexDirection:"row", alignContent:"center", alignContent:"center", justifyContent:"center", alignItems:"center" }}>
-                    <p>Bloqueo</p>
+                    <p style={ styles.textoAsociado }>Bloqueo</p>
                     {!blocked && <button onClick={ lock } style={ styles.bloqueado }>Bloquear</button>}
                     {blocked && <button onClick={ unlock } style={ styles.desbloqueado }>Desbloquear</button>}
-                    
                 </div>
             
-                <input type="text" ref={ reason_bloqued_ref } onChange={setReasonBlocked} style={ styles.input } defaultValue={ issue.reason_blocked } placeholder={ issue.reason_blocked } />
+                <input type="text" ref={ reason_bloqued_ref } onChange={setReasonBlocked} style={ styles.inputAsunto } defaultValue={ issue.reason_blocked } placeholder={ issue.reason_blocked } />
             </div>
             {/* DEADLINE */}
-            <div style={ styles.targeta }>
-                <p>Deadline: { issue.deadline }</p>
-                <input ref={ deadline_ref } onChange={handleDeadline} type="date" defaultValue={ issue.deadline } />
+            <div style={ styles.targetaDeadline }>
+                <p style={ styles.textoAsociado }>Deadline: { issue.deadline }</p>
+                <input ref={ deadline_ref } onChange={handleDeadline} type="date" defaultValue={ issue.deadline } style={ styles.datePicker }/>
             </div>
-            <div style={{ display:"flex", flexDirection:"row", width:"81%", justifyContent:"space-between"  }}>
+                <div style={{ display:"flex", flexDirection:"row", width:"81%", justifyContent:"space-between"  }}>
                 {/* PRIORIDAD */}
                 <div style={ styles.targetaBajo }>
-                    { issue.prioridad && <p>Prioridad: { issue.prioridad }</p> }
-                    {!issue.prioridad && <p>Prioridad: Ninguna</p> }
-                    <select ref={ prioridad_ref } onChange={handlePrioridad}>
+                    { issue.prioridad && <p style={ styles.textoAsociado }>Prioridad: { issue.prioridad }</p> }
+                    {!issue.prioridad && <p style={ styles.textoAsociado }>Prioridad: Ninguna</p> }
+                    <select ref={ prioridad_ref } style={ styles.selectInput } onChange={handlePrioridad}>
                         <option value="low">Low</option>
                         <option value="normal" defaultValue>Normal</option>
                         <option value="high">High</option>
@@ -231,9 +229,9 @@ export default function InfoIssue({ issue, setIssue }) {
                 </div>
                 {/* ESTADO */}
                 <div style={ styles.targetaBajo }>
-                    {issue.status && <p>Estado: { issue.status }</p>}
-                    {!issue.status && <p>Estado: Ninguno</p>}
-                    <select ref={ estado_ref } onChange={ handleEstado } name="estado" id="estado" style={ styles.select }>
+                    {issue.status && <p style={ styles.textoAsociado }>Estado: { issue.status }</p>}
+                    {!issue.status && <p style={ styles.textoAsociado }>Estado: Ninguno</p>}
+                    <select ref={ estado_ref }  onChange={ handleEstado } name="estado" id="estado" style={ styles.selectInput }>
                         <option value="new" defaultValue>New</option>
                         <option value="progress">In progress</option>
                         <option value="test">Ready for test</option>
@@ -244,6 +242,12 @@ export default function InfoIssue({ issue, setIssue }) {
                     </select>
                 </div>
             </div>
+
+            {error && 
+                <div>
+                    <p style={{ color:"red" }}>No se ha editado correctamente</p>  
+                </div>
+            }
             
             <div style={ styles.containerButton }>
                 <button style={ styles.button } onClick={ editarIssueAPI }>Guardar cambios</button>
@@ -253,6 +257,112 @@ export default function InfoIssue({ issue, setIssue }) {
 }
 
 const styles = {
+    // Asunto
+    targetaAsunto: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '80%',
+        justifyContent: 'space-between',
+        padding: '5px',
+    },
+    textoAsunto: {
+        fontFamily: 'sans-serif',
+        height: '20px',
+        fontSize: '15px',
+    },
+    inputAsunto: {
+        height: '40px',
+        paddingLeft: '10px',
+        borderRadius: '5px',
+        border: '0px',
+        backgroundColor: 'rgba(236, 236, 236, 1)',
+    },
+    // Descripcion
+    targetaDescripcion: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '80%',
+        justifyContent: 'space-between',
+        padding: '5px',
+    },
+    descripcionTexto: {
+        fontFamily: 'sans-serif',
+        height: '20px',
+        fontSize: '15px',
+    },
+    inputArea: {
+        height: '40px',
+        paddingLeft: '10px',
+        borderRadius: '5px',
+        border: '0px',
+        backgroundColor: 'rgba(236, 236, 236, 1)',
+        height: '100px',
+    },
+    // Creador
+    targetaCreador: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '80%',
+        justifyContent: 'space-between',
+        padding: '5px',
+    },
+    textoCreador: {
+        fontFamily: 'sans-serif',
+        height: '20px',
+        fontSize: '15px',
+    },
+    // Asociado
+    targetaAsociado: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '80%',
+        justifyContent: 'space-between',
+        padding: '5px',
+    },
+    textoAsociado: {
+        fontFamily: 'sans-serif',
+        height: '20px',
+        fontSize: '15px',
+    },
+    selectInput: {
+        height: '40px',
+        borderRadius: '5px',
+        border: '0px',
+        backgroundColor: 'rgba(236, 236, 236, 1)',
+        paddingLeft: '10px',
+    },
+    // Bloqueo
+    targetaBloqueo: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '80%',
+        justifyContent: 'space-between',
+        padding: '5px',
+    },
+    // Deadline
+    targetaDeadline: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '80%',
+        justifyContent: 'space-between',
+        padding: '5px',
+    },
+    datePicker: {
+        height: '40px',
+        borderRadius: '5px',
+        border: '0px',
+        backgroundColor: 'rgba(236, 236, 236, 1)',
+        paddingLeft: '10px',
+        marginTop: '5px',
+    },
+    // Prioridad y Estado
+    targetaBajo: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '80%',
+        justifyContent: 'space-between',
+        padding: '5px', 
+    },
     contenedor: {
         display: 'flex',
         flexDirection: 'column',
@@ -268,41 +378,12 @@ const styles = {
         borderRadius: '5px',
         marginTop: '5px',
     },
-    targetaBajo: {
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '5px',
-        backgroundColor: '#FBC252',
-        width: '48%',
-        borderRadius: '5px',
-        marginTop: '5px',
-    },
-    targetaCreador: {
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: '#FBC252',
-        width: '80%',
-        borderRadius: '5px',
-        padding: '5px',
-        marginTop: '5px',
-    },
+    
     input: {
         padding: '5px',
         borderRadius: '10px',
         border: "none",
         backgroundColor: 'white',
-    },
-    inputArea: {
-        padding: '5px',
-        height: '50px',
-        borderRadius: '10px',
-        border: "none",
-        backgroundColor: 'white',
-    },
-    select: {
-        padding: '5px',
-        width: '100%',
-        height: '10px',
     },
     button: {
         width: '100%',

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { FaCircle } from "react-icons/fa";
 import React from "react";
+import { Link } from "react-router-dom";
 
 // Controladores
 import { getIssuesCtrl } from "../Controllers/issueCtrl";
@@ -55,7 +56,7 @@ export default function ShowIssues() {
                         {issue.prioridad && issue.prioridad === "high" && <FaCircle style={{ color:"red" }}/>}
                     </div>
                     <div style={styles.columna}>#{issue.id}</div>
-                    <div style={styles.columnaTexto}>{issue.asunto}</div>
+                    <div style={styles.columnaTexto}><Link to={`/${issue.id}`}>{issue.asunto}</Link></div>
                     <div style={styles.columna}>
                         {issue.status && issue.status === "new" && <FaCircle style={{ color:"violet" }}/>}
                         {issue.status && issue.status === "progres" && <FaCircle style={{ color:"blue" }}/>}
