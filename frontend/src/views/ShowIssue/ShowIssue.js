@@ -7,7 +7,7 @@ import { getIssuesCtrl } from '../../Controllers/issueCtrl';
 import { getIssueCtrl } from '../../Controllers/issueCtrl';
 import { getCommentsCtrl } from '../../Controllers/commentCtrl';
 import { getActivitiesCtrl } from '../../Controllers/activityCtrl';
-
+import { setCommentCtrl } from '../../Controllers/issueCtrl';
 // Componentes
 import InfoIssue from '../../Components/InfoIssue';
 import Actividades from '../../Components/Actividades';
@@ -37,7 +37,6 @@ export default function ShowIssue() {
     function rechargeInfoIssue() {
         setIsLoading(true);
         getIssueAPI(id);
-        
     }
 
     async function getCommentsAPI(id) {
@@ -50,6 +49,12 @@ export default function ShowIssue() {
         setActivities(activities_aux);
     }
 
+    async function createCommentAPI(id, comment) {
+        await setCommentCtrl(id, comment);    
+        // Actualizar los comentarios de la issue
+        getCommentsAPI(id);
+    }
+
     // Funciones
     useEffect(() => {
         setIsLoading(true);
@@ -60,31 +65,50 @@ export default function ShowIssue() {
     }, []);
 
     return (
-        <div style={{ display:"flex", justifyContent:"center"}}>
-            { isLoading ? (
-                <div>
-                    <h1>Cargando...</h1>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          {isLoading ? (
+            <div>
+              <h1>Cargando...</h1>
+            </div>
+          ) : (
+            <div style={styles.mainContainer}>
+              {/* vertical */}
+              <div style={styles.infoContainer}>
+                <div style={styles.upperContainer}>
+                  <div style={styles.containerInfoIssue}>
+                    <InfoIssue issue={issue} setIssue={rechargeInfoIssue} />
+                  </div>
+                  <div style={styles.containerActivities}>
+                    <Actividades issue={issue.id} />
+                  </div>
                 </div>
-            ) : (
-                <div style={styles.mainContainer}>
-                    {/* vertical */}
-                    <div style={ styles.infoContainer }>
-                        <div style={ styles.upperContainer }>
-                            <div style={ styles.containerInfoIssue }>
-                                <InfoIssue issue={issue} setIssue={ rechargeInfoIssue }/>
-                            </div>
-                            <div sytle={ styles.containerActivities }>
-                                <Actividades issue={issue.id}/>
-                            </div>
-                        </div>
-                        <div style={ styles.commentsContainer}>
-                            <Comments issue={issue.id}/>
-                        </div>
-                    </div>
+                <div style={styles.commentsContainer}>
+                  {/* Formulario para crear un comentario */}
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      const comment = e.target.comment.value;
+                      createCommentAPI(issue.id, comment);
+                      e.target.comment.value = "";
+                      /*recargar la pagina*/
+                      rechargeInfoIssue();
+                    }}
+                  >
+                    <input
+                      type="text"
+                      name="comment"
+                      placeholder="Escribe un comentario..."
+                    />
+                    <button type="submit">Enviar</button>
+                  </form>
+                  <Comments issue={issue.id} />
                 </div>
-            )}
+              </div>
+            </div>
+          )}
         </div>
-    )
+      );
+            
 }
 
 const styles = {
