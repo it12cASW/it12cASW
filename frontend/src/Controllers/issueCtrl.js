@@ -258,3 +258,85 @@ export async function getCommentsCtrl(id_issue) {
         return null;
     }
 }
+
+export async function getIssue_usersCtrl(id_issue) {
+
+    try {
+        var idUsuario = getIdUsuario();
+        var url = "https://it12casw-backend.fly.dev/api/issues/" + id_issue + "/watchers/";
+        var auth = "Token " + getTokenUsuario(idUsuario);
+        const response = await axios.get(url, {
+            headers: {
+                "Authorization": auth,
+            },
+        });
+        
+        console.log("API: Se han obtenido los usuarios de la issue")
+
+        var watchers = response.data.vigilant;
+        var result = [];
+        for (let i = 0; i < watchers.length; i++) {
+                result.push(watchers[i].id);
+        }
+        return result;
+    }
+    catch(error){
+        console.log("API: Ha habido un error al obtener los usuarios de la issue")
+        return null;
+    }
+}
+
+
+export async function addWatcherCtrl(id_issue, id_user) {
+
+    try {
+        console.log("USUARIO: " + id_issue)
+        var idUsuario = getIdUsuario();
+        var url = "https://it12casw-backend.fly.dev/api/issues/" + id_issue + "/watchers/";
+        var data =
+            {
+                "idUser": id_user,
+            };
+        var auth = "Token " + getTokenUsuario(idUsuario);
+        const response = await axios.put(url, data, {
+            headers: {
+                "Authorization": auth,
+            },
+        });
+        console.log("API: Se ha añadido el watcher")
+        return true;
+    }
+    catch(error){
+        if( error.response.status == 409 ){
+            console.log("API: La issue ya tiene un watcher")
+            return false;
+        }
+        console.log("API: Ha habido un error al añadir el watcher")
+        return null;
+    }
+}
+
+
+export async function deleteWatcherCtrl(id_issue, id_user) {
+
+    try {
+        var idUsuario = getIdUsuario();
+        var url = "https://it12casw-backend.fly.dev/api/issues/" + id_issue + "/watchers/delete/";
+        var data =
+            {
+                "idUser": id_user,
+            };
+        var auth = "Token " + getTokenUsuario(idUsuario);
+        const response = await axios.put(url, data, {
+            headers: {
+                "Authorization": auth,
+            }
+        });
+        console.log("API: Se ha eliminado el watcher")
+        return true;
+    }
+    catch(error){
+        console.log(error)
+        return null;
+    }
+}

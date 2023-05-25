@@ -15,6 +15,8 @@ import { setDeadlineCtrl } from "../Controllers/issueCtrl";
 // Componentes
 import SwitchSelector from "react-switch-selector";
 import Switch from 'react-switch';
+import Watchers from "./Watchers";
+
 
 
 export default function InfoIssue({ issue, setIssue }) {
@@ -168,6 +170,10 @@ export default function InfoIssue({ issue, setIssue }) {
             </div>
             <div style={ styles.targetaCreador }>
                 <p style={ styles.textoCreador }>Creador:   {issue.creador.username}</p>
+            </div>
+
+            <div style={{ width:"80%" }}>
+                <Watchers id_issue={ issue.id }/>
             </div>
 
             {/* ASOCIADO --> Por defecto el 'none', sino pongo el que venia */}
