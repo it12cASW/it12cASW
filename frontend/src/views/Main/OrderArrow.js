@@ -28,18 +28,19 @@ const ClickableArrows = ({ isActive, handleClick, direction }) => {
     const handleClick = (index) => {
       setActiveIndexes((prevState) => {
         const newActiveIndexes = { ...prevState };
-        if (newActiveIndexes[index] && Object.keys(newActiveIndexes).length > 1) {
+        if (newActiveIndexes[index] && Object.keys(newActiveIndexes).length >= 1) {
           // Si ya está activa y hay otras instancias activas, cambiar solo la dirección
           setDirection(direction ? false : true);
           //escribe por pantalla el valor de direction
-          console.log(direction);
+          console.log(!direction);
         } else {
           // Deseleccionar cualquier otra instancia activa
           Object.keys(newActiveIndexes).forEach((key) => {
             newActiveIndexes[key] = false;
           });
           newActiveIndexes[index] = true; // Seleccionar el nuevo componente
-          setDirection(true); // Restablecer la dirección a la predeterminada al seleccionar uno nuevo
+          setDirection(false); // Restablecer la dirección a la predeterminada al seleccionar uno nuevo
+          console.log("direction: " + false);
         }
   
         // Actualizar el estado de setActiveIndexes
@@ -145,7 +146,7 @@ const styles = {
   clickedIcon: {
     margin: '0.5px',
     cursor: 'pointer',
-    color: '#83eede'
+    color: 'blue'
   },
   tablaContainer: {
     display: "flex",
