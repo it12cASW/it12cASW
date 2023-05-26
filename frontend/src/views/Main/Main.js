@@ -8,6 +8,8 @@ import { GrAdd } from "react-icons/gr";
 import { FaCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
+import ColumnWithClickableArrows from "./OrderArrow";
+
 // Controladores
 import { getUsuariosCtrl } from "../../Controllers/usuariosCtrl";
 import { getIssuesCtrl } from "../../Controllers/issueCtrl";
@@ -276,16 +278,7 @@ export default function Main ({ idUsuario, handleUsuario }){
             {/* Tabla */}
             <div style={styles.tablaContainer}>
               {/* Fila */}
-              <div style={styles.fila}>
-                <div style={styles.columna}>Type</div>
-                <div style={styles.columna}>Severity</div>
-                <div style={styles.columna}>Priority</div>
-                <div style={styles.columna}>Issue</div>
-                <div style={styles.columnaTexto}></div>
-                <div style={styles.columna}>Status</div>
-                <div style={styles.columna}>Modified</div>
-                <div style={styles.columna}>Assign to</div>
-              </div>
+              <ColumnWithClickableArrows />
               {/* por cada elemento en issues crea una nueva fila */}
               <ShowIssues />
               

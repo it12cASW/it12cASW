@@ -10,7 +10,7 @@ const users = [
     {
         id: 2,
         username: 'JoanTestSwagger',
-        token: '',
+        token: '08c02c5150c2fe158b7ac2d2774371e9db4167ac',
         email: 'sdfs@∫dfs.com',
     },
     {
