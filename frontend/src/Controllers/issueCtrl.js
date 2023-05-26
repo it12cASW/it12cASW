@@ -340,3 +340,31 @@ export async function deleteWatcherCtrl(id_issue, id_user) {
         return null;
     }
 }
+export var orderedIssues = null;
+
+export async function orderIssues(index, order) {
+     
+    try {
+        var idUsuario = getIdUsuario();
+        console.log("index: " + index + " order: " + order);
+        var iorder;
+        if (order === false) iorder = "asc";
+        else iorder = "desc";
+        var url = "https://it12casw-backend.fly.dev/api/issues/?order_field=" + index + "&order=" + iorder;
+        
+        var auth = "Token " + getTokenUsuario(idUsuario);
+        const response = await axios.get(url, {
+            headers: {
+                "Authorization": auth,
+            }
+        });
+        orderedIssues = response.data;
+        console.log(orderedIssues);
+        return response.data;
+
+    } catch(error) {
+        console.log(error)
+        return null;
+    }
+        
+};

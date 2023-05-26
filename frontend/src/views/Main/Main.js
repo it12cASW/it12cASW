@@ -14,9 +14,6 @@ import ColumnWithClickableArrows from "./OrderArrow";
 import { getUsuariosCtrl } from "../../Controllers/usuariosCtrl";
 import { getIssuesCtrl } from "../../Controllers/issueCtrl";
 
-// Componentes
-import ShowIssues from "../../Components/ShowIssues";
-
 
 
 export default function Main ({ idUsuario, handleUsuario }){
@@ -278,10 +275,7 @@ export default function Main ({ idUsuario, handleUsuario }){
             {/* Tabla */}
             <div style={styles.tablaContainer}>
               {/* Fila */}
-              <ColumnWithClickableArrows />
-              {/* por cada elemento en issues crea una nueva fila */}
-              <ShowIssues />
-              
+              <ColumnWithClickableArrows />              
             </div>
           </div>
         )}

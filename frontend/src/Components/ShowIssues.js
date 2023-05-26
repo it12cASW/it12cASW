@@ -6,10 +6,7 @@ import { Link } from "react-router-dom";
 // Controladores
 import { getIssuesCtrl } from "../Controllers/issueCtrl";
 
-
-
-
-export default function ShowIssues() {
+export default function ShowIssues({orderedIssues}) {
 
     // Pantalla
     const [isLoading, setIsLoading] = React.useState(true);
@@ -21,11 +18,16 @@ export default function ShowIssues() {
         var issues_aux = await getIssuesCtrl();
         setIssues(issues_aux);
     }
+    async function orderIssuesAPI() {
+        var issues_aux = {};
+        setIssues(issues_aux);
+    }
 
     useEffect(() => {
         setIsLoading(true);
-
-        getIssuesAPI();
+        console.log("orderedIssues: " + orderedIssues);
+        if (orderedIssues === null)getIssuesAPI();
+        else orderIssuesAPI();
         // recorre issues
         for (var i = 0; i < issues.length; i++) {
             console.log("issue: " + issues[i]);
@@ -33,7 +35,9 @@ export default function ShowIssues() {
 
         setIsLoading(false);
     }, []);
-
+    useEffect(() => {
+        setIssues(orderedIssues); // Actualiza el valor de 'issues' cuando 'orderedIssues' cambie
+    }, [orderedIssues]);
     return (
         <div>
             {issues && issues.map((issue) => (
