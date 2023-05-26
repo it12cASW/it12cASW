@@ -71,22 +71,25 @@ class IssueViewSet(ModelViewSet):
                         output_field=models.IntegerField(),
                         default=Value(0),
                     )
-                ).order_by('priority_order' if order == 'asc' else '-priority_order')
+                ).order_by('priority_order' if order == '' else '-priority_order')
             elif order_field == 'status':
                 status_order_case = Case(
                     *[When(status=value, then=Value(position)) for position, value in enumerate(status_order.keys())],
                     output_field=CharField(),
                 )
                 results = issues.order_by(status_order_case)
-                if order == 'desc':
+                if order == '-':
                     results = results[::-1]
             elif order_field == 'modified':
                 max_fecha_actividad = Max('actividades__fecha')
-                order_by_field = 'max_fecha_actividad' if order == 'desc' else '-max_fecha_actividad'
-
+                if order == '-':
+                    order_by_field = '-max_fecha_actividad'  
+                else:
+                    order_by_field = 'max_fecha_actividad'
                 results = issues.annotate(
                     max_fecha_actividad=max_fecha_actividad
                 ).order_by(order_by_field)
+
             elif order_field == 'asignada':
                 results = issues.order_by(order + 'asignada__username')
             elif order_field == 'creador':
