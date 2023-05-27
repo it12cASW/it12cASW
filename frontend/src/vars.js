@@ -2,10 +2,10 @@
 
 const users = [
     {
-        id: 1,
-        username: 'admin',
-        token: 'eca034cf07dc9fcfce33ec777702d989bc794cbf',
-        email: 'admin123@gmail.com'
+        id: 0,
+        username: 'miguel',
+        token: '9538cdddef7cef4b4a997b2d3f921052125ebe99',
+        email: 'admin@gmail.com'
     },
     {
         id: 2,

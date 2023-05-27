@@ -196,7 +196,7 @@ export async function deleteDeadlineCtrl(id_issue) {
         const response = await axios.delete(url, {
             headers: {
                 "Authorization": auth,
-            }
+            },
         });
         console.log("API: Se ha eliminado el deadline")
         return true;
