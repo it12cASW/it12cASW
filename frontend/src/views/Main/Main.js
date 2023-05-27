@@ -11,19 +11,23 @@ import { Link } from "react-router-dom";
 // Controladores
 import { getUsuariosCtrl } from "../../Controllers/usuariosCtrl";
 import { getIssuesCtrl } from "../../Controllers/issueCtrl";
+import { getUsernameUsuario, setUsuario } from "../../vars";
+import { getIdUsuario } from "../../vars";
+import { getUsuario } from "../../vars";
 
 // Componentes
 import ShowIssues from "../../Components/ShowIssues";
+import { getAllUsers } from "../../vars";
 
 
 
 export default function Main ({ idUsuario, handleUsuario }){
     const [isLoading, setIsLoading] = React.useState(true);
     const [issues, setIssues] = React.useState([]);
+    const [parametros, setParametros] = React.useState(null);
     const [usuarios, setUsuarios] = React.useState(Array);    
   
     async function getUsuariosAPI() {
-
         return await getUsuariosCtrl();
     }
 
@@ -31,49 +35,28 @@ export default function Main ({ idUsuario, handleUsuario }){
          return await getIssuesCtrl();
     }
 
+    function handleUsuario(e) {
+      setUsuario(e.target.value)
+
+      var auxIssues = getIssuesAPI();
+      if (auxIssues != null) setIssues(auxIssues);
+      setIsLoading(false);
+    }
+
+    function buscarIssues(e) {
+      setIsLoading(true);
+      setParametros(e.target.value)
+
+      setIsLoading(false);
+    }
+
 
     // Cuando cargue la pgina
     React.useEffect(() => {
 
-        // var auxUsuarios = getUsuariosAPI();
+        console.log("El usuario por defecto es: " + getUsernameUsuario())
+        var auxUsuarios = getAllUsers();  
         var auxIssues = getIssuesAPI();
-        
-        // var auxIssues = [
-        // {
-        //     id: 1,
-        //     type: "bug",
-        //     severity: "minor",
-        //     priority: "low",
-        //     title: "Issue 1",
-        //     description: "Description 1",
-        //     status: "test",
-        //     modified: "2021-10-10",
-        //     assignee: "Assignee 1",
-        // },
-        // {
-        //     id: 2,
-        //     type: "question",
-        //     severity: "wishlist",
-        //     priority: "normal",
-        //     title: "Issue 2",
-        //     description: "Description 2",
-        //     status: "closed",
-        //     modified: "2021-10-10",
-        //     assignee: "Assignee 2",
-        // },
-        // ];
-        var auxUsuarios = [
-            {
-                id: 1,
-                name: "Usuario 1",
-                token: "Token 1",
-            },
-            {
-              id: 2,
-              name: "Usuario 2",
-              token: "Token 1",
-          }
-        ];
 
         if (auxUsuarios != null) {
           setUsuarios(auxUsuarios);
@@ -198,6 +181,7 @@ export default function Main ({ idUsuario, handleUsuario }){
                     type="text"
                     placeholder="Search issues"
                     style={styles.inputBuscador}
+                    onChange={buscarIssues}
                   />
                   <AiOutlineSearch
                     style={{ position: "absolute", right: "10px", top: "6px" }}
@@ -223,13 +207,13 @@ export default function Main ({ idUsuario, handleUsuario }){
                   />
                 </div>
                 <div>
-                    <select style={{width: "100px", height: "30px"}} onChange={ handleUsuario } >
-                        <option value="0" key="0">Usuario</option>
+                    <select style={{width: "100px", height: "30px"}} onChange={ handleUsuario }>
                         {/* Recorre la variable 'usuarios' y crea una opción para cada uno */}
-                        {usuarios.map((usuario) => 
-                            <option value={usuario.id} key={usuario.id}>{usuario.name}</option>
+                        {usuarios && usuarios.map((usuario) => 
+                            <option value={usuario.id} key={usuario.id} defaultValue={ usuario.id === getUsuario() }>{usuario.username}</option>
                         )}  
                     </select>
+                    <p>Se ha iniciado con el usuario: { getUsernameUsuario() }</p>
                 </div>
               </div>
               <div
@@ -287,7 +271,7 @@ export default function Main ({ idUsuario, handleUsuario }){
                 <div style={styles.columna}>Assign to</div>
               </div>
               {/* por cada elemento en issues crea una nueva fila */}
-              <ShowIssues />
+              <ShowIssues parametros={ parametros }/>
               
             </div>
           </div>
