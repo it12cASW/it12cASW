@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-
-=======
 var idUsuario = 5;
->>>>>>> Stashed changes
 
 const users = [
     // {
@@ -12,26 +8,6 @@ const users = [
     //     "token": "426c253f3b374f23678e18aba4394268c49a8508"
     // },
     {
-<<<<<<< Updated upstream
-        id: 0,
-        username: 'miguel',
-        token: '9538cdddef7cef4b4a997b2d3f921052125ebe99',
-        email: 'admin@gmail.com'
-    },
-    {
-        id: 2,
-        username: 'JoanTestSwagger',
-        token: '',
-        email: 'sdfs@∫dfs.com',
-    },
-    {
-        id: 3,
-        username: 'JoanTestSwagger2',
-        token: '',
-        email: 'sdfs@∫dfs.com',
-    },
-];
-=======
         "id": 5,
         "username": "Joan",
         "email": "joan@gmail.com",
@@ -56,7 +32,6 @@ const users = [
         "token": "b3b2975d0de2df62a1cde575f22e98025b131db2"
     },
 ]
->>>>>>> Stashed changes
 
 
 
