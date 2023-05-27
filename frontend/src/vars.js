@@ -4,7 +4,7 @@ const users = [
     {
         id: 1,
         username: 'admin',
-        token: 'eca034cf07dc9fcfce33ec777702d989bc794cbf',
+        token: '96231607495288ad83a13a863bef75829b2cd65b',
         email: 'admin123@gmail.com'
     },
     {
