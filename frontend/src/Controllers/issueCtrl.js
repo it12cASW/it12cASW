@@ -369,3 +369,52 @@ export async function orderIssues(index, order) {
         
 };
 
+export async function obtenerIssuesFiltrados(filtrosSeleccionados, estadosSeleccionados, usuarioAsignado, prioridadSeleccionada, usuarioCreador) {
+    try{
+        console.log("Filtrao: " + filtrosSeleccionados + " estados: " + estadosSeleccionados + " usuarioAsignado: " + usuarioAsignado + " prioridad: " + prioridadSeleccionada + " usuarioCreador: " + usuarioCreador)
+        var first = true;
+        var idUsuario = getIdUsuario();
+        var url = "https://it12casw-backend.fly.dev/api/issues/";
+        //para cada valor de filtrosSeleccionados, añadir a la url el filtro y su valor
+        for (var i = 0; i < filtrosSeleccionados.length; i++) {
+            if (filtrosSeleccionados[i] != null && filtrosSeleccionados[i] !== "") {
+                console.log(filtrosSeleccionados[i]);              
+                if (first) {
+                    url = url + "?";
+                    first = false;
+                }
+                else {
+                    url = url + "&";
+                }
+                switch (filtrosSeleccionados[i]) {
+                    case "state":
+                        url = url + "status=" + estadosSeleccionados;
+                        break;
+                    case "assignee":
+                        url = url + "assigned=" + usuarioAsignado;
+                        break;
+                    case "priority":
+                        url = url + "priority=" + prioridadSeleccionada;
+                        break;
+                    case "created_by":
+                        url = url + "creator=" + usuarioCreador;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        console.log(url);
+        var auth = "Token " + getTokenUsuario(idUsuario);
+        const response = await axios.get(url, {
+            headers: {
+                "Authorization": auth,
+            }
+        });
+        console.log(response.data);
+        return response.data;
+    }catch(error){
+        console.log(error)
+        return null;
+    }
+};

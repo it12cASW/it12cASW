@@ -41,6 +41,14 @@ export const styles = {
         width: "100%",
         padding:"30px"
     },
+    containerBlockFilter: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        backgroundColor: "white",
+        alignItems: "left",
+        width: "10%",
+    }, 
     lateralSuperior: {
     
     },
@@ -80,6 +88,11 @@ export const styles = {
         flexDirection: "column",
         width: "100%",
     },
+    tablaContainerFilters: {
+        display: "left",
+        flexDirection: "column",
+        width: "70%",
+    },
     fila: {
         display: "flex",
         flexDirection: "row",
@@ -98,6 +111,7 @@ export const styles = {
         backgroundColor: "#f9f9fb",
         borderRadius: "5px",
         marginBottom: "10px",
+        width: "100%",
     },
     columna: {
         display: "flex",
