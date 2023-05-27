@@ -191,6 +191,7 @@ export async function setAsignadoCtrl(id_issue, asignado) {
 export async function deleteDeadlineCtrl(id_issue) {
     try {
         var idUsuario = getIdUsuario();
+        console.log("API: " + idUsuario)
         var url = "https://it12casw-backend.fly.dev/api/issues/" + id_issue + "/deadline/delete/";
         var auth = "Token " + getTokenUsuario(idUsuario);
         const response = await axios.delete(url, {
