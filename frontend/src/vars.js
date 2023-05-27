@@ -60,15 +60,30 @@ const users = [
 
 
 
-export function getTokenUsuario(id_usuario) {
-    return users[0].token;
+export function getTokenUsuario() {
+
+    var usuario = users.findIndex((usuario) => usuario.id == idUsuario);
+    return users[usuario].token;
 }
 
 export function getIdUsuario() {
-    return users[0].id;
+    return getUsuario();
 }
 
 export function getAllUsers() {
     return users;
+}
+
+export function getUsuario() {
+    return idUsuario;
+}
+
+export function setUsuario(id){
+    idUsuario = id;
+}
+
+export function getUsernameUsuario(){
+
+    return users[users.findIndex((usuario) => usuario.id == idUsuario)].username;
 }
 

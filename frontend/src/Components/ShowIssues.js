@@ -9,7 +9,7 @@ import { getIssuesCtrl } from "../Controllers/issueCtrl";
 
 
 
-export default function ShowIssues() {
+export default function ShowIssues({ parametros }) {
 
     // Pantalla
     const [isLoading, setIsLoading] = React.useState(true);
@@ -20,19 +20,18 @@ export default function ShowIssues() {
     async function getIssuesAPI() {
         var issues_aux = await getIssuesCtrl();
         setIssues(issues_aux);
+        if(parametros != null && parametros != "") {
+            var auxIssues = issues.filter(issue => issue.asunto.includes(parametros));
+            setIssues(auxIssues);
+        }
     }
 
     useEffect(() => {
+
         setIsLoading(true);
-
         getIssuesAPI();
-        // recorre issues
-        for (var i = 0; i < issues.length; i++) {
-            console.log("issue: " + issues[i]);
-        }
-
         setIsLoading(false);
-    }, []);
+    }, [parametros]);
 
     return (
         <div>

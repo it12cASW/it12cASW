@@ -7,6 +7,7 @@ import { getIdUsuario } from "../vars.js";
 export async function getIssuesCtrl(idUsuario) {
 
     try {
+        console.log("Voy a obtener los issues")
         var url = "https://it12casw-backend.fly.dev/api/issues/";
         var auth = "Token " + getTokenUsuario(idUsuario);
         const response = await axios.get(url, {
