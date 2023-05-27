@@ -3,12 +3,14 @@ import axios from "axios";
 // Funciones de utilidad
 import { getTokenUsuario } from "../vars.js";
 import { getIdUsuario } from "../vars.js";
+import { API_URL } from '../vars.js';
+
 
 export async function getIssuesCtrl(idUsuario) {
 
     try {
         console.log("Voy a obtener los issues")
-        var url = "https://it12casw-backend.fly.dev/api/issues/";
+        var url = API_URL + "issues/";
         var auth = "Token " + getTokenUsuario(idUsuario);
         const response = await axios.get(url, {
             headers: {
@@ -341,4 +343,25 @@ export async function deleteWatcherCtrl(id_issue, id_user) {
         console.log(error)
         return null;
     }
+}
+
+export async function bulkInsertCtrl(idUsuario, data) {
+
+    try {
+        var url = API_URL + "issues/bulk-insert/";
+        var auth = "Token " + getTokenUsuario(idUsuario);
+        //var auth = "Token " + "fb84ffcf558540bb6d78081e4a9ff272088c1f4c";
+        const response = await axios.post(url, data, {
+            headers: {
+                "Authorization": auth,
+            }
+        });
+        console.log("La peticion ha funcionado")
+        return response.data;
+
+    } catch (error) {
+        console.log(error)
+        return null;
+    }
+    return true;
 }

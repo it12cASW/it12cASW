@@ -234,27 +234,26 @@ export default function Main ({ idUsuario, handleUsuario }){
                     New issue</Link>
                   </button>
                 </div>
-                {/* Bulk insert */}
-                <div
-                  style={{
-                    display: "flex",
-                    paddingLeft: "20px",
-                    paddingRight: "20px",
-                  }}
-                >
-                  <button
-                    style={{
-                      borderWidth: "0px",
-                      borderRadius: "3px",
-                      backgroundColor: "#C2C2C2",
-                      borderStyle: "solid",
-                      paddingRight: "10px",
-                      paddingLeft: "10px",
-                    }}
+                  {/* Bulk insert */}
+                  <div
+                      style={{
+                          display: "flex",
+                          paddingLeft: "20px",
+                          paddingRight: "20px",
+                      }}
                   >
-                    <AiOutlineAppstoreAdd />
-                  </button>
-                </div>
+                      <button
+                          style={{
+                              borderWidth: "0px",
+                              borderRadius: "3px",
+                              backgroundColor: "#C2C2C2",
+                              borderStyle: "solid",
+                              paddingRight: "10px",
+                              paddingLeft: "10px",
+                          }}>
+                          <Link to="/bulkInsert" style={{color: "white", textDecoration: "none"}}>>Bulk Insert</Link>
+                      </button>
+                  </div>
               </div>
             </div>
             {/* Tabla */}
