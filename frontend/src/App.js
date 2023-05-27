@@ -6,6 +6,7 @@ import { Routes, Route } from 'react-router-dom';
 import CrearIssue from './views/CrearIssue/CrearIssue';
 import Main from './views/Main/Main';
 import ShowIssue from './views/ShowIssue/ShowIssue';
+import BulkInsert from './views/BulkInsert/BulkInsert'
 
 // token: acbbf2e3ca3929ccac31c8ccc572a2b783aa876f
 
@@ -39,7 +40,12 @@ function App() {
       <Route path="/crearIssue" element={
         <CrearIssue idUsuario={ idUsuario } 
           handleUsuario={ handleUsuario }
-      />} />  
+      />} />
+
+    <Route path="/bulkInsert" element={
+        <BulkInsert idUsuario={ idUsuario }
+                    handleUsuario={ handleUsuario }
+        />} />
 
       <Route path="/:id" element={ 
         <ShowIssue

@@ -27,6 +27,10 @@ const users = [
     }
 ]
 
+//export const API_URL = "http://127.0.0.1:8000/api/";
+export const API_URL = "https://it12casw-backend.fly.dev/api/";
+
+
 
 
 export function getTokenUsuario() {
