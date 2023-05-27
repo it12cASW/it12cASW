@@ -1,37 +1,58 @@
-
+var idUsuario = 4;
 
 const users = [
     {
-        id: 0,
-        username: 'miguel',
-        token: '9538cdddef7cef4b4a997b2d3f921052125ebe99',
-        email: 'admin@gmail.com'
+        "id": 1,
+        "username": "admin",
+        "email": "admin@gmail.com",
+        "token": 'eca034cf07dc9fcfce33ec777702d989bc794cbf',
     },
     {
-        id: 2,
-        username: 'JoanTestSwagger',
-        token: '',
-        email: 'sdfs@∫dfs.com',
+        "id": 2,
+        "username": "JoanTestSwagger",
+        "email": "joan@email.com",
+        "token": '',
     },
     {
-        id: 3,
-        username: 'JoanTestSwagger2',
-        token: '',
-        email: 'sdfs@∫dfs.com',
+        "id": 3,
+        "username": "miguel",
+        "email": "admin@gmail.com",
+        "token": '',
     },
-];
+    {
+        "id": 4,
+        "username": "test1",
+        "email": "test1@gmail.com",
+        "token": "426c253f3b374f23678e18aba4394268c49a8508"
+    }
+]
 
 
 
-export function getTokenUsuario(id_usuario) {
-    return users[0].token;
+export function getTokenUsuario() {
+
+    var usuario = users.findIndex((usuario) => usuario.id == idUsuario);
+    return users[usuario].token;
 }
 
 export function getIdUsuario() {
-    return users[0].id;
+    return getUsuario();
 }
 
 export function getAllUsers() {
     return users;
+}
+
+export function getUsuario() {
+    return idUsuario;
+}
+
+export function setUsuario(id){
+    idUsuario = id;
+}
+
+export function getUsernameUsuario(){
+
+    return users[users.findIndex((usuario) => usuario.id == idUsuario)].username;
 }
 
