@@ -28,10 +28,13 @@ const ClickableArrows = ({ isActive, handleClick, direction, order }) => {
   );
 };
 
-const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues }) => {
+const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, setSharedUrl }) => {
   const [activeIndexes, setActiveIndexes] = useState({});
   const [direction, setDirection] = useState(true);
-
+  
+  React.useEffect(() => {
+    setActiveIndexes({});
+  }, [sharedUrl]);
   const handleClick = (index) => {
     setActiveIndexes((prevState) => {
       const newActiveIndexes = { ...prevState };
@@ -54,9 +57,9 @@ const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues }) => {
       return newActiveIndexes;
     });
   };
-
+  
   const handleOrder = async (field, order) => {
-    const issues = await orderIssues(field, order);
+    const issues = await orderIssues(field, order, sharedUrl);
     await setSharedIssues(issues);
   };
 

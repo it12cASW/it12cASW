@@ -4,6 +4,8 @@ import axios from "axios";
 import { getTokenUsuario } from "../vars.js";
 import { getIdUsuario } from "../vars.js";
 
+
+
 export async function getIssuesCtrl(idUsuario) {
 
     try {
@@ -340,9 +342,8 @@ export async function deleteWatcherCtrl(id_issue, id_user) {
         return null;
     }
 }
-export var orderedIssues = null;
 
-export async function orderIssues(index, order) {
+export async function orderIssues(index, order, sharedUrl) {
      
     try {
         var idUsuario = getIdUsuario();
@@ -350,7 +351,7 @@ export async function orderIssues(index, order) {
         var iorder;
         if (order === false) iorder = "asc";
         else iorder = "desc";
-        var url = "https://it12casw-backend.fly.dev/api/issues/?order_field=" + index + "&order=" + iorder;
+        var url = sharedUrl + "&order_field=" + index + "&order=" + iorder;
         
         var auth = "Token " + getTokenUsuario(idUsuario);
         const response = await axios.get(url, {
@@ -358,7 +359,7 @@ export async function orderIssues(index, order) {
                 "Authorization": auth,
             }
         });
-        orderedIssues = response.data;
+        var orderedIssues = response.data;
         console.log(orderedIssues);
         return response.data;
 
@@ -372,20 +373,13 @@ export async function orderIssues(index, order) {
 export async function obtenerIssuesFiltrados(filtrosSeleccionados, estadosSeleccionados, usuarioAsignado, prioridadSeleccionada, usuarioCreador) {
     try{
         console.log("Filtrao: " + filtrosSeleccionados + " estados: " + estadosSeleccionados + " usuarioAsignado: " + usuarioAsignado + " prioridad: " + prioridadSeleccionada + " usuarioCreador: " + usuarioCreador)
-        var first = true;
         var idUsuario = getIdUsuario();
-        var url = "https://it12casw-backend.fly.dev/api/issues/";
+        var url = "https://it12casw-backend.fly.dev/api/issues/?";
         //para cada valor de filtrosSeleccionados, añadir a la url el filtro y su valor
         for (var i = 0; i < filtrosSeleccionados.length; i++) {
             if (filtrosSeleccionados[i] != null && filtrosSeleccionados[i] !== "") {
-                console.log(filtrosSeleccionados[i]);              
-                if (first) {
-                    url = url + "?";
-                    first = false;
-                }
-                else {
-                    url = url + "&";
-                }
+                console.log(filtrosSeleccionados[i]);                
+                url = url + "&";
                 switch (filtrosSeleccionados[i]) {
                     case "state":
                         url = url + "status=" + estadosSeleccionados;
@@ -412,7 +406,7 @@ export async function obtenerIssuesFiltrados(filtrosSeleccionados, estadosSelecc
             }
         });
         console.log(response.data);
-        return response.data;
+        return [response.data, url];
     }catch(error){
         console.log(error)
         return null;

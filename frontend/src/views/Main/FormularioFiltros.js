@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {obtenerIssuesFiltrados} from '../../Controllers/issueCtrl';
 
-function FormularioFiltros({ sharedIssues, setSharedIssues }) {
+function FormularioFiltros({ sharedIssues, setSharedIssues, sharedUrl, setSharedUrl }) {
   const [filtrosSeleccionados, setFiltrosSeleccionados] = useState([]);
   const [estadosSeleccionados, setEstadosSeleccionados] = useState([]);
   const [usuarioAsignado, setUsuarioAsignado] = useState('');
@@ -40,7 +40,8 @@ function FormularioFiltros({ sharedIssues, setSharedIssues }) {
   const handleFiltroSubmit = async (event) => {
     event.preventDefault();
     const issuesFiltradas = await obtenerIssuesFiltrados(filtrosSeleccionados, estadosSeleccionados, usuarioAsignado, prioridadSeleccionada, usuarioCreador);
-    await setSharedIssues(issuesFiltradas);
+    await setSharedIssues(issuesFiltradas[0]);
+    await setSharedUrl(issuesFiltradas[1]);
   };
   React.useEffect(() => {
     console.log(sharedIssues);

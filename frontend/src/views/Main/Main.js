@@ -23,6 +23,7 @@ export default function Main ({ idUsuario, handleUsuario }){
     const [usuarios, setUsuarios] = React.useState(Array);
     const [showFilters, setShowFilters] = React.useState(true);
     const [sharedIssues, setSharedIssues] = React.useState(null);
+    const [sharedUrl, setSharedUrl] = React.useState("https://it12casw-backend.fly.dev/api/issues/?");
   
     async function getUsuariosAPI() {
 
@@ -86,7 +87,10 @@ export default function Main ({ idUsuario, handleUsuario }){
         setIsLoading(false);
 
     }, []);
-
+    React.useEffect(() => {
+      console.log("sharedUrl: ", sharedUrl);
+    }, [sharedUrl]);
+    
     return (
       <div style={styles.mainScreen} id="test">
         <div style={styles.upperContainer}>
@@ -280,13 +284,13 @@ export default function Main ({ idUsuario, handleUsuario }){
               <div style={{ display: "flex", flexDirection: "row" }}>
                 {!showFilters && (
                   <div style={styles.containerBlockFilter}>
-                    <FormularioFiltros sharedIssues={sharedIssues} setSharedIssues={setSharedIssues}/>
+                    <FormularioFiltros sharedIssues={sharedIssues} setSharedIssues={setSharedIssues} sharedUrl={sharedUrl} setSharedUrl={setSharedUrl}/>
                   </div>
                 )}
                 <div
                   style={styles.tablaContainer}
                 >
-                  <ColumnWithClickableArrows sharedIssues={sharedIssues} setSharedIssues={setSharedIssues}/>
+                  <ColumnWithClickableArrows sharedIssues={sharedIssues} setSharedIssues={setSharedIssues} sharedUrl={sharedUrl} setSharedUrl={setSharedUrl}/>
                 </div>
               </div>
             </div>
