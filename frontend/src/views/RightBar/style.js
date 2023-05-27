@@ -5,7 +5,6 @@ export const styles = {
     contenedorCampos: {
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-around",
         height: "100%",
     },
     select: {

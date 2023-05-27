@@ -8,6 +8,10 @@ import { GrAdd } from "react-icons/gr";
 import { FaCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
+
+import ColumnWithClickableArrows from "./OrderArrow";
+
+
 // Controladores
 import { getUsuariosCtrl } from "../../Controllers/usuariosCtrl";
 import { getIssuesCtrl } from "../../Controllers/issueCtrl";
@@ -34,30 +38,32 @@ export default function Main ({ idUsuario, handleUsuario }){
         // var auxUsuarios = getUsuariosAPI();
         var auxIssues = getIssuesAPI();
         
-        var auxIssues = [
-        {
-            id: 1,
-            type: "bug",
-            severity: "minor",
-            priority: "low",
-            title: "Issue 1",
-            description: "Description 1",
-            status: "test",
-            modified: "2021-10-10",
-            assignee: "Assignee 1",
-        },
-        {
-            id: 2,
-            type: "question",
-            severity: "wishlist",
-            priority: "normal",
-            title: "Issue 2",
-            description: "Description 2",
-            status: "closed",
-            modified: "2021-10-10",
-            assignee: "Assignee 2",
-        },
-        ];
+
+        // var auxIssues = [
+        // {
+        //     id: 1,
+        //     type: "bug",
+        //     severity: "minor",
+        //     priority: "low",
+        //     title: "Issue 1",
+        //     description: "Description 1",
+        //     status: "test",
+        //     modified: "2021-10-10",
+        //     assignee: "Assignee 1",
+        // },
+        // {
+        //     id: 2,
+        //     type: "question",
+        //     severity: "wishlist",
+        //     priority: "normal",
+        //     title: "Issue 2",
+        //     description: "Description 2",
+        //     status: "closed",
+        //     modified: "2021-10-10",
+        //     assignee: "Assignee 2",
+        // },
+        // ];
+
         var auxUsuarios = [
             {
                 id: 1,
@@ -272,51 +278,7 @@ export default function Main ({ idUsuario, handleUsuario }){
             {/* Tabla */}
             <div style={styles.tablaContainer}>
               {/* Fila */}
-              <div style={styles.fila}>
-                <div style={styles.columna}>Type</div>
-                <div style={styles.columna}>Severity</div>
-                <div style={styles.columna}>Priority</div>
-                <div style={styles.columna}>Issue</div>
-                <div style={styles.columnaTexto}></div>
-                <div style={styles.columna}>Status</div>
-                <div style={styles.columna}>Modified</div>
-                <div style={styles.columna}>Assign to</div>
-              </div>
-              {/* por cada elemento en issues crea una nueva fila */}
-              {issues.map((issue) => (
-                <div style={styles.filaIssue}>
-                  <div style={styles.columna}>
-                    {issue.type === "bug" && <FaCircle style={{ color:"red" }}/>}
-                    {issue.type === "question" &&<FaCircle styles={{ color:"blue" }}/>}
-                    {issue.type === "enhancement" && <FaCircle styles={{ color:"green" }}/>}
-                  </div>
-                  <div style={styles.columna}>
-                    {issue.severity === "wishlist" && <FaCircle style={{ color:"violet" }}/>}
-                    {issue.severity === "minor" && <FaCircle style={{ color:"blue" }}/>}
-                    {issue.severity === "normal" && <FaCircle style={{ color:"green" }}/>}
-                    {issue.severity === "important" && <FaCircle style={{ color:"orange" }}/>}
-                    {issue.severity === "critical" && <FaCircle style={{ color:"red" }}/>}
-                  </div>
-                  <div style={styles.columna}>
-                    {issue.priority === "low" && <FaCircle style={{ color:"green" }}/>}
-                    {issue.priority === "normal" && <FaCircle style={{ color:"orange" }}/>}
-                    {issue.priority === "high" && <FaCircle style={{ color:"red" }}/>}
-                  </div>
-                  <div style={styles.columna}>#{issue.id}</div>
-                  <div style={styles.columnaTexto}>DESCRIPCION</div>
-                  <div style={styles.columna}>
-                    {issue.status === "new" && <FaCircle style={{ color:"violet" }}/>}
-                    {issue.status === "progres" && <FaCircle style={{ color:"blue" }}/>}
-                    {issue.status === "test" && <FaCircle style={{ color:"yellow" }}/>}
-                    {issue.status === "closed" && <FaCircle style={{ color:"green" }}/>}
-                    {issue.status === "info" && <FaCircle style={{ color:"red" }}/>}
-                    {issue.status === "rejected" && <FaCircle style={{ color:"grey" }}/>}
-                    {issue.status === "postponed" && <FaCircle style={{ color:"blue" }}/>}
-                  </div>
-                  <div style={styles.columna}>{issue.modified}</div>
-                  <div style={styles.columna}>{issue.assignTo}</div>
-                </div>
-              ))}
+              <ColumnWithClickableArrows />              
             </div>
           </div>
         )}

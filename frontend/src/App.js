@@ -1,11 +1,14 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 // Componentes pantallas
-import Panel from './views/Panel/Panel';
 import CrearIssue from './views/CrearIssue/CrearIssue';
 import Main from './views/Main/Main';
+import ShowIssue from './views/ShowIssue/ShowIssue';
+
+// token: acbbf2e3ca3929ccac31c8ccc572a2b783aa876f
+
 
 
 function App() {
@@ -13,9 +16,14 @@ function App() {
   const [idUsuario, setIdUsuario] = React.useState(null);
 
   function handleUsuario(id) {
-    console.log("ID: " + id.target.value);
+
     setIdUsuario(id.target.value);
   }
+
+  useEffect(() => {
+    setIdUsuario(0);
+  }, []);
+
 
 
   return (
@@ -34,6 +42,10 @@ function App() {
         <CrearIssue idUsuario={ idUsuario } 
           handleUsuario={ handleUsuario }
       />} />  
+
+      <Route path="/:id" element={ 
+        <ShowIssue
+      /> } />
 
     </Routes>
   );
