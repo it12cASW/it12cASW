@@ -6,38 +6,54 @@ import { Link } from "react-router-dom";
 // Controladores
 import { getIssuesCtrl } from "../Controllers/issueCtrl";
 
-export default function ShowIssues({orderedIssues}) {
+export default function ShowIssues({sharedIssues, parametros}) {
 
     // Pantalla
     const [isLoading, setIsLoading] = React.useState(true);
 
     // Variables
     const [issues, setIssues] = React.useState([]);
+    const [issuesGuardades, setIssuesGuardades] = React.useState([]);
 
     async function getIssuesAPI() {
         var issues_aux = await getIssuesCtrl();
         setIssues(issues_aux);
+        setIssuesGuardades(issues_aux);
     }
     async function orderIssuesAPI() {
         var issues_aux = {};
         setIssues(issues_aux);
+        setIssuesGuardades(issues_aux);
     }
 
     useEffect(() => {
         setIsLoading(true);
-        console.log("orderedIssues: " + orderedIssues);
-        if (orderedIssues === null)getIssuesAPI();
+        console.log("orderedIssues: " + sharedIssues);
+        if (sharedIssues === null)getIssuesAPI();
         else orderIssuesAPI();
         // recorre issues
         for (var i = 0; i < issues.length; i++) {
             console.log("issue: " + issues[i]);
         }
-
         setIsLoading(false);
     }, []);
+
     useEffect(() => {
-        setIssues(orderedIssues); // Actualiza el valor de 'issues' cuando 'orderedIssues' cambie
-    }, [orderedIssues]);
+        setIssues(sharedIssues); // Actualiza el valor de 'issues' cuando 'orderedIssues' cambie
+        setIssuesGuardades(sharedIssues);
+    }, [sharedIssues]);
+
+    React.useEffect(() => {
+        setIsLoading(true);
+        
+        // Filtrar las issues
+
+        var auxIssues = issuesGuardades.filter(issues => issues.asunto.includes(parametros));
+        setIssues(auxIssues);
+          
+        setIsLoading(false);
+    }, [parametros]);
+      
     return (
         <div>
             {issues && issues.map((issue) => (

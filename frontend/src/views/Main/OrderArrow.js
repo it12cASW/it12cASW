@@ -28,7 +28,7 @@ const ClickableArrows = ({ isActive, handleClick, direction, order }) => {
   );
 };
 
-const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, setSharedUrl }) => {
+const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, setSharedUrl , parametros}) => {
   const [activeIndexes, setActiveIndexes] = useState({});
   const [direction, setDirection] = useState(true);
   
@@ -138,7 +138,7 @@ const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, s
         />
         <div style={styles.columnaDerecha}>Assign to</div>
       </div>
-      <ShowIssues orderedIssues={sharedIssues} />
+      <ShowIssues sharedIssues={sharedIssues} parametros={parametros} />
     </div>
   );
 };

@@ -24,6 +24,7 @@ export default function Main ({ idUsuario, handleUsuario }){
     const [showFilters, setShowFilters] = React.useState(true);
     const [sharedIssues, setSharedIssues] = React.useState(null);
     const [sharedUrl, setSharedUrl] = React.useState("https://it12casw-backend.fly.dev/api/issues/?");
+    const [parametros, setParametros] = React.useState(null);
   
     async function getUsuariosAPI() {
 
@@ -90,7 +91,13 @@ export default function Main ({ idUsuario, handleUsuario }){
     React.useEffect(() => {
       console.log("sharedUrl: ", sharedUrl);
     }, [sharedUrl]);
-    
+
+    function buscarIssues(e) {
+      setIsLoading(true);
+      setParametros(e.target.value)
+      setIsLoading(false);
+    }
+
     return (
       <div style={styles.mainScreen} id="test">
         <div style={styles.upperContainer}>
@@ -201,6 +208,7 @@ export default function Main ({ idUsuario, handleUsuario }){
                       type="text"
                       placeholder="Search issues"
                       style={styles.inputBuscador}
+                      onChange={buscarIssues}
                     />
                     <AiOutlineSearch
                       style={{ position: "absolute", right: "10px", top: "6px" }}
@@ -290,7 +298,7 @@ export default function Main ({ idUsuario, handleUsuario }){
                 <div
                   style={styles.tablaContainer}
                 >
-                  <ColumnWithClickableArrows sharedIssues={sharedIssues} setSharedIssues={setSharedIssues} sharedUrl={sharedUrl} setSharedUrl={setSharedUrl}/>
+                  <ColumnWithClickableArrows sharedIssues={sharedIssues} setSharedIssues={setSharedIssues} sharedUrl={sharedUrl} setSharedUrl={setSharedUrl} parametros={parametros}/>
                 </div>
               </div>
             </div>
