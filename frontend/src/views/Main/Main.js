@@ -8,12 +8,13 @@ import { GrAdd } from "react-icons/gr";
 import { FaCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
+
 import ColumnWithClickableArrows from "./OrderArrow";
+
 
 // Controladores
 import { getUsuariosCtrl } from "../../Controllers/usuariosCtrl";
 import { getIssuesCtrl } from "../../Controllers/issueCtrl";
-
 
 
 export default function Main ({ idUsuario, handleUsuario }){
@@ -37,6 +38,7 @@ export default function Main ({ idUsuario, handleUsuario }){
         // var auxUsuarios = getUsuariosAPI();
         var auxIssues = getIssuesAPI();
         
+
         // var auxIssues = [
         // {
         //     id: 1,
@@ -61,6 +63,7 @@ export default function Main ({ idUsuario, handleUsuario }){
         //     assignee: "Assignee 2",
         // },
         // ];
+
         var auxUsuarios = [
             {
                 id: 1,

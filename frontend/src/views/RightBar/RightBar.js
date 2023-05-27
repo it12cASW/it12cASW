@@ -26,6 +26,7 @@ export default function RightBar({ usuarios,
                     </select>
                 </div>
                 <div>
+
                     <p>Usuario asignado:</p>
                     <select name="asignado" id="asignado" style={ styles.select } onChange={ handleAsignado }>
                         <option value="null" defaultValue>Nadie</option>
@@ -44,6 +45,7 @@ export default function RightBar({ usuarios,
                         </select>
                     </div>
                     {/* <div>
+
                         <select name="severidad" id="severidad" style={ styles.select } onChange={ handleSeverity }>
                             <option value="wishlist">Wishlist</option>
                             <option value="minor">Minor</option>
@@ -62,8 +64,6 @@ export default function RightBar({ usuarios,
                     </div>
                 </div>
                 <div>
-                    
-
                 </div>
             </div>
         </div>

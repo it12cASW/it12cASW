@@ -368,3 +368,4 @@ export async function orderIssues(index, order) {
     }
         
 };
+
