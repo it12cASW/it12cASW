@@ -47,7 +47,7 @@ export const styles = {
         justifyContent: "flex-start",
         backgroundColor: "white",
         alignItems: "left",
-        width: "10%",
+        width: "15%",
     }, 
     lateralSuperior: {
     
@@ -145,4 +145,26 @@ export const styles = {
         backgroundColor: "#83eede",
         padding: "0.7rem 2rem",
     },
+    radioContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+    },
+        // Estilos para los círculos de prioridad
+    '.high-priority-circle': {
+        color: 'red',
+        marginRight: '5px',
+    },
+    '.normal-priority-circle': {
+        color: 'orange',
+        marginRight: '5px',
+    },
+    '.low-priority-circle': {
+        color: 'green',
+        marginRight: '5px',
+    },   
+    formContainer: {
+        border: '2px solid #ccc',
+        borderRadius: '4px',
+        padding: '5px',
+    }, 
 }

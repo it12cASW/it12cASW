@@ -381,7 +381,7 @@ export async function obtenerIssuesFiltrados(filtrosSeleccionados, estadosSelecc
                 console.log(filtrosSeleccionados[i]);                
                 url = url + "&";
                 switch (filtrosSeleccionados[i]) {
-                    case "state":
+                    case "status":
                         url = url + "status=" + estadosSeleccionados;
                         break;
                     case "assignee":

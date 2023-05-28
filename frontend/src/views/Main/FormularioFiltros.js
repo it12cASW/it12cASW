@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
-import {obtenerIssuesFiltrados} from '../../Controllers/issueCtrl';
+import { obtenerIssuesFiltrados } from '../../Controllers/issueCtrl';
+import { getUsuariosCtrl } from '../../Controllers/usuariosCtrl';
+import { styles } from './style';
+import { FaCircle } from "react-icons/fa";
 
 function FormularioFiltros({ sharedIssues, setSharedIssues, sharedUrl, setSharedUrl }) {
   const [filtrosSeleccionados, setFiltrosSeleccionados] = useState([]);
-  const [estadosSeleccionados, setEstadosSeleccionados] = useState([]);
+  const [estadosSeleccionados, setEstadosSeleccionados] = useState('');
   const [usuarioAsignado, setUsuarioAsignado] = useState('');
   const [prioridadSeleccionada, setPrioridadSeleccionada] = useState('');
   const [usuarioCreador, setUsuarioCreador] = useState('');
+  const [users, setUsers] = useState([]);
 
   const handleFiltroChange = (event) => {
     const filtro = event.target.value;
@@ -19,11 +23,7 @@ function FormularioFiltros({ sharedIssues, setSharedIssues, sharedUrl, setShared
 
   const handleEstadoChange = (event) => {
     const estado = event.target.value;
-    if (estadosSeleccionados.includes(estado)) {
-      setEstadosSeleccionados(estadosSeleccionados.filter((e) => e !== estado));
-    } else {
-      setEstadosSeleccionados([...estadosSeleccionados, estado]);
-    }
+    setEstadosSeleccionados(estado);
   };
 
   const handleUsuarioAsignadoChange = (event) => {
@@ -37,117 +37,268 @@ function FormularioFiltros({ sharedIssues, setSharedIssues, sharedUrl, setShared
   const handleUsuarioCreadorChange = (event) => {
     setUsuarioCreador(event.target.value);
   };
+
   const handleFiltroSubmit = async (event) => {
     event.preventDefault();
-    const issuesFiltradas = await obtenerIssuesFiltrados(filtrosSeleccionados, estadosSeleccionados, usuarioAsignado, prioridadSeleccionada, usuarioCreador);
+    const issuesFiltradas = await obtenerIssuesFiltrados(
+      filtrosSeleccionados,
+      estadosSeleccionados,
+      usuarioAsignado,
+      prioridadSeleccionada,
+      usuarioCreador
+    );
     await setSharedIssues(issuesFiltradas[0]);
     await setSharedUrl(issuesFiltradas[1]);
   };
+
   React.useEffect(() => {
     console.log(sharedIssues);
   }, [sharedIssues]);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const aux_users = await getUsuariosCtrl();
+      await setUsers(aux_users);
+    };
   
+    fetchData();
+  }, []);
+  
+
   return (
     <div>
-        <form id="filtres" onSubmit={handleFiltroSubmit}>
+      <form id="filtres" onSubmit={handleFiltroSubmit}>
         <label style={{ fontWeight: 'bold' }} htmlFor="filtro">
-            Filtrar issues por:
+          Filtrar issues por:
         </label>
-        <div className="filtro-options">
-            <div>
-            <input
+        <div className="filtro-options" style={styles.filterOptions}>
+          <div>
+            <div className="checkbox-style">
+              <input
                 type="checkbox"
                 id="status"
                 name="filtro"
                 value="status"
                 checked={filtrosSeleccionados.includes('status')}
                 onChange={handleFiltroChange}
-            />
-            <label htmlFor="status">Estado</label>
-            {filtrosSeleccionados.includes('status') && (
-                <div>
-                <select
-                    id="status-select"
-                    name="status"
-                    value={estadosSeleccionados}
-                    onChange={handleEstadoChange}
-                    multiple
-                >
-                    {/* Renderizar las opciones dinámicamente en React */}
-                </select>
-                </div>
-            )}
+              />
+              <label htmlFor="status">Estado</label>
             </div>
-            <div>
-            <input
+            {filtrosSeleccionados.includes('status') && (
+              <div>
+                <div>
+                  <input
+                    type="radio"
+                    id="new"
+                    name="estados"
+                    value="new"
+                    checked={estadosSeleccionados === 'new'}
+                    onChange={handleEstadoChange}
+                  />
+                  <label htmlFor="new">
+                    <FaCircle style={{ color: 'violet', marginRight: '5px' }} /> New
+                  </label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="progress"
+                    name="estados"
+                    value="progress"
+                    checked={estadosSeleccionados === 'progress'}
+                    onChange={handleEstadoChange}
+                  />
+                  <label htmlFor="progress">
+                    <FaCircle style={{ color: 'blue', marginRight: '5px' }} /> Progress
+                  </label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="test"
+                    name="estados"
+                    value="test"
+                    checked={estadosSeleccionados === 'test'}
+                    onChange={handleEstadoChange}
+                  />
+                  <label htmlFor="test" >
+                    <FaCircle style={{ color: 'yellow', marginRight: '5px' }} /> Test
+                  </label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="closed"
+                    name="estados"
+                    value="closed"
+                    checked={estadosSeleccionados === 'closed'}
+                    onChange={handleEstadoChange}
+                  />
+                  <label htmlFor="closed" >
+                    <FaCircle style={{ color: 'green', marginRight: '5px' }} /> Closed
+                  </label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="info"
+                    name="estados"
+                    value="info"
+                    checked={estadosSeleccionados === 'info'}
+                    onChange={handleEstadoChange}
+                  />
+                  <label htmlFor="info" >
+                    <FaCircle style={{ color: 'red', marginRight: '5px' }} /> Info
+                  </label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="rejected"
+                    name="estados"
+                    value="rejected"
+                    checked={estadosSeleccionados === 'rejected'}
+                    onChange={handleEstadoChange}
+                  />
+                  <label htmlFor="rejected" >
+                    <FaCircle style={{ color: 'gray', marginRight: '5px' }} /> Rejected
+                  </label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="posponed"
+                    name="estados"
+                    value="posponed"
+                    checked={estadosSeleccionados === 'posponed'}
+                    onChange={handleEstadoChange}
+                  />
+                  <label htmlFor="posponed" >
+                    <FaCircle style={{ color: 'blue', marginRight: '5px' }} /> Posponed
+                  </label>
+                </div>
+              </div>
+            )}
+          </div>
+          <div>
+            <div className="checkbox-style">
+              <input
                 type="checkbox"
                 id="assignee"
                 name="filtro"
                 value="assignee"
                 checked={filtrosSeleccionados.includes('assignee')}
                 onChange={handleFiltroChange}
-            />
-            <label htmlFor="assignee">Asignado a</label>
-            {filtrosSeleccionados.includes('assignee') && (
-                <div>
-                <input
-                    type="text"
-                    id="assignee-select"
-                    name="asignados"
-                    value={usuarioAsignado}
-                    onChange={handleUsuarioAsignadoChange}
-                />
-                </div>
-            )}
+              />
+              <label htmlFor="assignee">Asignado a</label>
             </div>
-            <div>
-            <input
+            {filtrosSeleccionados.includes('assignee') && (
+              <div>
+                <select
+                  id="assignee-select"
+                  name="asignados"
+                  value={usuarioAsignado}
+                  onChange={handleUsuarioAsignadoChange}
+                >
+                  <option value="">Selecciona un usuario</option>
+                  {users.map((user) => (
+                    <option key={user.id} value={user.username}>
+                      {user.username}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+          <div>
+            <div className="checkbox-style">
+              <input
                 type="checkbox"
                 id="priority"
                 name="filtro"
                 value="priority"
                 checked={filtrosSeleccionados.includes('priority')}
                 onChange={handleFiltroChange}
-            />
-            <label htmlFor="priority">Prioridad</label>
-            {filtrosSeleccionados.includes('priority') && (
-                <div>
-                <select
-                    id="priority-select"
-                    name="prioridades"
-                    value={prioridadSeleccionada}
-                    onChange={handlePrioridadChange}
-                >
-                    {/* Renderizar las opciones dinámicamente en React */}
-                </select>
-                </div>
-            )}
+              />
+              <label htmlFor="priority">Prioridad</label>
             </div>
-            <div>
-            <input
+            {filtrosSeleccionados.includes('priority') && (
+              <div style={styles.radioContainer}>
+                <div>
+                  <input
+                    type="radio"
+                    id="high"
+                    name="prioridades"
+                    value="high"
+                    checked={prioridadSeleccionada === 'high'}
+                    onChange={handlePrioridadChange}
+                  />
+                  <label htmlFor="high" >
+                    <FaCircle style={{ color: 'red', marginRight: '5px' }} /> High
+                  </label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="normal"
+                    name="prioridades"
+                    value="normal"
+                    checked={prioridadSeleccionada === 'normal'}
+                    onChange={handlePrioridadChange}
+                  />
+                  <label htmlFor="normal" >
+                    <FaCircle style={{ color: 'orange', marginRight: '5px' }} /> Normal
+                  </label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="low"
+                    name="prioridades"
+                    value="low"
+                    checked={prioridadSeleccionada === 'low'}
+                    onChange={handlePrioridadChange}
+                  />
+                  <label htmlFor="low" >
+                    <FaCircle style={{ color: 'green', marginRight: '5px' }} /> Low
+                  </label>
+                </div>
+              </div>
+            )}
+          </div>
+          <div>
+            <div className="checkbox-style">
+              <input
                 type="checkbox"
                 id="created_by"
                 name="filtro"
                 value="created_by"
                 checked={filtrosSeleccionados.includes('created_by')}
                 onChange={handleFiltroChange}
-            />
-            <label htmlFor="created_by">Creador</label>
-            {filtrosSeleccionados.includes('created_by') && (
-                <div>
-                <input
-                    type="text"
-                    id="created_by-select"
-                    name="creado_por"
-                    value={usuarioCreador}
-                    onChange={handleUsuarioCreadorChange}
-                />
-                </div>
-            )}
+              />
+              <label htmlFor="created_by">Creador</label>
             </div>
+            {filtrosSeleccionados.includes('created_by') && (
+              <div>
+                <select
+                  id="created_by-select"
+                  name="creado_por"
+                  value={usuarioCreador}
+                  onChange={handleUsuarioCreadorChange}
+                >
+                  <option value="">Selecciona un usuario</option>
+                  {users.map((user) => (
+                    <option key={user.id} value={user.username}>
+                      {user.username}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
         </div>
         <input id="botonFiltro" type="submit" value="Filtrar" />
-        </form>
+      </form>
     </div>
   );
 }

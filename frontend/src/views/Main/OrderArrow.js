@@ -35,6 +35,7 @@ const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, s
   React.useEffect(() => {
     setActiveIndexes({});
   }, [sharedUrl]);
+  
   const handleClick = (index) => {
     setActiveIndexes((prevState) => {
       const newActiveIndexes = { ...prevState };
