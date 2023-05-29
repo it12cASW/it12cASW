@@ -48,7 +48,7 @@ const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, s
         });
         newActiveIndexes[index] = true;
         setDirection(false);
-        console.log("direction: " + true);
+        console.log("direction: " + false);
       }
       if (newActiveIndexes[index]) {
         setActiveIndexes(newActiveIndexes);
@@ -59,8 +59,8 @@ const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, s
     });
   };
   
-  const handleOrder = async (field, order) => {
-    const issues = await orderIssues(field, order, sharedUrl);
+  const handleOrder = async (field) => {
+    const issues = await orderIssues(field, direction, sharedUrl);
     await setSharedIssues(issues);
   };
 
@@ -74,7 +74,7 @@ const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, s
             console.log("Ordenar por type");
           }}
           direction={direction && activeIndexes[0]} // Pasar el valor booleano de direction
-          order={() => handleOrder("type", direction)}
+          order={() => handleOrder("type")}
         />
         <div style={styles.columna}>Type</div>
         <ClickableArrows
@@ -84,7 +84,7 @@ const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, s
             console.log("Ordenar por severity");
           }}
           direction={direction && activeIndexes[1]} // Pasar el valor booleano de direction
-          order={() => handleOrder("severity", direction)}
+          order={() => handleOrder("severity")}
         />
         <div style={styles.columna}>Severity</div>
         <ClickableArrows
@@ -94,7 +94,7 @@ const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, s
             console.log("Ordenar por priority");
           }}
           direction={direction && activeIndexes[2]} // Pasar el valor booleano de direction
-          order={() => handleOrder('prioridad', direction)}
+          order={() => handleOrder('prioridad')}
         />
         <div style={styles.columna}>Priority</div>
         <ClickableArrows
@@ -104,7 +104,7 @@ const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, s
             console.log("Ordenar por issue");
           }}
           direction={direction && activeIndexes[3]} // Pasar el valor booleano de direction
-          order={() => handleOrder('asunto', direction)}
+          order={() => handleOrder('asunto')}
         />
         <div style={styles.columna}>Issue</div>
         <div style={styles.columnaTexto}></div>
@@ -115,7 +115,7 @@ const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, s
             console.log("Ordenar por status");
           }}
           direction={direction && activeIndexes[4]} // Pasar el valor booleano de direction
-          order={() => handleOrder('status', direction)}
+          order={() => handleOrder('status')}
         />
         <div style={styles.columnaDerecha}>Status</div>
         <ClickableArrows
@@ -125,7 +125,7 @@ const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, s
             console.log("Ordenar por modified");
           }}
           direction={direction && activeIndexes[5]} // Pasar el valor booleano de direction
-          order={() => handleOrder('modified', direction)}
+          order={() => handleOrder('modified')}
         />
         <div style={styles.columnaDerecha}>Modified</div>
         <ClickableArrows
@@ -135,7 +135,7 @@ const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, s
             console.log("Ordenar por assign to");
           }}
           direction={direction && activeIndexes[6]} // Pasar el valor booleano de direction
-          order={() => handleOrder('asignada', direction)}
+          order={() => handleOrder('asignada')}
         />
         <div style={styles.columnaDerecha}>Assign to</div>
       </div>

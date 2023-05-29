@@ -39,8 +39,10 @@ export default function ShowIssues({sharedIssues, parametros}) {
     }, []);
 
     useEffect(() => {
+        setIsLoading(true);
         setIssues(sharedIssues); // Actualiza el valor de 'issues' cuando 'orderedIssues' cambie
         setIssuesGuardades(sharedIssues);
+        setIsLoading(false);
     }, [sharedIssues]);
 
     React.useEffect(() => {

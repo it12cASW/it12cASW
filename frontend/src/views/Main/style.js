@@ -165,6 +165,16 @@ export const styles = {
     formContainer: {
         border: '2px solid #ccc',
         borderRadius: '4px',
-        padding: '5px',
+        padding: '10px',
+        marginRight: '15px',
     }, 
+    checkboxContainer: {
+        border: '2px solid #ccc',
+        padding: '10px',
+    },
+    
+    filtersContainer: {
+        border: '2px solid #ccc',
+        borderRadius: '4px',
+    },
 }

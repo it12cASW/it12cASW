@@ -66,14 +66,14 @@ function FormularioFiltros({ sharedIssues, setSharedIssues, sharedUrl, setShared
   
 
   return (
-    <div>
+    <div style={styles.formContainer}>
       <form id="filtres" onSubmit={handleFiltroSubmit}>
         <label style={{ fontWeight: 'bold' }} htmlFor="filtro">
           Filtrar issues por:
         </label>
         <div className="filtro-options" style={styles.filterOptions}>
-          <div>
-            <div className="checkbox-style">
+          <div style={styles.filtersContainer}>
+            <div className="checkbox-style" style={styles.checkboxContainer}>
               <input
                 type="checkbox"
                 id="status"
@@ -180,8 +180,8 @@ function FormularioFiltros({ sharedIssues, setSharedIssues, sharedUrl, setShared
               </div>
             )}
           </div>
-          <div>
-            <div className="checkbox-style">
+          <div style={styles.filtersContainer}>
+            <div className="checkbox-style" style={styles.checkboxContainer}>
               <input
                 type="checkbox"
                 id="assignee"
@@ -194,24 +194,24 @@ function FormularioFiltros({ sharedIssues, setSharedIssues, sharedUrl, setShared
             </div>
             {filtrosSeleccionados.includes('assignee') && (
               <div>
-                <select
-                  id="assignee-select"
-                  name="asignados"
-                  value={usuarioAsignado}
-                  onChange={handleUsuarioAsignadoChange}
-                >
-                  <option value="">Selecciona un usuario</option>
-                  {users.map((user) => (
-                    <option key={user.id} value={user.username}>
-                      {user.username}
-                    </option>
-                  ))}
-                </select>
+                {users.map((user) => (
+                  <div key={user.id}>
+                    <input
+                      type="radio"
+                      id={`created_by-${user.id}`}
+                      name="creado_por"
+                      value={user.username}
+                      checked={usuarioCreador === user.username}
+                      onChange={handleUsuarioCreadorChange}
+                    />
+                    <label htmlFor={`created_by-${user.id}`}>{user.username}</label>
+                  </div>
+                ))}
               </div>
             )}
           </div>
-          <div>
-            <div className="checkbox-style">
+          <div style={styles.filtersContainer}>
+            <div className="checkbox-style" style={styles.checkboxContainer}>
               <input
                 type="checkbox"
                 id="priority"
@@ -266,8 +266,8 @@ function FormularioFiltros({ sharedIssues, setSharedIssues, sharedUrl, setShared
               </div>
             )}
           </div>
-          <div>
-            <div className="checkbox-style">
+          <div style={styles.filtersContainer}>
+            <div className="checkbox-style" style={styles.checkboxContainer}>
               <input
                 type="checkbox"
                 id="created_by"
@@ -280,19 +280,19 @@ function FormularioFiltros({ sharedIssues, setSharedIssues, sharedUrl, setShared
             </div>
             {filtrosSeleccionados.includes('created_by') && (
               <div>
-                <select
-                  id="created_by-select"
-                  name="creado_por"
-                  value={usuarioCreador}
-                  onChange={handleUsuarioCreadorChange}
-                >
-                  <option value="">Selecciona un usuario</option>
-                  {users.map((user) => (
-                    <option key={user.id} value={user.username}>
-                      {user.username}
-                    </option>
-                  ))}
-                </select>
+                {users.map((user) => (
+                  <div key={user.id}>
+                    <input
+                      type="radio"
+                      id={`created_by-${user.id}`}
+                      name="creado_por"
+                      value={user.username}
+                      checked={usuarioCreador === user.username}
+                      onChange={handleUsuarioCreadorChange}
+                    />
+                    <label htmlFor={`created_by-${user.id}`}>{user.username}</label>
+                  </div>
+                ))}
               </div>
             )}
           </div>
