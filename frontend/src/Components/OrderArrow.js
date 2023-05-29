@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { orderIssues } from '../../Controllers/issueCtrl';
+import { orderIssues } from '../Controllers/issueCtrl';
 import { RiArrowDownSFill, RiArrowUpSFill } from 'react-icons/ri';
-import ShowIssues from "../../Components/ShowIssues";
+import ShowIssues from "./ShowIssues";
 
 const ClickableArrows = ({ isActive, handleClick, direction, order }) => {
   const handleArrowClick = async () => {

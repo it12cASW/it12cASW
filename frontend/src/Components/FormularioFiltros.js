@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { obtenerIssuesFiltrados } from '../../Controllers/issueCtrl';
-import { getUsuariosCtrl } from '../../Controllers/usuariosCtrl';
-import { styles } from './style';
+import { obtenerIssuesFiltrados } from '../Controllers/issueCtrl';
+import { getUsuariosCtrl } from '../Controllers/usuariosCtrl';
+import { styles } from '../views/Main/style';
 import { FaCircle } from "react-icons/fa";
 
 function FormularioFiltros({ sharedIssues, setSharedIssues, sharedUrl, setSharedUrl }) {
@@ -198,13 +198,13 @@ function FormularioFiltros({ sharedIssues, setSharedIssues, sharedUrl, setShared
                   <div key={user.id}>
                     <input
                       type="radio"
-                      id={`created_by-${user.id}`}
-                      name="creado_por"
+                      id={`assignee-${user.id}`}
+                      name="asignados"
                       value={user.username}
-                      checked={usuarioCreador === user.username}
-                      onChange={handleUsuarioCreadorChange}
+                      checked={usuarioAsignado === user.username}
+                      onChange={handleUsuarioAsignadoChange}
                     />
-                    <label htmlFor={`created_by-${user.id}`}>{user.username}</label>
+                    <label htmlFor={`assignee-${user.id}`}>{user.username}</label>
                   </div>
                 ))}
               </div>

@@ -9,8 +9,8 @@ import { FaCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 
-import ColumnWithClickableArrows from "./OrderArrow";
-import FormularioFiltros from "./FormularioFiltros";
+import ColumnWithClickableArrows from "../../Components/OrderArrow";
+import FormularioFiltros from "../../Components/FormularioFiltros";
 
 // Controladores
 import { getUsuariosCtrl } from "../../Controllers/usuariosCtrl";
