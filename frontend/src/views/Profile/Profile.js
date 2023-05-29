@@ -1,10 +1,13 @@
 
 import React, { useEffect } from 'react';
 import { useState } from "react"
+import {getIdUsuario} from '../../vars'
+import { BiSearch } from "react-icons/bi";
+
+
 
 import { useParams } from 'react-router-dom';
 import { getIssuesCtrl } from '../../Controllers/issueCtrl';
-import { styles } from "./style"
 import { Link } from "react-router-dom";
 
 
@@ -13,99 +16,147 @@ import { getIssueCtrl } from '../../Controllers/issueCtrl';
 import { getCommentsCtrl } from '../../Controllers/commentCtrl';
 import { getActivitiesCtrl } from '../../Controllers/activityCtrl';
 import {getUsuariosFullCtrl} from '../../Controllers/usuariosCtrl';
+import {saveUsuario} from '../../Controllers/usuariosCtrl';
 
 // Componentes
 import IssueRow from '../../Components/IssueRow';
 import Actividades from '../../Components/Actividades';
 import Comments from '../../Components/Comments';
-import {getIdUsuario} from '../../vars'
 import Actividad from '../../Components/Actividad';
+import User from '../../Components/User'
 
 
 import axios from 'axios';
 
 // Estilos
 
+import { styles } from "./style"
+
+
 // Pantallas
 
 
-export default function Profile({ idUsuario, handleUsuario }) {
+export default function Profile() {
     const [user, setUser] = useState('');
+    const [username, setUsername] = useState('')
+    const [usernameChange, setUsernameChange] = useState('')
+    const [emailChange, setEmail] = useState('')
 
 
     useEffect(() => {
         const fetchUser = async () => {
-            try {
-                const params = {
-                    id: idUsuario,
-                    serializer_type: 'full', // Replace with the desired serializer type
-                };
-
-                const userData = await getUsuariosFullCtrl(params);
-
-                setUser(userData[0]);
-            } catch (error) {
-                console.error('Error fetching user:', error);
-            }
+           getUserFromApi();
         };
 
         fetchUser();
-    }, [idUsuario]);
+    },[]);
 
     if (!user) {
-        return <div>Loading user...</div>;
+        return <div>No user found</div>;
+    }
+
+    async function getUserFromApi(){
+        var params = null;
+        var id_user = getIdUsuario();
+        if (username==""){
+            params = {
+                id: id_user,
+                serializer_type: 'full', // Replace with the desired serializer type
+            };
+        }else{
+            params = {
+                username: username,
+                serializer_type: 'full', // Replace with the desired serializer type
+            };
+        }
+
+
+        const userData = await getUsuariosFullCtrl(params);
+
+        setUser(userData[0]);
+    }
+
+    function handleUsername(e) {
+        setUsername(e.target.value);
+    }
+
+    function handleChangeUsername(e) {
+        setUsernameChange(e.target.value);
+    }
+
+    function handleChangeEmail(e) {
+        setEmail(e.target.value);
+    }
+
+    async function saveChanges(){
+        try{
+            const body = {
+                "username": usernameChange,
+                "email": emailChange
+            }
+            const userData = await saveUsuario(body);
+
+            getUserFromApi()
+
+        }catch (e){
+            console.log(e)
+        }
+
+
+    }
+
+    function getUserInfo(){
+        if(username!=""){
+            return (
+                <div style={{width: "100%"}}>
+                    <h2>User Information</h2>
+                    <p>Username: {user.username}</p>
+                    <p>Email: {user.email}</p>
+                </div>
+            );
+        }else{
+            return (
+                <div style={{width: "100%"}}>
+                    <h2>User Information</h2>
+                    <p>Username:</p>
+                        <input onChange={ handleChangeUsername }type="text" placeholder={user.username} defaultValue={ user.username }  />
+                    <p>Email:</p>
+                        <input onChange={ handleChangeEmail }type="text" placeholder={user.email} defaultValue={ user.email } />
+
+                    <div style={{ position: "relative"}}>
+                        <BiSearch
+                            style={{ position: "absolute", top: "10px", left: "7px" }}
+                        />
+                        <button onClick={saveChanges} style={styles.Button}>
+                            SaveChanges
+                        </button>
+                    </div>
+
+                </div>
+            );
+
+        }
     }
 
     return (
         <div>
-            <div style={{width: "100%"}}>
-                <h2>User Information</h2>
-                <p>Username: {user.username}</p>
-                <p>Email: {user.email}</p>
-            </div>
-            <div style={{display: "flex" , margin:"5px"}}>
-
-                <div style={{width: "50%", margin:"5px", border:"1px"}}>
-                    <h3>Activities</h3>
-                    {user.actividades_hechas.map((actividad) => (
-                        <Actividad activity={actividad} />
-                    ))}
-
-                    <h3>Comments</h3>
-                    {user.comments.map((comment) => (
-                        <div key={comment.id}>
-                            <p>Text: {comment.text}</p>
-                            {/* Display other relevant fields */}
-                        </div>
-                    ))}
-
-                </div>
-                <div style={{width: "50%",margin:"5px" , border:"1px"}}>
-                    <h3>Vigilant Issues</h3>
-                    {user.issues_vigiladas.map((issue) => (
-                        <IssueRow issue={issue}></IssueRow>
-                    ))}
+            <div style={{ alignContent:"center", width:"100%", display: "flex" , margin:"5px" }}>
 
 
 
-                    <h3>Created Teams</h3>
-                    {user.equipos_creados.map((equipo) => (
-                        <div key={equipo.id}>
-                            <p>Name: {equipo.name}</p>
-                            {/* Display other relevant fields */}
-                        </div>
-                    ))}
-
+                <input onChange={ handleUsername }type="text"  />
+                <div style={{ position: "relative"}}>
+                    <BiSearch
+                        style={{ position: "absolute", top: "10px", left: "7px" }}
+                    />
+                    <button onClick={getUserFromApi} style={styles.Button}>
+                        Search
+                    </button>
                 </div>
 
             </div>
-
-            <div style={{ alignSelf: "center"}}>
-                <button style={ styles.botonCrear }>
-                    <Link to="/">Volver</Link>
-                </button>
-            </div>
-
+            {getUserInfo()}
+            <User user={user}></User>
         </div>
     );
 }
