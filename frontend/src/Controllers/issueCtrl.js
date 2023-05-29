@@ -350,7 +350,6 @@ export async function bulkInsertCtrl(idUsuario, data) {
     try {
         var url = API_URL + "issues/bulk-insert/";
         var auth = "Token " + getTokenUsuario(idUsuario);
-        //var auth = "Token " + "fb84ffcf558540bb6d78081e4a9ff272088c1f4c";
         const response = await axios.post(url, data, {
             headers: {
                 "Authorization": auth,
