@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { API_URL } from '../vars.js';
 
 export async function getTokenUsuario() {
     
@@ -20,4 +20,20 @@ export async function getUsuariosCtrl() {
         return null;
     }
     return null;
+}
+
+
+export async function getUsuariosFullCtrl(params) {
+    try {
+        const url = API_URL + 'users/';
+
+        const response = await axios.get(url, {
+            params,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
 }

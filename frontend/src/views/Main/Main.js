@@ -75,28 +75,36 @@ export default function Main ({ idUsuario, handleUsuario }){
           <RiAliensFill style={{ fontSize: "35px" }} />
         </div>
         <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            display: "flex",
-            justifyContent: "center",
-          }}
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                display: "flex",
+                justifyContent: "center",
+              }}
         >
-          <div style={{ width: "80px" }}>
-            <p style={{ fontFamily: "sans-serif", color: "#008aa8" }}>Login</p>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <p style={{ fontFamily: "sans-serif", color: "#008aa8" }}>
-              Sign Up
-            </p>
-          </div>
+            <div style={{ width: "80px" }}>
+                <p>
+                    <Link to="/profile" style={{ fontFamily: "sans-serif", color: "#008aa8" }}>
+                        Profile</Link>
+                </p>
+
+            </div>
+            <div style={{ width: "80px" }}>
+                <p style={{ fontFamily: "sans-serif", color: "#008aa8" }}>Login</p>
+            </div>
+            <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+            >
+                <p style={{ fontFamily: "sans-serif", color: "#008aa8" }}>
+                  Sign Up
+                </p>
+            </div>
+
         </div>
       </div>
       <div style={styles.mainContainer}>
@@ -235,23 +243,13 @@ export default function Main ({ idUsuario, handleUsuario }){
                   </button>
                 </div>
                   {/* Bulk insert */}
-                  <div
-                      style={{
-                          display: "flex",
-                          paddingLeft: "20px",
-                          paddingRight: "20px",
-                      }}
-                  >
-                      <button
-                          style={{
-                              borderWidth: "0px",
-                              borderRadius: "3px",
-                              backgroundColor: "#C2C2C2",
-                              borderStyle: "solid",
-                              paddingRight: "10px",
-                              paddingLeft: "10px",
-                          }}>
-                          <Link to="/bulkInsert" style={{color: "white", textDecoration: "none"}}>>Bulk Insert</Link>
+
+                  <div style={{ position: "relative" , marginLeft:"5px" }}>
+                      <AiOutlineAppstoreAdd
+                          style={{ position: "absolute", top: "10px", left: "7px" }}
+                      />
+                      <button style={styles.newIssueButton }>
+                          <Link to="/bulkInsert" style={{color: "white", textDecoration: "none"}}>Bulk Insert</Link>
                       </button>
                   </div>
               </div>

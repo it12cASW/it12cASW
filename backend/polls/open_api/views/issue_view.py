@@ -124,7 +124,7 @@ class IssueViewSet(ModelViewSet):
 
         # BLOCKED
         blocked = request.data['blocked']
-        if blocked:
+        if blocked != None:
             issue.blocked = blocked
 
         # REASON_BLOQUED
