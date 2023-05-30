@@ -3,6 +3,8 @@ import { useEffect } from "react";
 
 // Controladores
 import { getIssueCtrl } from '../Controllers/issueCtrl';
+import Actividad from './Actividad';
+
 
 export default function Actividades({ issue }) {
 
@@ -31,9 +33,8 @@ export default function Actividades({ issue }) {
                 {activities ? (
                     <div style={{ padding:"10px" }}>
                         {activities.map((activity) => (
-                            <div style={ styles.actividad }>
-                                <p style={ styles.texto }>El usuario {activity.usuario} ha hecho una modificación de tipo {activity.tipo} con la fecha {activity.fecha}</p>
-                            </div>
+                            <Actividad activity={activity} />
+
                         ))}
                     </div>
                 ) : (

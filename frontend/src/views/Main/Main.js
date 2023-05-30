@@ -15,6 +15,14 @@ import FormularioFiltros from "../../Components/FormularioFiltros";
 // Controladores
 import { getUsuariosCtrl } from "../../Controllers/usuariosCtrl";
 import { getIssuesCtrl } from "../../Controllers/issueCtrl";
+import { getUsernameUsuario, setUsuario } from "../../vars";
+import { getIdUsuario } from "../../vars";
+import { getUsuario } from "../../vars";
+
+// Componentes
+import ShowIssues from "../../Components/ShowIssues";
+import { getAllUsers } from "../../vars";
+
 
 
 export default function Main ({ idUsuario, handleUsuario }){
@@ -27,7 +35,6 @@ export default function Main ({ idUsuario, handleUsuario }){
     const [parametros, setParametros] = React.useState(null);
   
     async function getUsuariosAPI() {
-
         return await getUsuariosCtrl();
     }
 
@@ -35,50 +42,28 @@ export default function Main ({ idUsuario, handleUsuario }){
          return await getIssuesCtrl();
     }
 
+    function handleUsuario(e) {
+      setUsuario(e.target.value)
+
+      var auxIssues = getIssuesAPI();
+      if (auxIssues != null) setIssues(auxIssues);
+      setIsLoading(false);
+    }
+
+    function buscarIssues(e) {
+      setIsLoading(true);
+      setParametros(e.target.value)
+
+      setIsLoading(false);
+    }
+
+
     // Cuando cargue la pgina
     React.useEffect(() => {
 
-        // var auxUsuarios = getUsuariosAPI();
+        console.log("El usuario por defecto es: " + getUsernameUsuario())
+        var auxUsuarios = getAllUsers();  
         var auxIssues = getIssuesAPI();
-        
-
-        // var auxIssues = [
-        // {
-        //     id: 1,
-        //     type: "bug",
-        //     severity: "minor",
-        //     priority: "low",
-        //     title: "Issue 1",
-        //     description: "Description 1",
-        //     status: "test",
-        //     modified: "2021-10-10",
-        //     assignee: "Assignee 1",
-        // },
-        // {
-        //     id: 2,
-        //     type: "question",
-        //     severity: "wishlist",
-        //     priority: "normal",
-        //     title: "Issue 2",
-        //     description: "Description 2",
-        //     status: "closed",
-        //     modified: "2021-10-10",
-        //     assignee: "Assignee 2",
-        // },
-        // ];
-
-        var auxUsuarios = [
-            {
-                id: 1,
-                name: "Usuario 1",
-                token: "Token 1",
-            },
-            {
-              id: 2,
-              name: "Usuario 2",
-              token: "Token 1",
-          }
-        ];
 
         if (auxUsuarios != null) {
           setUsuarios(auxUsuarios);
@@ -99,150 +84,158 @@ export default function Main ({ idUsuario, handleUsuario }){
     }
 
     return (
-      <div style={styles.mainScreen} id="test">
-        <div style={styles.upperContainer}>
-          <div>
-            <RiAliensFill style={{ fontSize: "35px" }} />
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <div style={{ width: "80px" }}>
-              <p style={{ fontFamily: "sans-serif", color: "#008aa8" }}>Login</p>
-            </div>
-            <div
+        <div style={styles.mainScreen} id="test">
+      
+      <div style={styles.upperContainer}>
+        <div>
+          <RiAliensFill style={{ fontSize: "35px" }} />
+        </div>
+        <div
               style={{
                 display: "flex",
                 flexDirection: "row",
                 display: "flex",
                 justifyContent: "center",
               }}
-            >
-              <p style={{ fontFamily: "sans-serif", color: "#008aa8" }}>
-                Sign Up
-              </p>
+        >
+            <div style={{ width: "80px" }}>
+                <p>
+                    <Link to="/profile" style={{ fontFamily: "sans-serif", color: "#008aa8" }}>
+                        Profile</Link>
+                </p>
+
             </div>
+            <div style={{ width: "80px" }}>
+                <p style={{ fontFamily: "sans-serif", color: "#008aa8" }}>Login</p>
+            </div>
+            <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+            >
+                <p style={{ fontFamily: "sans-serif", color: "#008aa8" }}>
+                  Sign Up
+                </p>
+            </div>
+
+        </div>
+      </div>
+      <div style={styles.mainContainer}>
+        <div style={styles.lateralBar}>
+          <div style={styles.lateralSuperior}>
+            <div
+              style={{
+                height: "auto",
+                backgroundColor: "rgb(46, 52, 64)",
+                paddingLeft: "10px",
+                margin: "0px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingLeft: "15px",
+                paddingRight: "15px",
+                paddingTop: "15px",
+                paddingBottom: "15px",
+              }}
+            >
+              <GiAlienEgg style={{ color: "#008aa8" }} />
+              <p style={styles.nombreLateral}>ASW-2022-2023</p>
+            </div>
+            <p style={styles.textLateral}>Epics</p>
+            <p style={styles.textLateral}>Scrum</p>
+            <p style={styles.textLateral}>Issues</p>
+          </div>
+          <div styles={styles.lateralInferior}>
+            <p style={styles.textLateral}>Search</p>
+            <p style={styles.textLateral}>Wiki</p>
+            <p style={styles.textLateral}>Team</p>
           </div>
         </div>
-        <div style={styles.mainContainer}>
-          <div style={styles.lateralBar}>
-            <div style={styles.lateralSuperior}>
-              <div
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : (
+          <div style={styles.containerBlock}>
+            {/* Issues */}
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "flex-start",
+                justifyContent: "unset",
+                width: "100%",
+                paddingBottom: "20px",
+              }}
+            >
+              <p
                 style={{
-                  height: "auto",
-                  backgroundColor: "rgb(46, 52, 64)",
-                  paddingLeft: "10px",
+                  fontSize: "30px",
                   margin: "0px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  paddingLeft: "15px",
-                  paddingRight: "15px",
-                  paddingTop: "15px",
-                  paddingBottom: "15px",
+                  fontFamily: "sans-serif",
+                  color: "#008aa8",
                 }}
               >
-                <GiAlienEgg style={{ color: "#008aa8" }} />
-                <p style={styles.nombreLateral}>ASW-2022-2023</p>
-              </div>
-              <p style={styles.textLateral}>Epics</p>
-              <p style={styles.textLateral}>Scrum</p>
-              <p style={styles.textLateral}>Issues</p>
+                Issues
+              </p>
             </div>
-            <div styles={styles.lateralInferior}>
-              <p style={styles.textLateral}>Search</p>
-              <p style={styles.textLateral}>Wiki</p>
-              <p style={styles.textLateral}>Team</p>
-            </div>
-          </div>
-          {isLoading ? (
-            <p>Loading...</p>
-          ) : (
-            <div style={styles.containerBlock}>
+            {/* Buscador y filtros */}
+            <div style={styles.barraFiltro}>
               <div
                 style={{
-                  width: "100%",
                   display: "flex",
-                  flexDirection: "flex-start",
-                  justifyContent: "unset",
-                  width: "100%",
-                  paddingBottom: "20px",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: "50%",
                 }}
               >
-                <p
-                  style={{
-                    fontSize: "30px",
-                    margin: "0px",
-                    fontFamily: "sans-serif",
-                    color: "#008aa8",
-                  }}
-                >
-                  Issues
-                </p>
-              </div>
-              <div style={styles.barraFiltro}>
+                {/* Filters */}
+                <div>
+                  <a
+                    href="#"
+                    style={{ color: "#008aa8", textDecoration: "none" }}
+                  >
+                    Filters
+                  </a>
+                </div>
+                {/* Buscador */}
+                <div style={{ position: "relative" }}>
+                  <input
+                    type="text"
+                    placeholder="Search issues"
+                    style={styles.inputBuscador}
+                    onChange={buscarIssues}
+                  />
+                  <AiOutlineSearch
+                    style={{ position: "absolute", right: "10px", top: "6px" }}
+                  />
+                </div>
+                {/* Tags */}
                 <div
                   style={{
+                    flexWrap: "wrap",
+                    width: "30%",
                     display: "flex",
                     flexDirection: "row",
-                    justifyContent: "space-between",
-                    width: "50%",
+                    alignContent: "center",
+                    justifyContent: "flex-start",
                   }}
                 >
-                  <div>
-                    <a
-                      href="#"
-                      style={{ color: "#008aa8", textDecoration: "none" }}
-                      onClick={() => setShowFilters(!showFilters)}
-                    >
-                      {showFilters ? "Filters" : "Ocultar Filtros"}
-                    </a>
-                  </div>
-                  <div style={{ position: "relative" }}>
-                    <input
-                      type="text"
-                      placeholder="Search issues"
-                      style={styles.inputBuscador}
-                      onChange={buscarIssues}
-                    />
-                    <AiOutlineSearch
-                      style={{ position: "absolute", right: "10px", top: "6px" }}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      flexWrap: "wrap",
-                      width: "30%",
-                      display: "flex",
-                      flexDirection: "row",
-                      alignContent: "center",
-                      justifyContent: "flex-start",
-                    }}
-                  >
-                    <label style={{ marginRight: "5px" }}>Tags</label>
-                    <input
-                      type="checkbox"
-                      style={{ width: "20px", height: "20px" }}
-                    />
-                  </div>
-                  <div>
-                    <select
-                      style={{ width: "100px", height: "30px" }}
-                      onChange={handleUsuario}
-                    >
-                      <option value="0" key="0">
-                        Usuario
-                      </option>
-                      {usuarios.map((usuario) => (
-                        <option value={usuario.id} key={usuario.id}>
-                          {usuario.name}
-                        </option>
-                      ))}
+                  <label style={{ marginRight: "5px" }}>
+                    Tags
+                  </label>
+                  <input
+                    type="checkbox"
+                    style={{ width: "20px", height: "20px" }}
+                  />
+                </div>
+                <div>
+                    <select style={{width: "100px", height: "30px"}} onChange={ handleUsuario }>
+                        {/* Recorre la variable 'usuarios' y crea una opción para cada uno */}
+                        {usuarios && usuarios.map((usuario) => 
+                            <option value={usuario.id} key={usuario.id} defaultValue={ usuario.id === getUsuario() }>{usuario.username}</option>
+                        )}  
                     </select>
                   </div>
                 </div>

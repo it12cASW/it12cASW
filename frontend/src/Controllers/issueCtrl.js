@@ -3,13 +3,16 @@ import axios from "axios";
 // Funciones de utilidad
 import { getTokenUsuario } from "../vars.js";
 import { getIdUsuario } from "../vars.js";
+import { API_URL } from '../vars.js';
+
 
 
 
 export async function getIssuesCtrl(idUsuario) {
 
     try {
-        var url = "https://it12casw-backend.fly.dev/api/issues/";
+        console.log("Voy a obtener los issues")
+        var url = API_URL + "issues/";
         var auth = "Token " + getTokenUsuario(idUsuario);
         const response = await axios.get(url, {
             headers: {
@@ -193,12 +196,13 @@ export async function setAsignadoCtrl(id_issue, asignado) {
 export async function deleteDeadlineCtrl(id_issue) {
     try {
         var idUsuario = getIdUsuario();
+        console.log("API: " + idUsuario)
         var url = "https://it12casw-backend.fly.dev/api/issues/" + id_issue + "/deadline/delete/";
         var auth = "Token " + getTokenUsuario(idUsuario);
         const response = await axios.delete(url, {
             headers: {
                 "Authorization": auth,
-            }
+            },
         });
         console.log("API: Se ha eliminado el deadline")
         return true;
@@ -341,6 +345,26 @@ export async function deleteWatcherCtrl(id_issue, id_user) {
         console.log(error)
         return null;
     }
+}
+
+export async function bulkInsertCtrl(idUsuario, data) {
+
+    try {
+        var url = API_URL + "issues/bulk-insert/";
+        var auth = "Token " + getTokenUsuario(idUsuario);
+        const response = await axios.post(url, data, {
+            headers: {
+                "Authorization": auth,
+            }
+        });
+        console.log("La peticion ha funcionado")
+        return response.data;
+
+    } catch (error) {
+        console.log(error)
+        return null;
+    }
+    return true;
 }
 
 export async function orderIssues(index, order, sharedUrl) {

@@ -117,7 +117,7 @@ export const styles = {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        width: "5%",
+        width: "15%",
     },
     columnaTexto: {
         display: "flex",

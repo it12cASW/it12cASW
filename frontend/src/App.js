@@ -6,6 +6,11 @@ import { Routes, Route } from 'react-router-dom';
 import CrearIssue from './views/CrearIssue/CrearIssue';
 import Main from './views/Main/Main';
 import ShowIssue from './views/ShowIssue/ShowIssue';
+import BulkInsert from './views/BulkInsert/BulkInsert'
+
+import Profile from './views/Profile/Profile'
+import {getIdUsuario} from './vars'
+
 
 // token: acbbf2e3ca3929ccac31c8ccc572a2b783aa876f
 
@@ -16,12 +21,11 @@ function App() {
   const [idUsuario, setIdUsuario] = React.useState(null);
 
   function handleUsuario(id) {
-
-    setIdUsuario(id.target.value);
+    setIdUsuario(getIdUsuario() );
   }
 
   useEffect(() => {
-    setIdUsuario(0);
+    setIdUsuario(getIdUsuario());
   }, []);
 
 
@@ -41,9 +45,19 @@ function App() {
       <Route path="/crearIssue" element={
         <CrearIssue idUsuario={ idUsuario } 
           handleUsuario={ handleUsuario }
-      />} />  
+      />} />
 
-      <Route path="/:id" element={ 
+    <Route path="/bulkInsert" element={
+        <BulkInsert idUsuario={ idUsuario }
+                    handleUsuario={ handleUsuario }
+        />} />
+    <Route path="/profile" element={
+        <Profile idUsuario={ idUsuario }
+                    handleUsuario={ handleUsuario }
+        />} />
+
+
+        <Route path="/:id" element={
         <ShowIssue
       /> } />
 
