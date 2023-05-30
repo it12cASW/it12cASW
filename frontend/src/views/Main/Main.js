@@ -258,13 +258,13 @@ export default function Main ({ idUsuario, handleUsuario }){
             <div style={styles.tablaContainer}>
               {/* Fila */}
               <div style={styles.fila}>
-                <div style={styles.columna}>Type</div>
-                <div style={styles.columna}>Severity</div>
+                {/* <div style={styles.columna}>Type</div>
+                <div style={styles.columna}>Severity</div> */}
                 <div style={styles.columna}>Priority</div>
                 <div style={styles.columna}>Issue</div>
-                <div style={styles.columnaTexto}></div>
+                <div style={styles.columnaTexto}>Title</div>
                 <div style={styles.columna}>Status</div>
-                <div style={styles.columna}>Modified</div>
+                <div style={styles.columna}>Date</div>
                 <div style={styles.columna}>Assign to</div>
               </div>
               {/* por cada elemento en issues crea una nueva fila */}
@@ -277,3 +277,4 @@ export default function Main ({ idUsuario, handleUsuario }){
     </div>
   );
 }
+
