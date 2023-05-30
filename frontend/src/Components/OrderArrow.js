@@ -68,26 +68,6 @@ const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, s
     <div>
       <div style={styles.fila}>
         <ClickableArrows
-          isActive={activeIndexes[0]}
-          handleClick={() => {
-            handleClick(0);
-            console.log("Ordenar por type");
-          }}
-          direction={direction && activeIndexes[0]} // Pasar el valor booleano de direction
-          order={() => handleOrder("type")}
-        />
-        <div style={styles.columna}>Type</div>
-        <ClickableArrows
-          isActive={activeIndexes[1]}
-          handleClick={() => {
-            handleClick(1);
-            console.log("Ordenar por severity");
-          }}
-          direction={direction && activeIndexes[1]} // Pasar el valor booleano de direction
-          order={() => handleOrder("severity")}
-        />
-        <div style={styles.columna}>Severity</div>
-        <ClickableArrows
           isActive={activeIndexes[2]}
           handleClick={() => {
             handleClick(2);
@@ -98,15 +78,25 @@ const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, s
         />
         <div style={styles.columna}>Priority</div>
         <ClickableArrows
-          isActive={activeIndexes[3]}
+          isActive={activeIndexes[1]}
           handleClick={() => {
-            handleClick(3);
-            console.log("Ordenar por issue");
+            handleClick(1);
+            console.log("Ordenar por id");
           }}
-          direction={direction && activeIndexes[3]} // Pasar el valor booleano de direction
-          order={() => handleOrder('asunto')}
+          direction={direction && activeIndexes[1]} // Pasar el valor booleano de direction
+          order={() => handleOrder("id")}
         />
         <div style={styles.columna}>Issue</div>
+        <ClickableArrows
+          isActive={activeIndexes[2]}
+          handleClick={() => {
+            handleClick(2);
+            console.log("Ordenar por Assunto");
+          }}
+          direction={direction && activeIndexes[2]} // Pasar el valor booleano de direction
+          order={() => handleOrder('issue')}
+        />
+        <div style={styles.columna}>Title</div>
         <div style={styles.columnaTexto}></div>
         <ClickableArrows
           isActive={activeIndexes[4]}
@@ -127,7 +117,7 @@ const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, s
           direction={direction && activeIndexes[5]} // Pasar el valor booleano de direction
           order={() => handleOrder('modified')}
         />
-        <div style={styles.columnaDerecha}>Modified</div>
+        <div style={styles.columnaDerecha}>Date</div>
         <ClickableArrows
           isActive={activeIndexes[6]}
           handleClick={() => {
