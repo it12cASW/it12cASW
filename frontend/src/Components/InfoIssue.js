@@ -15,6 +15,8 @@ import { setDeadlineCtrl } from "../Controllers/issueCtrl";
 // Componentes
 import SwitchSelector from "react-switch-selector";
 import Switch from 'react-switch';
+import Watchers from "./Watchers";
+
 
 
 export default function InfoIssue({ issue, setIssue }) {
@@ -22,6 +24,7 @@ export default function InfoIssue({ issue, setIssue }) {
     // Variables
     const [usuarios, setUsuarios] = React.useState(null);
     const [error, setError] = React.useState(false);
+    const [success, setSuccess] = React.useState(null);
 
     // Editar issue
     const [asunto, setAsunto] = React.useState(issue.asunto);
@@ -42,7 +45,6 @@ export default function InfoIssue({ issue, setIssue }) {
     const deadline_ref = useRef(null)
     const prioridad_ref = useRef(null)
     const estado_ref = useRef(null)
-
 
     ////////// FUNCIONES HANDLE //////////
     function handleAsunto(e) {
@@ -76,11 +78,17 @@ export default function InfoIssue({ issue, setIssue }) {
         setBlocked(false);
     }
 
-    async function handleDeadline(e) {
-        
+    async function deleteDeadline() {
         var deleted = await deleteDeadlineCtrl(issue.id);
-        var res = await setDeadlineCtrl(issue.id, e.target.value);
-        if(!res) setError(true);
+        setIssue();
+    }
+
+    async function handleDeadline(e) {
+        var deleted = await deleteDeadlineCtrl(issue.id);
+        if(e) {
+            var res = await setDeadlineCtrl(issue.id, e.target.value);
+            if(!res) setError(true);
+        }
         setIssue();
     }
 
@@ -140,12 +148,16 @@ export default function InfoIssue({ issue, setIssue }) {
         };
 
         var res = await editarIssueCtrl(issue.id ,data);
+        
         if(!res) setError(true);
         setIssue();
+        if(res) {
+            setSuccess(true);
+        }
     }
 
     useEffect(() => {   
-
+        
         async function getUsuariosAPI() {
             var usuarios_aux = await getAllUsers();
             setUsuarios(usuarios_aux);
@@ -168,6 +180,10 @@ export default function InfoIssue({ issue, setIssue }) {
             </div>
             <div style={ styles.targetaCreador }>
                 <p style={ styles.textoCreador }>Creador:   {issue.creador.username}</p>
+            </div>
+
+            <div style={{ width:"80%" }}>
+                <Watchers id_issue={ issue.id }/>
             </div>
 
             {/* ASOCIADO --> Por defecto el 'none', sino pongo el que venia */}
@@ -213,7 +229,16 @@ export default function InfoIssue({ issue, setIssue }) {
             </div>
             {/* DEADLINE */}
             <div style={ styles.targetaDeadline }>
-                <p style={ styles.textoAsociado }>Deadline: { issue.deadline }</p>
+                <div>
+                    {issue.deadline && 
+                        <div style={{ display:"flex", justifiContent:"center", verticalAlign:"center" }}>
+                            <p style={ styles.textoAsociado }>Deadline: { issue.deadline }</p>
+                            <button onClick={ () => deleteDeadline() } style={ styles.bloqueado }>Eliminar deadline</button>
+                        </div>
+                    }
+                    {!issue.deadline && <p style={ styles.textoAsociado }>Deadline: Ninguno</p>}
+                    
+                </div>                
                 <input ref={ deadline_ref } onChange={handleDeadline} type="date" defaultValue={ issue.deadline } style={ styles.datePicker }/>
             </div>
                 <div style={{ display:"flex", flexDirection:"row", width:"81%", justifyContent:"space-between"  }}>
@@ -249,9 +274,16 @@ export default function InfoIssue({ issue, setIssue }) {
                 </div>
             }
             
+            
             <div style={ styles.containerButton }>
                 <button style={ styles.button } onClick={ editarIssueAPI }>Guardar cambios</button>
             </div>
+
+            {success &&
+                <div>
+                    <p style={{ color:"green" }}>Se ha editado correctamente</p>
+                </div>
+            }
         </div>
     )
 }
