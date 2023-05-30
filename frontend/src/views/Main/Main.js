@@ -195,8 +195,9 @@ export default function Main ({ idUsuario, handleUsuario }){
                   <a
                     href="#"
                     style={{ color: "#008aa8", textDecoration: "none" }}
-                  >
-                    Filters
+                    onClick={() => setShowFilters(!showFilters)}
+                    >
+                      {showFilters ? "Filters" : "Ocultar Filtros"}
                   </a>
                 </div>
                 {/* Buscador */}
