@@ -238,6 +238,7 @@ export default function Main ({ idUsuario, handleUsuario }){
                             <option value={usuario.id} key={usuario.id} defaultValue={ usuario.id === getUsuario() }>{usuario.username}</option>
                         )}  
                     </select>
+                    <p>Se ha iniciado con el usuario: { getUsernameUsuario() }</p>
                   </div>
                 </div>
                 <div
