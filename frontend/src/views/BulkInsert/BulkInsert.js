@@ -76,7 +76,7 @@ export default function BulkInsert({ idUsuario, handleUsuario } ) {
                         </div>
                         <div style={ styles.botonContainer }>
                             <button style={ styles.botonCrear }>
-                                <Link to="/">Volver</Link>
+                                <Link to="/it12cASW">Volver</Link>
                             </button>
                         </div>
                     </div>

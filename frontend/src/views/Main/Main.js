@@ -100,7 +100,7 @@ export default function Main ({ idUsuario, handleUsuario }){
         >
             <div style={{ width: "80px" }}>
                 <p>
-                    <Link to="/profile" style={{ fontFamily: "sans-serif", color: "#008aa8" }}>
+                    <Link to="/it12cASW/profile" style={{ fontFamily: "sans-serif", color: "#008aa8" }}>
                         Profile</Link>
                 </p>
 
@@ -255,7 +255,7 @@ export default function Main ({ idUsuario, handleUsuario }){
                     />
                     <button style={styles.newIssueButton}>
                       <Link
-                        to="/crearIssue"
+                        to="/it12cASW/crearIssue"
                         style={{ color: "white", textDecoration: "none" }}
                       >
                         New issue
@@ -269,7 +269,7 @@ export default function Main ({ idUsuario, handleUsuario }){
                           style={{ position: "absolute", top: "10px", left: "7px" }}
                       />
                       <button style={styles.newIssueButton }>
-                          <Link to="/bulkInsert" style={{color: "white", textDecoration: "none"}}>Bulk Insert</Link>
+                          <Link to="/it12cASW/bulkInsert" style={{color: "white", textDecoration: "none"}}>Bulk Insert</Link>
                       </button>
                   </div>
                 </div>
