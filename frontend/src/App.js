@@ -15,6 +15,7 @@ import {getIdUsuario} from './vars'
 // token: acbbf2e3ca3929ccac31c8ccc572a2b783aa876f
 
 
+
 function App() {
 
   const [idUsuario, setIdUsuario] = React.useState(null);
@@ -26,6 +27,7 @@ function App() {
   useEffect(() => {
     setIdUsuario(getIdUsuario());
   }, []);
+
 
 
   return (

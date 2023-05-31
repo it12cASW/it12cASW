@@ -6,6 +6,8 @@ import { getIdUsuario } from "../vars.js";
 import { API_URL } from '../vars.js';
 
 
+
+
 export async function getIssuesCtrl(idUsuario) {
 
     try {
@@ -386,3 +388,74 @@ export async function setCommentCtrl(id_issue, comment) {
         return null;
     }
 }
+
+
+export async function orderIssues(index, order, sharedUrl) {
+     
+    try {
+        var idUsuario = getIdUsuario();
+        console.log("index: " + index + " order: " + order);
+        var iorder;
+        if (order === false) iorder = "asc";
+        else iorder = "desc";
+        var url = sharedUrl + "&order_field=" + index + "&order=" + iorder;
+        
+        var auth = "Token " + getTokenUsuario(idUsuario);
+        const response = await axios.get(url, {
+            headers: {
+                "Authorization": auth,
+            }
+        });
+        var orderedIssues = response.data;
+        console.log(orderedIssues);
+        return response.data;
+
+    } catch(error) {
+        console.log(error)
+        return null;
+    }
+        
+};
+
+export async function obtenerIssuesFiltrados(filtrosSeleccionados, estadosSeleccionados, usuarioAsignado, prioridadSeleccionada, usuarioCreador) {
+    try{
+        console.log("Filtrao: " + filtrosSeleccionados + " estados: " + estadosSeleccionados + " usuarioAsignado: " + usuarioAsignado + " prioridad: " + prioridadSeleccionada + " usuarioCreador: " + usuarioCreador)
+        var idUsuario = getIdUsuario();
+        var url = "https://it12casw-backend.fly.dev/api/issues/?";
+        //para cada valor de filtrosSeleccionados, añadir a la url el filtro y su valor
+        for (var i = 0; i < filtrosSeleccionados.length; i++) {
+            if (filtrosSeleccionados[i] != null && filtrosSeleccionados[i] !== "") {
+                console.log(filtrosSeleccionados[i]);                
+                url = url + "&";
+                switch (filtrosSeleccionados[i]) {
+                    case "status":
+                        url = url + "status=" + estadosSeleccionados;
+                        break;
+                    case "assignee":
+                        url = url + "assigned=" + usuarioAsignado;
+                        break;
+                    case "priority":
+                        url = url + "priority=" + prioridadSeleccionada;
+                        break;
+                    case "created_by":
+                        url = url + "creator=" + usuarioCreador;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        console.log(url);
+        var auth = "Token " + getTokenUsuario(idUsuario);
+        const response = await axios.get(url, {
+            headers: {
+                "Authorization": auth,
+            }
+        });
+        console.log(response.data);
+        return [response.data, url];
+    }catch(error){
+        console.log(error)
+        return null;
+    }
+};

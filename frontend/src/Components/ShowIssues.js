@@ -7,33 +7,65 @@ import { Link } from "react-router-dom";
 import { getIssuesCtrl } from "../Controllers/issueCtrl";
 import IssueRow from "./IssueRow"
 
-
-
-
-export default function ShowIssues({ parametros }) {
+export default function ShowIssues({sharedIssues, parametros}) {
 
     // Pantalla
     const [isLoading, setIsLoading] = React.useState(true);
 
     // Variables
     const [issues, setIssues] = React.useState([]);
+    const [issuesGuardades, setIssuesGuardades] = React.useState([]);
 
     async function getIssuesAPI() {
         var issues_aux = await getIssuesCtrl();
         setIssues(issues_aux);
-        if(parametros != null && parametros != "") {
-            var auxIssues = issues.filter(issue => issue.asunto.includes(parametros));
-            setIssues(auxIssues);
-        }
+        setIssuesGuardades(issues_aux);
+    }
+    async function orderIssuesAPI() {
+        var issues_aux = {};
+        setIssues(issues_aux);
+        setIssuesGuardades(issues_aux);
     }
 
     useEffect(() => {
 
         setIsLoading(true);
-        getIssuesAPI();
+        console.log("orderedIssues: " + sharedIssues);
+        if (sharedIssues === null)getIssuesAPI();
+        else orderIssuesAPI();
+        // recorre issues
+        for (var i = 0; i < issues.length; i++) {
+            console.log("issue: " + issues[i]);
+        }
+        setIsLoading(false);
+    }, []);
+    useEffect(() => {
+        setIsLoading(true);
+        setIssues(sharedIssues); // Actualiza el valor de 'issues' cuando 'orderedIssues' cambie
+        setIssuesGuardades(sharedIssues);
+        setIsLoading(false);
+    }, [sharedIssues]);
+
+    React.useEffect(() => {
+        setIsLoading(true);
+      
+        if (parametros && parametros.trim() !== "") { // Verificar si parametros no es null ni una cadena vacía
+          // Filtrar las issues
+          const lowercaseParametros = parametros.toLowerCase(); // Convertir los parámetros a minúsculas
+      
+          var auxIssues = issuesGuardades.filter(issues =>
+            issues.asunto.toLowerCase().includes(lowercaseParametros)
+          );
+          setIssues(auxIssues);
+        } else {
+          // Si parametros es null o una cadena vacía, no se realiza ninguna búsqueda
+          setIssues(issuesGuardades);
+        }
+      
         setIsLoading(false);
     }, [parametros]);
-
+      
+      
     return (
         <div>
             {issues && issues.map((issue) => (

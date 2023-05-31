@@ -17,6 +17,7 @@ import { getAllUsers } from "../../vars";
 
 export default function CrearIssue( { idUsuario , handleUsuario } ) {
 
+
     // Parametros de input
     const [usuario, setUsuario] = useState({})
     const [titulo, setTitulo] = useState("")
@@ -71,6 +72,7 @@ export default function CrearIssue( { idUsuario , handleUsuario } ) {
         console.log("Enviando formulario")
 
         var data = {
+
             "id_creador": usuario,
             "asunto": titulo,
             "descripcion": descripcion,
@@ -85,11 +87,13 @@ export default function CrearIssue( { idUsuario , handleUsuario } ) {
         }
 
         var res = await crearIssueCtrl(idUsuario, data)
+
         setIncorrecto(res)
     }
 
     async function asignarVariables() {
         var usuarios_aux = await getAllUsers()
+
         // var tipos_aux = await getTiposCtrl()
         // var prioridades_aux = await getPrioridadesCtrl()
         // var severidades_aux = await getSeveridadesCtrl()
@@ -107,7 +111,6 @@ export default function CrearIssue( { idUsuario , handleUsuario } ) {
         asignarVariables()
         setIsLoading(false)
     }, [])
-
 
     return (
         
@@ -129,6 +132,7 @@ export default function CrearIssue( { idUsuario , handleUsuario } ) {
                             </div>
                             <div>
                                 <p>Introduce un archivo adjunto:</p>
+
                                 <input type="file" placeholder="Titulo" style={ styles.inputFile } />
                             </div>
                         </div>
@@ -152,8 +156,8 @@ export default function CrearIssue( { idUsuario , handleUsuario } ) {
                         </div>
                     </div>
                     
-                    {incorrecto == true && <div style={ styles.incorrecto }>No se ha podido crear la issue</div>}
-                    {incorrecto == false && <div style={ styles.incorrecto }>Issue creada correctamente</div>}
+                    {incorrecto === true && <div style={ styles.incorrecto }>No se ha podido crear la issue</div>}
+                    {incorrecto === false && <div style={ styles.incorrecto }>Issue creada correctamente</div>}
                     
                 </div>
             ) : (

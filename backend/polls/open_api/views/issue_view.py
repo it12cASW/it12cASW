@@ -56,7 +56,7 @@ class IssueViewSet(ModelViewSet):
             filters &= Q(associat__username__icontains=asociated)
         #obtenemos los datos filtrados
         issues = Issue.objects.filter(filters)
-        if order_field in ['prioridad', 'asunto', 'status', 'modified', 'asignada', 'creador']:
+        if order_field in ['prioridad', 'asunto', 'status', 'modified', 'asignada', 'creador', 'id']:
             if order == 'asc' or not order:
                 order = ''
             else:
@@ -65,28 +65,29 @@ class IssueViewSet(ModelViewSet):
             if order_field == 'prioridad':
                 results = issues.annotate(
                     priority_order=Case(
-                        When(prioridad='baja', then=Value(1)),
-                        When(prioridad='media', then=Value(2)),
-                        When(prioridad='alta', then=Value(3)),
+                        When(prioridad='low', then=Value(1)),
+                        When(prioridad='normal', then=Value(2)),
+                        When(prioridad='high', then=Value(3)),
                         output_field=models.IntegerField(),
                         default=Value(0),
                     )
-                ).order_by('priority_order' if order == 'asc' else '-priority_order')
+                ).order_by(order + 'priority_order')
             elif order_field == 'status':
                 status_order_case = Case(
                     *[When(status=value, then=Value(position)) for position, value in enumerate(status_order.keys())],
                     output_field=CharField(),
                 )
                 results = issues.order_by(status_order_case)
-                if order == 'desc':
+                if order == '-':
                     results = results[::-1]
             elif order_field == 'modified':
                 max_fecha_actividad = Max('actividades__fecha')
-                order_by_field = 'max_fecha_actividad' if order == 'desc' else '-max_fecha_actividad'
+                order_by_field = 'max_fecha_actividad' if order == '' else '-max_fecha_actividad'
 
                 results = issues.annotate(
                     max_fecha_actividad=max_fecha_actividad
                 ).order_by(order_by_field)
+
             elif order_field == 'asignada':
                 results = issues.order_by(order + 'asignada__username')
             elif order_field == 'creador':

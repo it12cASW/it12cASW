@@ -8,6 +8,10 @@ import { GrAdd } from "react-icons/gr";
 import { FaCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
+
+import ColumnWithClickableArrows from "../../Components/OrderArrow";
+import FormularioFiltros from "../../Components/FormularioFiltros";
+
 // Controladores
 import { getUsuariosCtrl } from "../../Controllers/usuariosCtrl";
 import { getIssuesCtrl } from "../../Controllers/issueCtrl";
@@ -24,8 +28,11 @@ import { getAllUsers } from "../../vars";
 export default function Main ({ idUsuario, handleUsuario }){
     const [isLoading, setIsLoading] = React.useState(true);
     const [issues, setIssues] = React.useState([]);
+    const [usuarios, setUsuarios] = React.useState(Array);
+    const [showFilters, setShowFilters] = React.useState(true);
+    const [sharedIssues, setSharedIssues] = React.useState(null);
+    const [sharedUrl, setSharedUrl] = React.useState("https://it12casw-backend.fly.dev/api/issues/?");
     const [parametros, setParametros] = React.useState(null);
-    const [usuarios, setUsuarios] = React.useState(Array);    
   
     async function getUsuariosAPI() {
         return await getUsuariosCtrl();
@@ -66,6 +73,15 @@ export default function Main ({ idUsuario, handleUsuario }){
         setIsLoading(false);
 
     }, []);
+    React.useEffect(() => {
+      console.log("sharedUrl: ", sharedUrl);
+    }, [sharedUrl]);
+
+    function buscarIssues(e) {
+      setIsLoading(true);
+      setParametros(e.target.value)
+      setIsLoading(false);
+    }
 
     return (
         <div style={styles.mainScreen} id="test">
@@ -179,8 +195,9 @@ export default function Main ({ idUsuario, handleUsuario }){
                   <a
                     href="#"
                     style={{ color: "#008aa8", textDecoration: "none" }}
-                  >
-                    Filters
+                    onClick={() => setShowFilters(!showFilters)}
+                    >
+                      {showFilters ? "Filters" : "Ocultar Filtros"}
                   </a>
                 </div>
                 {/* Buscador */}
@@ -222,29 +239,32 @@ export default function Main ({ idUsuario, handleUsuario }){
                         )}  
                     </select>
                     <p>Se ha iniciado con el usuario: { getUsernameUsuario() }</p>
+                  </div>
                 </div>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  width: "30%",
-                  justifyContent: "end",}}
-              >
-                {/* New issue */}
-                <div style={{ position: "relative" }}>
-                  <GrAdd
-                    style={{ position: "absolute", top: "10px", left: "7px" }}
-                  />
-                  <button style={styles.newIssueButton} >
-                    {/* /Link a /createIssue */}
-                    <Link to="/crearIssue" style={{color: "white", textDecoration: "none"}}>
-                    New issue</Link>
-                  </button>
-                </div>
-                  {/* Bulk insert */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    width: "30%",
+                    justifyContent: "end",
+                  }}
+                >
+                  <div style={{ position: "relative" }}>
+                    <GrAdd
+                      style={{ position: "absolute", top: "10px", left: "7px" }}
+                    />
+                    <button style={styles.newIssueButton}>
+                      <Link
+                        to="/crearIssue"
+                        style={{ color: "white", textDecoration: "none" }}
+                      >
+                        New issue
+                      </Link>
+                    </button>
+                  </div>
+                 {/* Bulk insert */}
 
-                  <div style={{ position: "relative" , marginLeft:"5px" }}>
+                 <div style={{ position: "relative" , marginLeft:"5px" }}>
                       <AiOutlineAppstoreAdd
                           style={{ position: "absolute", top: "10px", left: "7px" }}
                       />
@@ -252,29 +272,24 @@ export default function Main ({ idUsuario, handleUsuario }){
                           <Link to="/bulkInsert" style={{color: "white", textDecoration: "none"}}>Bulk Insert</Link>
                       </button>
                   </div>
+                </div>
+              </div>
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                {!showFilters && (
+                  <div style={styles.containerBlockFilter}>
+                    <FormularioFiltros sharedIssues={sharedIssues} setSharedIssues={setSharedIssues} sharedUrl={sharedUrl} setSharedUrl={setSharedUrl}/>
+                  </div>
+                )}
+                <div
+                  style={styles.tablaContainer}
+                >
+                  <ColumnWithClickableArrows sharedIssues={sharedIssues} setSharedIssues={setSharedIssues} sharedUrl={sharedUrl} setSharedUrl={setSharedUrl} parametros={parametros}/>
+                </div>
               </div>
             </div>
-            {/* Tabla */}
-            <div style={styles.tablaContainer}>
-              {/* Fila */}
-              <div style={styles.fila}>
-                {/* <div style={styles.columna}>Type</div>
-                <div style={styles.columna}>Severity</div> */}
-                <div style={styles.columna}>Priority</div>
-                <div style={styles.columna}>Issue</div>
-                <div style={styles.columnaTexto}>Title</div>
-                <div style={styles.columna}>Status</div>
-                <div style={styles.columna}>Date</div>
-                <div style={styles.columna}>Assign to</div>
-              </div>
-              {/* por cada elemento en issues crea una nueva fila */}
-              <ShowIssues parametros={ parametros }/>
-              
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
-  );
-}
-
+    );
+    
+};
