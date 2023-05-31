@@ -364,3 +364,25 @@ export async function bulkInsertCtrl(idUsuario, data) {
     }
     return true;
 }
+export async function setCommentCtrl(id_issue, comment) {
+    try{
+        var idUsuario = getIdUsuario();
+        var url = "https://it12casw-backend.fly.dev/api/issues/" + id_issue + "/comments/";
+        var data =
+            {
+                "comment": comment,
+            };
+        var auth = "Token " + getTokenUsuario(idUsuario);
+        const response = await axios.post(url, data, {
+            headers: {
+                "Authorization": auth,
+            },
+        });
+        console.log("API: Se ha añadido el comentario")
+        return response.data;
+    }
+    catch(error){
+        console.log("API: Ha habido un error al añadir el comentario")
+        return null;
+    }
+}
