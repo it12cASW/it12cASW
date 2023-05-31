@@ -48,14 +48,18 @@ export default function ShowIssues({sharedIssues, parametros}) {
 
     React.useEffect(() => {
         setIsLoading(true);
-        
+      
         // Filtrar las issues
-
-        var auxIssues = issuesGuardades.filter(issues => issues.asunto.includes(parametros));
+        const lowercaseParametros = parametros.toLowerCase(); // Convertir los parámetros a minúsculas
+      
+        var auxIssues = issuesGuardades.filter(issues =>
+          issues.asunto.toLowerCase().includes(lowercaseParametros)
+        );
         setIssues(auxIssues);
-          
+      
         setIsLoading(false);
     }, [parametros]);
+      
       
     return (
         <div>
