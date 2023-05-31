@@ -1,6 +1,8 @@
 import React from "react";
 import { useEffect } from "react";
 
+import Comment from './Comment';
+
 // Controladores
 import { getCommentsCtrl } from '../Controllers/issueCtrl';
 
@@ -28,15 +30,7 @@ export default function Comments({issue}) {
             {comments && comments.length > 0 ? (
                 <div style={{ width:"100%" }}>
                     {comments.map((comment) => (
-                        <div style={ styles.comentario }>
-                            <div style={{ display:"flex", flexDirection:"row", justifyContent:"space-around" }}>
-                                <p style={ styles.texto }>{ comment.autor.username }</p>
-                                <p style={ styles.texto }>{ comment.fecha }</p>
-                            </div>
-                            <div style={{ display:"flex", alignContent:"center", alignItems:"center", justifyContent:"center", borderRadius:"10px", backgroundColor:"white" }}>
-                                <p style={ styles.texto }>{ comment.contenido }</p>
-                            </div>
-                        </div>
+                        <Comment comment={comment}></Comment>
                     ))}
                 </div>
             ) : (

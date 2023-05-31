@@ -1,9 +1,9 @@
 import axios from "axios";
 import { API_URL } from '../vars.js';
 
-export async function getTokenUsuario() {
-    
-}
+import { getTokenUsuario } from "../vars.js";
+import { getIdUsuario } from "../vars.js";
+
 
 export async function getUsuariosCtrl() {
     try {
@@ -36,4 +36,25 @@ export async function getUsuariosFullCtrl(params) {
         console.error(error);
         return null;
     }
+}
+
+export async function saveUsuario(data){
+    try{
+        var idUsuario = getIdUsuario();
+        var url = API_URL + "users/edit/";
+
+        var auth = "Token " + getTokenUsuario(idUsuario);
+
+        const response = await axios.put(url, data, {
+            headers: {
+                "Authorization": auth,
+            },
+        });
+        console.log("La peticion ha funcionado")
+    }
+    catch(error){
+        console.log("API: La peticion no ha funcionado")
+        return null;
+    }
+    return true;
 }
