@@ -102,9 +102,9 @@ class UserViewSet(ModelViewSet):
         if(not user):
             return Response({'message': 'User does not exists'}, status=status.HTTP_404_NOT_FOUND)
 
-        user.username = username
-        user.password = password
-        user.email = email
+        user.username = username if username else user.username
+        user.password = password if password else user.password
+        user.email = email if email else user.email
         user.save()
 
         serializer = UserSerializer(user)
