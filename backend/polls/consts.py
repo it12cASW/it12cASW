@@ -1,21 +1,23 @@
 
-status = ['NUEVO', 'EN_PROCESO', 'FINALIZADO', 'CANCELADO', 'NECESITA_INFORMACION', 'LISTA_PARA_TESTEAR']
+status = ['new', 'progress', 'closed', 'rejected', 'info', 'test']
 
-status_order = {'NUEVO': 0,
-                'EN_PROCESO': 1,
-                'FINALIZADO': 2,
-                'CANCELADO': 3,
-                'NECESITA_INFORMACION': 4,
-                'LISTA_PARA_TESTEAR': 5}
+status_order = {'new': 0,
+                'progress': 1,
+                'closed': 2,
+                'rejected': 3,
+                'info': 4,
+                'test': 5,
+                'posponed': 6,}
 
 prioridades = ["baja", "media", "alta", "ninguna"]
 
 
 STATUS_CHOICES = (
-        ('NUEVO', 'Nuevo'),
-        ('EN_PROCESO', 'En proceso'),
-        ('FINALIZADO', 'Finalizado'),
-        ('CANCELADO', 'Cancelado'),
-        ('NECESITA_INFORMACION', 'Necesita información'),
-        ('LISTA_PARA_TESTEAR', 'Lista para testear'),
+        ('new', 'new'),
+        ('progress', 'progress'),
+        ('closed', 'closed'),
+        ('rejected', 'rejected'),
+        ('info', 'info'),
+        ('test', 'test'),
+        ('posponed', 'posponed'),
     )
