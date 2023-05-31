@@ -112,7 +112,7 @@ const ColumnWithClickableArrows = ({ sharedIssues, setSharedIssues, sharedUrl, s
         <ClickableArrows
           isActive={activeIndexes[2]}
           handleClick={() => {
-            handleClick(2, 'issue');
+            handleClick(2, 'asunto');
             console.log("Ordenar por Assunto");
           }}
           direction={direction && activeIndexes[2]}
