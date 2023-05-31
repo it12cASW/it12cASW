@@ -142,6 +142,7 @@ def actualizarPerfil(request):
     email = request.POST.get('email')
     nombre = request.POST.get('nombre')
     apellidos = request.POST.get('apellidos')
+    about = request.POST.get('about')
 
     if username != usuario.username:
         if User.objects.filter(username=username).exists():
@@ -158,6 +159,9 @@ def actualizarPerfil(request):
         usuario.save()
     if apellidos != usuario.last_name:
         usuario.last_name = apellidos
+        usuario.save()
+    if about != usuario.about:
+        usuario.about = about
         usuario.save()
 
     # si existe imagen perfil
@@ -190,6 +194,7 @@ def seleccionarEquipo(request):
 def verPerfil(request, username):
     # Obtén el ID de la BD
     user = User.objects.get(username=username)
+    about = User.objects.get(about=user.about);
 
     # obten las actividades de este usuario
     actividades = Actividad_Issue.objects.filter(usuario=user.id)
@@ -218,7 +223,7 @@ def verPerfil(request, username):
     else:
         usuarios = None
 
-    return render(request, 'verPerfil.html', {"user" : user, "actividades": actividades, "equipo" : equipo_usuario, "imagenPerfil" : imagenPerfil, "issues" : issues, "usuarios": usuarios})
+    return render(request, 'verPerfil.html', {"user" : user, "about" : about, "actividades": actividades, "equipo" : equipo_usuario, "imagenPerfil" : imagenPerfil, "issues" : issues, "usuarios": usuarios})
 
 
 
