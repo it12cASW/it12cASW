@@ -49,13 +49,18 @@ export default function ShowIssues({sharedIssues, parametros}) {
     React.useEffect(() => {
         setIsLoading(true);
       
-        // Filtrar las issues
-        const lowercaseParametros = parametros.toLowerCase(); // Convertir los parámetros a minúsculas
+        if (parametros && parametros.trim() !== "") { // Verificar si parametros no es null ni una cadena vacía
+          // Filtrar las issues
+          const lowercaseParametros = parametros.toLowerCase(); // Convertir los parámetros a minúsculas
       
-        var auxIssues = issuesGuardades.filter(issues =>
-          issues.asunto.toLowerCase().includes(lowercaseParametros)
-        );
-        setIssues(auxIssues);
+          var auxIssues = issuesGuardades.filter(issues =>
+            issues.asunto.toLowerCase().includes(lowercaseParametros)
+          );
+          setIssues(auxIssues);
+        } else {
+          // Si parametros es null o una cadena vacía, no se realiza ninguna búsqueda
+          setIssues(issuesGuardades);
+        }
       
         setIsLoading(false);
     }, [parametros]);
