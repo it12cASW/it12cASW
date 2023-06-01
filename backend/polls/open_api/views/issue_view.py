@@ -87,7 +87,6 @@ class IssueViewSet(ModelViewSet):
                 results = issues.annotate(
                     max_fecha_actividad=max_fecha_actividad
                 ).order_by(order_by_field)
-
             elif order_field == 'asignada':
                 results = issues.order_by(order + 'asignada__username')
             elif order_field == 'creador':

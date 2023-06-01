@@ -1,35 +1,30 @@
-var idUsuario = 5;
+var idUsuario = 1;
 
 const users = [
-    // {
-    //     "id": 4,
-    //     "username": "test1",
-    //     "email": "test1@gmail.com",
-    //     "token": "426c253f3b374f23678e18aba4394268c49a8508"
-    // },
+    
     {
-        "id": 5,
+        "id": 1,
         "username": "Joan",
         "email": "joan@gmail.com",
-        "token": "e76f2d82a326de231b8ff7b4d2ff8199132fe258"
+        "token": "d6ff5166a8c8289e27348c50b70de3c774a436a3"
     },
     {
-        "id": 6,
+        "id": 2,
         "username": "Juan",
         "email": "juan@gmail.com",
-        "token": "d50b877a60295604c95ac06aa03f9e769c4b3898"
+        "token": "7a45e7ce6c6e65e585295ccac0fa12023306c05a"
     },
     {
-        "id": 7,
+        "id": 3,
         "username": "Dimas",
         "email": "dimas@gmail.com",
-        "token": "a6fff97a4599b1667a60e89a2c8c0d2d31efdd3a"
+        "token": "cab197b7acc1ae9e341164fe30e317adf6fa7061"
     },
     {
-        "id": 8,
+        "id": 4,
         "username": "Miguel",
         "email": "miguel@gmail.com",
-        "token": "b3b2975d0de2df62a1cde575f22e98025b131db2"
+        "token": "5cb63162fec93bcd049ece8c2d4a9e1b5da997a4"
     },
 ]
 
@@ -62,4 +57,3 @@ export function getUsernameUsuario(){
 
     return users[users.findIndex((usuario) => usuario.id == idUsuario)].username;
 }
-
