@@ -12,7 +12,7 @@ from . import comment_serializer
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ('id','username', 'email')
+        fields = ('id','username', 'email','about')
 
 
 class ComentarioSerializer(ModelSerializer):
@@ -56,7 +56,7 @@ class UserFullSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'actividades_hechas', 'issues_vigiladas', 'equipos_creados','comments']
+        fields = ['id', 'username', 'email','about', 'actividades_hechas', 'issues_vigiladas', 'equipos_creados','comments']
 
 
         

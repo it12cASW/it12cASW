@@ -5,74 +5,71 @@ import { Link } from "react-router-dom";
 
 // Controladores
 import { getIssuesCtrl } from "../Controllers/issueCtrl";
+import IssueRow from "./IssueRow"
 
-export default function ShowIssues({orderedIssues}) {
+export default function ShowIssues({sharedIssues, parametros}) {
 
     // Pantalla
     const [isLoading, setIsLoading] = React.useState(true);
 
     // Variables
     const [issues, setIssues] = React.useState([]);
+    const [issuesGuardades, setIssuesGuardades] = React.useState([]);
 
     async function getIssuesAPI() {
         var issues_aux = await getIssuesCtrl();
         setIssues(issues_aux);
+        setIssuesGuardades(issues_aux);
     }
     async function orderIssuesAPI() {
         var issues_aux = {};
         setIssues(issues_aux);
+        setIssuesGuardades(issues_aux);
     }
 
     useEffect(() => {
+
         setIsLoading(true);
-        console.log("orderedIssues: " + orderedIssues);
-        if (orderedIssues === null)getIssuesAPI();
+        console.log("orderedIssues: " + sharedIssues);
+        if (sharedIssues === null)getIssuesAPI();
         else orderIssuesAPI();
         // recorre issues
         for (var i = 0; i < issues.length; i++) {
             console.log("issue: " + issues[i]);
         }
-
         setIsLoading(false);
     }, []);
     useEffect(() => {
-        setIssues(orderedIssues); // Actualiza el valor de 'issues' cuando 'orderedIssues' cambie
-    }, [orderedIssues]);
+        setIsLoading(true);
+        setIssues(sharedIssues); // Actualiza el valor de 'issues' cuando 'orderedIssues' cambie
+        setIssuesGuardades(sharedIssues);
+        setIsLoading(false);
+    }, [sharedIssues]);
+
+    React.useEffect(() => {
+        setIsLoading(true);
+      
+        if (parametros && parametros.trim() !== "") { // Verificar si parametros no es null ni una cadena vacía
+          // Filtrar las issues
+          const lowercaseParametros = parametros.toLowerCase(); // Convertir los parámetros a minúsculas
+      
+          var auxIssues = issuesGuardades.filter(issues =>
+            issues.asunto.toLowerCase().includes(lowercaseParametros)
+          );
+          setIssues(auxIssues);
+        } else {
+          // Si parametros es null o una cadena vacía, no se realiza ninguna búsqueda
+          setIssues(issuesGuardades);
+        }
+      
+        setIsLoading(false);
+    }, [parametros]);
+      
+      
     return (
         <div>
             {issues && issues.map((issue) => (
-                <div style={styles.filaIssue} key={ issue.id }>
-                    <div style={styles.columna}>
-                        {issue.type && issue.type === "bug" && <FaCircle style={{ color:"red" }}/>}
-                        {issue.type && issue.type === "question" &&<FaCircle styles={{ color:"blue" }}/>}
-                        {issue.type && issue.type === "enhancement" && <FaCircle styles={{ color:"green" }}/>}
-                    </div>
-                    <div style={styles.columna}>
-                        {issue.severity && issue.severity === "wishlist" && <FaCircle style={{ color:"violet" }}/>}
-                        {issue.severity && issue.severity === "minor" && <FaCircle style={{ color:"blue" }}/>}
-                        {issue.severity && issue.severity === "normal" && <FaCircle style={{ color:"green" }}/>}
-                        {issue.severity && issue.severity === "important" && <FaCircle style={{ color:"orange" }}/>}
-                        {issue.severity && issue.severity === "critical" && <FaCircle style={{ color:"red" }}/>}
-                    </div>
-                    <div style={styles.columna}>
-                        {issue.prioridad && issue.prioridad === "low" && <FaCircle style={{ color:"green" }}/>}
-                        {issue.prioridad && issue.prioridad === "normal" && <FaCircle style={{ color:"orange" }}/>}
-                        {issue.prioridad && issue.prioridad === "high" && <FaCircle style={{ color:"red" }}/>}
-                    </div>
-                    <div style={styles.columna}>#{issue.id}</div>
-                    <div style={styles.columnaTexto}><Link to={`/${issue.id}`}>{issue.asunto}</Link></div>
-                    <div style={styles.columna}>
-                        {issue.status && issue.status === "new" && <FaCircle style={{ color:"violet" }}/>}
-                        {issue.status && issue.status === "progres" && <FaCircle style={{ color:"blue" }}/>}
-                        {issue.status && issue.status === "test" && <FaCircle style={{ color:"yellow" }}/>}
-                        {issue.status && issue.status === "closed" && <FaCircle style={{ color:"green" }}/>}
-                        {issue.status && issue.status === "info" && <FaCircle style={{ color:"red" }}/>}
-                        {issue.status && issue.status === "rejected" && <FaCircle style={{ color:"grey" }}/>}
-                        {issue.status && issue.status === "postponed" && <FaCircle style={{ color:"blue" }}/>}
-                    </div>
-                    <div style={styles.columna}>{issue.actividades && issue.actividades[issue.actividades.length - 1].fecha.split('T')[0]}</div>
-                    <div style={styles.columna}>{issue.asignada && issue.asignada.username}</div>
-                </div>
+                <IssueRow issue={issue}></IssueRow>
             ))}
         </div>  
     );

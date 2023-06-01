@@ -9,21 +9,32 @@ import { FaCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 
-import ColumnWithClickableArrows from "./OrderArrow";
-
+import ColumnWithClickableArrows from "../../Components/OrderArrow";
+import FormularioFiltros from "../../Components/FormularioFiltros";
 
 // Controladores
 import { getUsuariosCtrl } from "../../Controllers/usuariosCtrl";
 import { getIssuesCtrl } from "../../Controllers/issueCtrl";
+import { getUsernameUsuario, setUsuario } from "../../vars";
+import { getIdUsuario } from "../../vars";
+import { getUsuario } from "../../vars";
+
+// Componentes
+import ShowIssues from "../../Components/ShowIssues";
+import { getAllUsers } from "../../vars";
+
 
 
 export default function Main ({ idUsuario, handleUsuario }){
     const [isLoading, setIsLoading] = React.useState(true);
     const [issues, setIssues] = React.useState([]);
-    const [usuarios, setUsuarios] = React.useState(Array);    
+    const [usuarios, setUsuarios] = React.useState(Array);
+    const [showFilters, setShowFilters] = React.useState(true);
+    const [sharedIssues, setSharedIssues] = React.useState(null);
+    const [sharedUrl, setSharedUrl] = React.useState("https://it12casw-backend.fly.dev/api/issues/?");
+    const [parametros, setParametros] = React.useState(null);
   
     async function getUsuariosAPI() {
-
         return await getUsuariosCtrl();
     }
 
@@ -31,51 +42,28 @@ export default function Main ({ idUsuario, handleUsuario }){
          return await getIssuesCtrl();
     }
 
+    function handleUsuario(e) {
+      setUsuario(e.target.value)
+
+      var auxIssues = getIssuesAPI();
+      if (auxIssues != null) setIssues(auxIssues);
+      setIsLoading(false);
+    }
+
+    function buscarIssues(e) {
+      setIsLoading(true);
+      setParametros(e.target.value)
+
+      setIsLoading(false);
+    }
+
 
     // Cuando cargue la pgina
     React.useEffect(() => {
 
-        // var auxUsuarios = getUsuariosAPI();
+        console.log("El usuario por defecto es: " + getUsernameUsuario())
+        var auxUsuarios = getAllUsers();  
         var auxIssues = getIssuesAPI();
-        
-
-        // var auxIssues = [
-        // {
-        //     id: 1,
-        //     type: "bug",
-        //     severity: "minor",
-        //     priority: "low",
-        //     title: "Issue 1",
-        //     description: "Description 1",
-        //     status: "test",
-        //     modified: "2021-10-10",
-        //     assignee: "Assignee 1",
-        // },
-        // {
-        //     id: 2,
-        //     type: "question",
-        //     severity: "wishlist",
-        //     priority: "normal",
-        //     title: "Issue 2",
-        //     description: "Description 2",
-        //     status: "closed",
-        //     modified: "2021-10-10",
-        //     assignee: "Assignee 2",
-        // },
-        // ];
-
-        var auxUsuarios = [
-            {
-                id: 1,
-                name: "Usuario 1",
-                token: "Token 1",
-            },
-            {
-              id: 2,
-              name: "Usuario 2",
-              token: "Token 1",
-          }
-        ];
 
         if (auxUsuarios != null) {
           setUsuarios(auxUsuarios);
@@ -85,6 +73,15 @@ export default function Main ({ idUsuario, handleUsuario }){
         setIsLoading(false);
 
     }, []);
+    React.useEffect(() => {
+      console.log("sharedUrl: ", sharedUrl);
+    }, [sharedUrl]);
+
+    function buscarIssues(e) {
+      setIsLoading(true);
+      setParametros(e.target.value)
+      setIsLoading(false);
+    }
 
     return (
         <div style={styles.mainScreen} id="test">
@@ -94,28 +91,36 @@ export default function Main ({ idUsuario, handleUsuario }){
           <RiAliensFill style={{ fontSize: "35px" }} />
         </div>
         <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            display: "flex",
-            justifyContent: "center",
-          }}
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                display: "flex",
+                justifyContent: "center",
+              }}
         >
-          <div style={{ width: "80px" }}>
-            <p style={{ fontFamily: "sans-serif", color: "#008aa8" }}>Login</p>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <p style={{ fontFamily: "sans-serif", color: "#008aa8" }}>
-              Sign Up
-            </p>
-          </div>
+            <div style={{ width: "80px" }}>
+                <p>
+                    <Link to="/profile" style={{ fontFamily: "sans-serif", color: "#008aa8" }}>
+                        Profile</Link>
+                </p>
+
+            </div>
+            <div style={{ width: "80px" }}>
+                <p style={{ fontFamily: "sans-serif", color: "#008aa8" }}>Login</p>
+            </div>
+            <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+            >
+                <p style={{ fontFamily: "sans-serif", color: "#008aa8" }}>
+                  Sign Up
+                </p>
+            </div>
+
         </div>
       </div>
       <div style={styles.mainContainer}>
@@ -190,8 +195,9 @@ export default function Main ({ idUsuario, handleUsuario }){
                   <a
                     href="#"
                     style={{ color: "#008aa8", textDecoration: "none" }}
-                  >
-                    Filters
+                    onClick={() => setShowFilters(!showFilters)}
+                    >
+                      {showFilters ? "Filters" : "Ocultar Filtros"}
                   </a>
                 </div>
                 {/* Buscador */}
@@ -200,6 +206,7 @@ export default function Main ({ idUsuario, handleUsuario }){
                     type="text"
                     placeholder="Search issues"
                     style={styles.inputBuscador}
+                    onChange={buscarIssues}
                   />
                   <AiOutlineSearch
                     style={{ position: "absolute", right: "10px", top: "6px" }}
@@ -225,64 +232,64 @@ export default function Main ({ idUsuario, handleUsuario }){
                   />
                 </div>
                 <div>
-                    <select style={{width: "100px", height: "30px"}} onChange={ handleUsuario } >
-                        <option value="0" key="0">Usuario</option>
+                    <select style={{width: "100px", height: "30px"}} onChange={ handleUsuario }>
                         {/* Recorre la variable 'usuarios' y crea una opción para cada uno */}
-                        {usuarios.map((usuario) => 
-                            <option value={usuario.id} key={usuario.id}>{usuario.name}</option>
+                        {usuarios && usuarios.map((usuario) => 
+                            <option value={usuario.id} key={usuario.id} defaultValue={ usuario.id === getUsuario() }>{usuario.username}</option>
                         )}  
                     </select>
+                    <p>Se ha iniciado con el usuario: { getUsernameUsuario() }</p>
+                  </div>
                 </div>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  width: "30%",
-                  justifyContent: "end",}}
-              >
-                {/* New issue */}
-                <div style={{ position: "relative" }}>
-                  <GrAdd
-                    style={{ position: "absolute", top: "10px", left: "7px" }}
-                  />
-                  <button style={styles.newIssueButton} >
-                    {/* /Link a /createIssue */}
-                    <Link to="/crearIssue" style={{color: "white", textDecoration: "none"}}>
-                    New issue</Link>
-                  </button>
-                </div>
-                {/* Bulk insert */}
                 <div
                   style={{
                     display: "flex",
-                    paddingLeft: "20px",
-                    paddingRight: "20px",
+                    flexDirection: "row",
+                    width: "30%",
+                    justifyContent: "end",
                   }}
                 >
-                  <button
-                    style={{
-                      borderWidth: "0px",
-                      borderRadius: "3px",
-                      backgroundColor: "#C2C2C2",
-                      borderStyle: "solid",
-                      paddingRight: "10px",
-                      paddingLeft: "10px",
-                    }}
-                  >
-                    <AiOutlineAppstoreAdd />
-                  </button>
+                  <div style={{ position: "relative" }}>
+                    <GrAdd
+                      style={{ position: "absolute", top: "10px", left: "7px" }}
+                    />
+                    <button style={styles.newIssueButton}>
+                      <Link
+                        to="/crearIssue"
+                        style={{ color: "white", textDecoration: "none" }}
+                      >
+                        New issue
+                      </Link>
+                    </button>
+                  </div>
+                 {/* Bulk insert */}
+
+                 <div style={{ position: "relative" , marginLeft:"5px" }}>
+                      <AiOutlineAppstoreAdd
+                          style={{ position: "absolute", top: "10px", left: "7px" }}
+                      />
+                      <button style={styles.newIssueButton }>
+                          <Link to="/bulkInsert" style={{color: "white", textDecoration: "none"}}>Bulk Insert</Link>
+                      </button>
+                  </div>
+                </div>
+              </div>
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                {!showFilters && (
+                  <div style={styles.containerBlockFilter}>
+                    <FormularioFiltros sharedIssues={sharedIssues} setSharedIssues={setSharedIssues} sharedUrl={sharedUrl} setSharedUrl={setSharedUrl}/>
+                  </div>
+                )}
+                <div
+                  style={styles.tablaContainer}
+                >
+                  <ColumnWithClickableArrows sharedIssues={sharedIssues} setSharedIssues={setSharedIssues} sharedUrl={sharedUrl} setSharedUrl={setSharedUrl} parametros={parametros}/>
                 </div>
               </div>
             </div>
-            {/* Tabla */}
-            <div style={styles.tablaContainer}>
-              {/* Fila */}
-              <ColumnWithClickableArrows />              
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+    
+};

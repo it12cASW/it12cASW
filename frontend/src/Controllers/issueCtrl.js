@@ -3,11 +3,16 @@ import axios from "axios";
 // Funciones de utilidad
 import { getTokenUsuario } from "../vars.js";
 import { getIdUsuario } from "../vars.js";
+import { API_URL } from '../vars.js';
+
+
+
 
 export async function getIssuesCtrl(idUsuario) {
 
     try {
-        var url = "https://it12casw-backend.fly.dev/api/issues/";
+        console.log("Voy a obtener los issues")
+        var url = API_URL + "issues/";
         var auth = "Token " + getTokenUsuario(idUsuario);
         const response = await axios.get(url, {
             headers: {
@@ -191,12 +196,13 @@ export async function setAsignadoCtrl(id_issue, asignado) {
 export async function deleteDeadlineCtrl(id_issue) {
     try {
         var idUsuario = getIdUsuario();
+        console.log("API: " + idUsuario)
         var url = "https://it12casw-backend.fly.dev/api/issues/" + id_issue + "/deadline/delete/";
         var auth = "Token " + getTokenUsuario(idUsuario);
         const response = await axios.delete(url, {
             headers: {
                 "Authorization": auth,
-            }
+            },
         });
         console.log("API: Se ha eliminado el deadline")
         return true;
@@ -340,9 +346,51 @@ export async function deleteWatcherCtrl(id_issue, id_user) {
         return null;
     }
 }
-export var orderedIssues = null;
 
-export async function orderIssues(index, order) {
+export async function bulkInsertCtrl(idUsuario, data) {
+
+    try {
+        var url = API_URL + "issues/bulk-insert/";
+        var auth = "Token " + getTokenUsuario(idUsuario);
+        const response = await axios.post(url, data, {
+            headers: {
+                "Authorization": auth,
+            }
+        });
+        console.log("La peticion ha funcionado")
+        return response.data;
+
+    } catch (error) {
+        console.log(error)
+        return null;
+    }
+    return true;
+}
+export async function setCommentCtrl(id_issue, comment) {
+    try{
+        var idUsuario = getIdUsuario();
+        var url = "https://it12casw-backend.fly.dev/api/issues/" + id_issue + "/comments/";
+        var data =
+            {
+                "comment": comment,
+            };
+        var auth = "Token " + getTokenUsuario(idUsuario);
+        const response = await axios.post(url, data, {
+            headers: {
+                "Authorization": auth,
+            },
+        });
+        console.log("API: Se ha añadido el comentario")
+        return response.data;
+    }
+    catch(error){
+        console.log("API: Ha habido un error al añadir el comentario")
+        return null;
+    }
+}
+
+
+export async function orderIssues(index, order, sharedUrl) {
      
     try {
         var idUsuario = getIdUsuario();
@@ -350,7 +398,7 @@ export async function orderIssues(index, order) {
         var iorder;
         if (order === false) iorder = "asc";
         else iorder = "desc";
-        var url = "https://it12casw-backend.fly.dev/api/issues/?order_field=" + index + "&order=" + iorder;
+        var url = sharedUrl + "&order_field=" + index + "&order=" + iorder;
         
         var auth = "Token " + getTokenUsuario(idUsuario);
         const response = await axios.get(url, {
@@ -358,7 +406,7 @@ export async function orderIssues(index, order) {
                 "Authorization": auth,
             }
         });
-        orderedIssues = response.data;
+        var orderedIssues = response.data;
         console.log(orderedIssues);
         return response.data;
 
@@ -369,3 +417,45 @@ export async function orderIssues(index, order) {
         
 };
 
+export async function obtenerIssuesFiltrados(filtrosSeleccionados, estadosSeleccionados, usuarioAsignado, prioridadSeleccionada, usuarioCreador) {
+    try{
+        console.log("Filtrao: " + filtrosSeleccionados + " estados: " + estadosSeleccionados + " usuarioAsignado: " + usuarioAsignado + " prioridad: " + prioridadSeleccionada + " usuarioCreador: " + usuarioCreador)
+        var idUsuario = getIdUsuario();
+        var url = "https://it12casw-backend.fly.dev/api/issues/?";
+        //para cada valor de filtrosSeleccionados, añadir a la url el filtro y su valor
+        for (var i = 0; i < filtrosSeleccionados.length; i++) {
+            if (filtrosSeleccionados[i] != null && filtrosSeleccionados[i] !== "") {
+                console.log(filtrosSeleccionados[i]);                
+                url = url + "&";
+                switch (filtrosSeleccionados[i]) {
+                    case "status":
+                        url = url + "status=" + estadosSeleccionados;
+                        break;
+                    case "assignee":
+                        url = url + "assigned=" + usuarioAsignado;
+                        break;
+                    case "priority":
+                        url = url + "priority=" + prioridadSeleccionada;
+                        break;
+                    case "created_by":
+                        url = url + "creator=" + usuarioCreador;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        console.log(url);
+        var auth = "Token " + getTokenUsuario(idUsuario);
+        const response = await axios.get(url, {
+            headers: {
+                "Authorization": auth,
+            }
+        });
+        console.log(response.data);
+        return [response.data, url];
+    }catch(error){
+        console.log(error)
+        return null;
+    }
+};

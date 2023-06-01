@@ -7,7 +7,8 @@
 | Juan Clusellas | @jclusi | clusellas |
 | Joan Martínez | @joanmartinezsoria | JoanMartinezSoria |
 
-Aplicacion deployada en: https://it12casw-backend.fly.dev
+Aplicacion deployada en: https://it12casw-backend.fly.dev (backend)
+Aplication deployada en: https://it12cASW.github.io/it12cASW (frontend)
 # Más información
 
 # COMANDOS

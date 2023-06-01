@@ -112,7 +112,6 @@ export default function CrearIssue( { idUsuario , handleUsuario } ) {
         setIsLoading(false)
     }, [])
 
-
     return (
         
         <div style={ styles.mainContainer }>
@@ -157,8 +156,8 @@ export default function CrearIssue( { idUsuario , handleUsuario } ) {
                         </div>
                     </div>
                     
-                    {incorrecto == true && <div style={ styles.incorrecto }>No se ha podido crear la issue</div>}
-                    {incorrecto == false && <div style={ styles.incorrecto }>Issue creada correctamente</div>}
+                    {incorrecto === true && <div style={ styles.incorrecto }>No se ha podido crear la issue</div>}
+                    {incorrecto === false && <div style={ styles.incorrecto }>Issue creada correctamente</div>}
                     
                 </div>
             ) : (
