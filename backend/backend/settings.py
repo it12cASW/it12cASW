@@ -149,6 +149,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+
 CORS_ALLOWED_ORIGINS = [
     "https://domain.com",
     "https://api.domain.com",
@@ -159,7 +160,6 @@ CORS_ALLOWED_ORIGINS = [
     "https://it12casw-backend.fly.dev",
     "https://it12casw.github.io",
 ]
-
 
 SITE_ID = 1
 
