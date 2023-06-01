@@ -66,7 +66,7 @@ const User = ({ user }) => {
 
             <div style={{ alignSelf: "center"}}>
                 <button style={ styles.botonCrear }>
-                    <Link to="/">Volver</Link>
+                    <Link to="/it12cASW">Volver</Link>
                 </button>
             </div>
         </div>
