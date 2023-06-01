@@ -41,6 +41,7 @@ export default function Profile() {
     const [username, setUsername] = useState('')
     const [usernameChange, setUsernameChange] = useState('')
     const [emailChange, setEmail] = useState('')
+    const [aboutChange, setAbout] = useState('')
 
 
     useEffect(() => {
@@ -88,11 +89,16 @@ export default function Profile() {
         setEmail(e.target.value);
     }
 
+    function handleChangeAbout(e) {
+        setAbout(e.target.value);
+    }
+
     async function saveChanges(){
         try{
             const body = {
                 "username": usernameChange,
-                "email": emailChange
+                "email": emailChange,
+                "about": aboutChange
             }
             const userData = await saveUsuario(body);
 
@@ -112,6 +118,7 @@ export default function Profile() {
                     <h2>User Information</h2>
                     <p>Username: {user.username}</p>
                     <p>Email: {user.email}</p>
+                    <p>About: {user.about}</p>
                 </div>
             );
         }else{
@@ -122,6 +129,8 @@ export default function Profile() {
                         <input onChange={ handleChangeUsername }type="text" placeholder={user.username} defaultValue={ user.username }  />
                     <p>Email:</p>
                         <input onChange={ handleChangeEmail }type="text" placeholder={user.email} defaultValue={ user.email } />
+                    <p>About:</p>
+                        <textarea  onChange={ handleChangeAbout }type="text" placeholder={user.about} defaultValue={ user.about } />
 
                     <div style={{ position: "relative"}}>
                         <BiSearch

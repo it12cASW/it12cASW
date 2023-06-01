@@ -73,12 +73,13 @@ class UserViewSet(ModelViewSet):
         username = data['username']
         password = data['password']
         email = data['email']
+        about = data['about']
         
         user = User.objects.filter(username=username).first()
         if(user):
             return Response({'message': 'User already exists'}, status=status.HTTP_409_CONFLICT)
 
-        user = User.objects.create_user(username=username, password=password, email=email)
+        user = User.objects.create_user(username=username, password=password, email=email, about=about)
         user.save()
 
         token, created = Token.objects.get_or_create(user=user)
@@ -92,9 +93,11 @@ class UserViewSet(ModelViewSet):
         if(not data):
             return Response({'message': 'Please provide all the required fields'}, status=status.HTTP_400_BAD_REQUEST)
 
-        username = data['username']
-        password = data['password']
-        email = data['email']
+        username = data.get('username')
+        password = data.get('password')
+        email = data.get('email')
+        about = data.get('about')
+
         token = request.query_params['ApiKeyAuth']
         if (not token):
             return Response({'message': 'Please provide the token'}, status=status.HTTP_400_BAD_REQUEST)
@@ -105,6 +108,7 @@ class UserViewSet(ModelViewSet):
         user.username = username if username else user.username
         user.password = password if password else user.password
         user.email = email if email else user.email
+        user.about = about if about else user.about
         user.save()
 
         serializer = UserSerializer(user)

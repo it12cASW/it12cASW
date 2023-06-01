@@ -43,12 +43,12 @@ export async function saveUsuario(data){
         var idUsuario = getIdUsuario();
         var url = API_URL + "users/edit/";
 
-        var auth = "Token " + getTokenUsuario(idUsuario);
+        var auth = getTokenUsuario(idUsuario);
 
         const response = await axios.put(url, data, {
-            headers: {
-                "Authorization": auth,
-            },
+            params:{
+                "ApiKeyAuth": auth,
+            }
         });
         console.log("La peticion ha funcionado")
     }
