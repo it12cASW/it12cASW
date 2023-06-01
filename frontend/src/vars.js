@@ -6,25 +6,25 @@ const users = [
         "id": 1,
         "username": "Joan",
         "email": "joan@gmail.com",
-        "token": "d6ff5166a8c8289e27348c50b70de3c774a436a3"
+        "token": "5c6592a04c2d7118a654c832e229c0bc0fe69fcf"
     },
     {
         "id": 2,
         "username": "Juan",
         "email": "juan@gmail.com",
-        "token": "7a45e7ce6c6e65e585295ccac0fa12023306c05a"
+        "token": "07cd0a379247eef201ab82b6eae04ba375d38e00"
     },
     {
         "id": 3,
         "username": "Dimas",
         "email": "dimas@gmail.com",
-        "token": "cab197b7acc1ae9e341164fe30e317adf6fa7061"
+        "token": "e38eb83cb86bfc0205b2c4f8b352b799ca3faf7e"
     },
     {
         "id": 4,
         "username": "Miguel",
         "email": "miguel@gmail.com",
-        "token": "5cb63162fec93bcd049ece8c2d4a9e1b5da997a4"
+        "token": "4dcd1fd2c99b1cf289e7327fc047dea51c5d4915"
     },
 ]
 
