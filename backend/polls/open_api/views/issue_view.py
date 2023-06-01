@@ -138,6 +138,8 @@ class IssueViewSet(ModelViewSet):
         if deadline:
             dline = True
             issue.deadline = deadline
+        else:
+            issue.deadline = None
 
         # PRIORITY
         prioridad = request.data['prioridad']
