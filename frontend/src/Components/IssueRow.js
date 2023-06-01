@@ -63,7 +63,7 @@ const IssueRow = ({ issue }) => {
                 {issue.prioridad && issue.prioridad === "high" && <div><FaCircle  data-tooltip-id="my-tooltip" data-tooltip-content="High" style={{ color:"red" }}/><Tooltip id="my-tooltip" /></div>}
             </div>
             <div style={styles.columna}>#{issue.id}</div>
-            <div style={styles.columnaTexto}><Link to={`/${issue.id}`}>{issue.asunto}</Link></div>
+            <div style={styles.columnaTexto}><Link to={`/it12cASW/${issue.id}`}>{issue.asunto}</Link></div>
             <div style={styles.columna}>
                 {issue.status && issue.status === "new" && <div><FaCircle data-tooltip-id="my-tooltip" data-tooltip-content="New" style={{ color:"violet" }}/><Tooltip id="my-tooltip" /></div>}
                 {issue.status && issue.status === "progres" && <div><FaCircle data-tooltip-id="my-tooltip" data-tooltip-content="Progres" style={{ color:"blue" }}/><Tooltip id="my-tooltip" /></div>}
